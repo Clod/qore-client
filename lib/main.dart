@@ -1,9 +1,17 @@
 import 'package:cardio_gut/routes/route_guard.dart';
 import 'package:cardio_gut/routes/router.gr.dart';
 import 'package:cardio_gut/util/auth_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(MyApp());
 }
 
