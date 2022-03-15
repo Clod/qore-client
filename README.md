@@ -1,5 +1,7 @@
 # cardio_gut
 
+La navagación que tiene en cuenta la autenticación la saco de:
+
 https://blog.logrocket.com/implementing-route-guards-flutter-web-apps/
 https://github.com/Chinmay-KB/route_guard_example/issues/1
 
@@ -61,6 +63,13 @@ Ahora tengo que configurar Auth. Para el caso de GMail tengo que hacer la
 configuración manual: 
 
 https://firebase.flutter.dev/docs/manual-installation/
+
+Como se me complicó la configuración de la autenticación con GMail opto por validación por
+usuario/password.
+
+Saco la pantalla de login de:
+
+https://www.tutorialkart.com/flutter/flutter-login-screen/
 
 
 
