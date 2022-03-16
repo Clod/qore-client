@@ -71,6 +71,64 @@ Saco la pantalla de login de:
 
 https://www.tutorialkart.com/flutter/flutter-login-screen/
 
+--------------------------------
+Para subirlo a Firebase Hosting (estoy convencido de que ya lo había hecho)
+
+https://www.solutelabs.com/blog/flutter-for-web-how-to-deploy-a-flutter-web-app
+
+D:\home\flutter\cardio_gut>firebase login
+Already logged in as j.claudio.grasso@gmail.com
+
+D:\home\flutter\cardio_gut>firebase init
+
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+D:\home\flutter\cardio_gut
+
+? Are you ready to proceed? Yes
+? Which Firebase features do you want to set up for this directory? Press Space to select features, then Enter to confirm your choices. Hosting: Configure files for F
+irebase Hosting and (optionally) set up GitHub Action deploys
+
+=== Project Setup
+
+First, let's associate this project directory with a Firebase project.
+You can create multiple project aliases by running firebase use --add,
+but for now we'll just set up a default project.
+
+? Please select an option: Use an existing project
+? Select a default Firebase project for this directory: cardio-gut (cardio-gut)
+i  Using project cardio-gut (cardio-gut)
+
+=== Hosting Setup
+
+Your public directory is the folder (relative to your project directory) that
+will contain Hosting assets to be uploaded with firebase deploy. If you
+have a build process for your assets, use your build's output directory.
+
+? What do you want to use as your public directory? build/web
+? Configure as a single-page app (rewrite all urls to /index.html)? No
+? Set up automatic builds and deploys with GitHub? No
+? File build/web/404.html already exists. Overwrite? No
+i  Skipping write of build/web/404.html
+? File build/web/index.html already exists. Overwrite? No
+i  Skipping write of build/web/index.html
+
+i  Writing configuration info to firebase.json...
+i  Writing project information to .firebaserc...
+
++  Firebase initialization complete!
+
+D:\home\flutter\cardio_gut>
+
+
+
+
 
 
 
