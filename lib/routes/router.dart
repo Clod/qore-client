@@ -14,7 +14,11 @@ import '../screens/login/login_screen.dart';
 
 @MaterialAutoRouter(
   routes: <AutoRoute>[
-    AutoRoute(page: LoginScreen, name: 'LoginRoute', path: 'login'),
+    AutoRoute(
+        page: LoginScreen,
+        name: 'LoginRoute',
+        path: 'login'
+    ),
     AutoRoute(
       page: HomeScreen,
       name: 'HomeRoute',
@@ -41,10 +45,18 @@ import '../screens/login/login_screen.dart';
                 path: 'add_products'),
           ],
         ),
-        AutoRoute(page: ProfileScreen, name: 'ProfileRoute', path: 'profile')
+        AutoRoute(
+            page: ProfileScreen,
+            name: 'ProfileRoute',
+            path: 'profile'
+        )
       ],
     ),
-    AutoRoute(page: AboutScreen, name: 'AboutRouter', path: '/about')
+    AutoRoute(
+        page: AboutScreen,
+        name: 'AboutRouter',
+        path: '/about'
+    )
   ],
 )
 class $AppRouter {}   // Clod: AppRouter se va a crear automáticamente con el comando de abajo

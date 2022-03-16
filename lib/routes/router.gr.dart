@@ -49,8 +49,10 @@ class AppRouter extends _i5.RootStackRouter {
           routeData: routeData, child: const _i3.DashboardScreen());
     },
     AboutRouter.name: (routeData) {
+      final args = routeData.argsAs<AboutRouterArgs>();
       return _i5.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i4.AboutScreen());
+          routeData: routeData,
+          child: _i4.AboutScreen(key: args.key, parametro: args.parametro));
     },
     ProductsRoute.name: (routeData) {
       return _i5.MaterialPageX<_i5.EmptyRouterPage>(
@@ -137,10 +139,26 @@ class DashboardRoute extends _i5.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.AboutScreen]
-class AboutRouter extends _i5.PageRouteInfo<void> {
-  const AboutRouter() : super(AboutRouter.name, path: '/about');
+class AboutRouter extends _i5.PageRouteInfo<AboutRouterArgs> {
+  AboutRouter({_i9.Key? key, required String parametro})
+      : super(AboutRouter.name,
+            path: '/about',
+            args: AboutRouterArgs(key: key, parametro: parametro));
 
   static const String name = 'AboutRouter';
+}
+
+class AboutRouterArgs {
+  const AboutRouterArgs({this.key, required this.parametro});
+
+  final _i9.Key? key;
+
+  final String parametro;
+
+  @override
+  String toString() {
+    return 'AboutRouterArgs{key: $key, parametro: $parametro}';
+  }
 }
 
 /// generated route for

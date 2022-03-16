@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatelessWidget {
-  const AboutScreen ({Key? key}) : super(key: key);
+  AboutScreen ({Key? key, required this.parametro}) : super(key: key);
+
+  final String parametro;
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    print ("Recibí el parámetro: " + parametro);
+    return Scaffold(
         body: Center(
           child: Text(
-            'This is our about screen',
+            'This is our about screen ${parametro}',
             style: TextStyle(
               fontSize: 16,
             ),

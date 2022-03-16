@@ -1,12 +1,22 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
+import '../../routes/router.gr.dart';
 
 class LoginScreen extends StatelessWidget {
+
+  // By convention, widget constructors only use named arguments.
+  // Also by convention, the first argument is key, and the last argument
+  // is child, children, or the equivalent.
+  // If your class represents an object that will never change after its
+  // creation, you can benefit from the use of a constant constructor. You
+  // have to make sure that all your class fields are final.
   const LoginScreen({Key? key, required this.onLoginCallback})
       : super(key: key);
 
+  // onLoginCallback es una función que tiene un parámetro de tipo bool
   final Function(bool loggedIn) onLoginCallback;
 
   static const String _title = 'Sample App';
@@ -115,7 +125,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       }
 
                       if (user != null) {
-                        // Change value of auth in authservice
+                        // Change value of auth in authservice (en route_guard.dart)
                         MyApp.of(context).authService.authenticated = true;
                         onLoginCallback.call(true);
                         print('SIIIIIIIIIIIIIIIIIIIIIII');
@@ -131,11 +141,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 const Text('Does not have account?'),
                 TextButton(
                   child: const Text(
-                    'Sign in',
+                    'About',
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
+                    print ("Intento ir a about");
                     //signup screen
+                    AutoRouter.of(context).push(AboutRouter(parametro: "Pindonga"));
                   },
                 )
               ],

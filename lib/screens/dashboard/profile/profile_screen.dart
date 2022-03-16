@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../main.dart';
@@ -21,6 +22,11 @@ class ProfileScreen extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
+
+                  // Me delogueo de Firebase
+                  FirebaseAuth.instance.signOut();
+
+                  // Le "aviso" a route_guard
                   MyApp.of(context).authService.authenticated = false;
                 },
                 child: const Text('Logout'),
