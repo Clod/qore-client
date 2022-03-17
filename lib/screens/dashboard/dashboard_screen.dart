@@ -17,15 +17,15 @@ class DashboardScreen extends StatelessWidget {
           currentIndex: tabsRouter.activeIndex,
           items: const [
             BottomNavigationBarItem(
-              label: 'Products',
+              label: 'Pacientes',
               icon: Icon(
-                Icons.category,
+                Icons.person,
               ),
             ),
             BottomNavigationBarItem(
               label: 'Profile',
               icon: Icon(
-                Icons.person,
+                Icons.access_alarm,
               ),
             ),
           ]),

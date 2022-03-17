@@ -9,9 +9,10 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     print ("Recibí el parámetro: " + parametro);
     return Scaffold(
+        appBar: AppBar(title: const Text("CardioGut - Ayuda")),
         body: Center(
           child: Text(
-            'This is our about screen ${parametro}',
+            'Acá va el texto de ayuda. ${parametro}',
             style: TextStyle(
               fontSize: 16,
             ),

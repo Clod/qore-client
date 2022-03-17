@@ -74,7 +74,11 @@ https://www.tutorialkart.com/flutter/flutter-login-screen/
 --------------------------------
 Para subirlo a Firebase Hosting (estoy convencido de que ya lo había hecho)
 
-https://www.solutelabs.com/blog/flutter-for-web-how-to-deploy-a-flutter-web-app
+Antes de subirla hay que generar una versión para PROD:
+
+flutter build web
+
+https://www.solutelabs.com/blog/flutter-for-web-how-to-deploy-a-flutter-web-appflutter
 
 D:\home\flutter\cardio_gut>firebase login
 Already logged in as j.claudio.grasso@gmail.com

@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../routes/router.gr.dart';
 
+// La pantalla de login la saqué de:
+// https://www.tutorialkart.com/flutter/flutter-login-screen/
+
 class LoginScreen extends StatelessWidget {
 
   // By convention, widget constructors only use named arguments.
@@ -19,7 +22,7 @@ class LoginScreen extends StatelessWidget {
   // onLoginCallback es una función que tiene un parámetro de tipo bool
   final Function(bool loggedIn) onLoginCallback;
 
-  static const String _title = 'Sample App';
+  static const String _title = 'CardioGut';
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(10),
                 child: const Text(
-                  'TutorialKart',
+                  'CardioGut',
                   style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.w500,
@@ -67,7 +70,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(10),
                 child: const Text(
-                  'Sign in',
+                  'Ingreso',
                   style: TextStyle(fontSize: 20),
                 )),
             Container(
@@ -76,7 +79,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 controller: nameController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'User Name',
+                  labelText: 'Usuario',
                 ),
               ),
             ),
@@ -91,17 +94,18 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 ),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                //forgot password screen
-              },
-              child: const Text('Forgot Password',),
-            ),
+            const SizedBox(height: 20),
+            // TextButton(
+            //   onPressed: () {
+            //     //forgot password screen
+            //   },
+            //   child: const Text('Forgot Password',),
+            // ),
             Container(
                 height: 50,
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
-                  child: const Text('Login'),
+                  child: const Text('Entrar'),
                   onPressed: () async {
                     print(nameController.text);
                     print(passwordController.text);
@@ -138,16 +142,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ),
             Row(
               children: <Widget>[
-                const Text('Does not have account?'),
+                const Text('¿No conoce el sistema?'),
                 TextButton(
                   child: const Text(
-                    'About',
+                    'Ayuda',
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
                     print ("Intento ir a about");
                     //signup screen
-                    AutoRouter.of(context).push(AboutRouter(parametro: "Pindonga"));
+                    AutoRouter.of(context).push(AboutRouter(parametro: "Un parámetro"));
                   },
                 )
               ],
