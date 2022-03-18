@@ -1,12 +1,20 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cardio_gut/model/Pacientes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../main.dart';
 import '../../../routes/router.gr.dart';
 
-class ProductsScreen extends StatelessWidget {
+class ProductsScreen extends StatefulWidget {
   const ProductsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProductsScreen> createState() => _ProductsScreenState();
+}
+
+class _ProductsScreenState extends State<ProductsScreen> {
+  List allPatients = damePacientes();
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +36,30 @@ class ProductsScreen extends StatelessWidget {
         },
         child: const Icon(Icons.add),
       ),
-      body: ListView.builder(
-          itemCount: 100,
-          itemBuilder: (context, index) =>
-              Center(child: Text('Paciente #$index'))),
+      body: Column(
+        children: [
+          Text("Mostremos algo fijo"),
+          Expanded(
+            child: ListView.builder(
+                // itemCount: 100,
+                // itemBuilder: (context, index) =>
+                //     Center(child: Text('Paciente #$index'))),
+                itemCount: allPatients.length,
+                itemBuilder: (context, index) {
+                  final item = allPatients[index];
+                  return ListTile(
+                    title: Text(item.nombre + ' ' + item.apellido),
+                    subtitle: Text(item.nacionalidad),
+                    onTap: () {
+                      print('Hiciste click sobre: ${item.apellido}');
+                      // AutoRouter.of(context).push(AboutRouter(parametro: item.apellido)); // Anda!
+                      AutoTabsRouter.of(context).setActiveIndex(1);
+                    },
+                  );
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

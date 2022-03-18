@@ -30,9 +30,16 @@ damePacientes() {
   dos.comentarios.add(luigi2);
 
   var algunosPacientes = <Paciente>[];
-
-  algunosPacientes.add(uno);
   algunosPacientes.add(dos);
+  algunosPacientes.add(uno);
+
+  for (int i = 1; i < 100; i++) {
+    String nombre = "Nombre paciente " + i.toString();
+    String apellido = "Apellido paciente " + i.toString();
+
+    algunosPacientes.add(Paciente(nombre: nombre, apellido: apellido, documento: "1111", nacionalidad: 'Búlgaro', fechaNacimiento: DateTime.now()));
+
+  }
 
   return algunosPacientes;
 
