@@ -13,6 +13,7 @@
 import 'package:auto_route/auto_route.dart' as _i5;
 import 'package:flutter/material.dart' as _i9;
 
+import '../model/Paciente.dart' as _i11;
 import '../screens/about/about_screen.dart' as _i4;
 import '../screens/dashboard/dashboard_screen.dart' as _i3;
 import '../screens/dashboard/products/add_products/add_products_screen.dart'
@@ -59,8 +60,10 @@ class AppRouter extends _i5.RootStackRouter {
           routeData: routeData, child: const _i5.EmptyRouterPage());
     },
     ProfileRoute.name: (routeData) {
+      final args = routeData.argsAs<ProfileRouteArgs>();
       return _i5.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i6.ProfileScreen());
+          routeData: routeData,
+          child: _i6.ProfileScreen(key: args.key, parametro: args.parametro));
     },
     ProductsScreenRoute.name: (routeData) {
       return _i5.MaterialPageX<dynamic>(
@@ -172,10 +175,26 @@ class ProductsRoute extends _i5.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i6.ProfileScreen]
-class ProfileRoute extends _i5.PageRouteInfo<void> {
-  const ProfileRoute() : super(ProfileRoute.name, path: 'profile');
+class ProfileRoute extends _i5.PageRouteInfo<ProfileRouteArgs> {
+  ProfileRoute({_i9.Key? key, required _i11.Paciente parametro})
+      : super(ProfileRoute.name,
+            path: 'profile',
+            args: ProfileRouteArgs(key: key, parametro: parametro));
 
   static const String name = 'ProfileRoute';
+}
+
+class ProfileRouteArgs {
+  const ProfileRouteArgs({this.key, required this.parametro});
+
+  final _i9.Key? key;
+
+  final _i11.Paciente parametro;
+
+  @override
+  String toString() {
+    return 'ProfileRouteArgs{key: $key, parametro: $parametro}';
+  }
 }
 
 /// generated route for

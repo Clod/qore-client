@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cardio_gut/model/Paciente.dart';
 import 'package:flutter/material.dart';
 
 import '../../routes/router.gr.dart';
@@ -8,9 +9,9 @@ class DashboardScreen extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
-      routes: const [
+      routes: [
         ProductsRoute(),
-        ProfileRoute(),
+        ProfileRoute(parametro: Paciente(nombre: "", apellido: "", fechaNacimiento: DateTime.now(), documento: "", nacionalidad: "")),
       ],
       bottomNavigationBuilder: (context, tabsRouter) => BottomNavigationBar(
           onTap: tabsRouter.setActiveIndex,

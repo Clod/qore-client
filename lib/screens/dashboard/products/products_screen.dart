@@ -15,7 +15,6 @@ class ProductsScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<ProductsScreen> {
   List allPatients = damePacientes();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +52,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     onTap: () {
                       print('Hiciste click sobre: ${item.apellido}');
                       // AutoRouter.of(context).push(AboutRouter(parametro: item.apellido)); // Anda!
-                      AutoTabsRouter.of(context).setActiveIndex(1);
+                      // AutoTabsRouter.of(context).setActiveIndex(1); // Navega pero no le paso parámetros
+                      // AutoRouter.of(context).pushNamed("/dashboard/profile"); // Navega!
+                      // AutoRouter.of(context).push(ProfileRoute(parametro: "Fruta")); Explota
+                      // AutoRouter.of(context).navigate(ProfileRoute(parametro: '${item.apellido}')); Anda!!!
+                      AutoRouter.of(context).navigate(ProfileRoute(parametro: allPatients[index]));
                     },
                   );
                 }),
