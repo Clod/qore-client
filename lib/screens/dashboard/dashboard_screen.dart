@@ -10,8 +10,8 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
       routes: [
-        ProductsRoute(),
-        ProfileRoute(parametro: Paciente(nombre: "", apellido: "", fechaNacimiento: DateTime.now(), documento: "", nacionalidad: "")),
+        const ProductsRoute(),
+        ProfileRoute(parametro: Paciente(nombre: "", apellido: "Cadorna", fechaNacimiento: DateTime.now(), documento: "", nacionalidad: "")),
       ],
       bottomNavigationBuilder: (context, tabsRouter) => BottomNavigationBar(
           onTap: tabsRouter.setActiveIndex,

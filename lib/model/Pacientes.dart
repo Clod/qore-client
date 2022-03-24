@@ -1,5 +1,6 @@
 import 'Comentario.dart';
 import 'Paciente.dart';
+import 'dart:async';
 
 damePacientes() {
   Paciente uno = Paciente(
@@ -65,3 +66,4 @@ damePacientes() {
 
   return algunosPacientes;
 }
+

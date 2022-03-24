@@ -6,9 +6,9 @@ import '../../../model/Paciente.dart';
 
 class ProfileScreen extends StatelessWidget {
 
-  ProfileScreen({Key? key, required this.parametro}) : super(key: key);
+  const ProfileScreen({Key? key, required this.parametro}) : super(key: key);
 
-  Paciente parametro;
+  final Paciente parametro;
 
   @override
   Widget build(BuildContext context) {
@@ -32,22 +32,22 @@ class ProfileScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              const Text(
-                'This is the profile screen',
-                style: TextStyle(
+              Text(
+                'This is the patient´s screen \n + Paciente: ${parametro.apellido}',
+                style: const TextStyle(
                   fontSize: 16,
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  // Me delogueo de Firebase
-                  FirebaseAuth.instance.signOut();
-
-                  // Le "aviso" a route_guard
-                  MyApp.of(context).authService.authenticated = false;
-                },
-                child: const Text('Logout'),
-              )
+              // TextButton(
+              //   onPressed: () {
+              //     // Me delogueo de Firebase
+              //     FirebaseAuth.instance.signOut();
+              //
+              //     // Le "aviso" a route_guard
+              //     MyApp.of(context).authService.authenticated = false;
+              //   },
+              //   child: const Text('Logout'),
+              // )
             ],
           ),
         ));

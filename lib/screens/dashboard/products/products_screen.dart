@@ -14,6 +14,7 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
+
   List allPatients = damePacientes();
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
       ),
       body: Column(
         children: [
-          Text("Mostremos algo fijo"),
+          Text("Acá van los filtros para la búsqueda",
+          style: TextStyle(fontSize: 24),),
           Expanded(
             child: ListView.builder(
                 // itemCount: 100,

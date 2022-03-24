@@ -117,7 +117,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                             .signInWithEmailAndPassword(
                             email: nameController.text,
                             password: passwordController.text);
-                        print("XXXXXXXXX" + uc.user.toString());
+                        print("XXXXXXXXX " + uc.user.toString());
 
                         user = FirebaseAuth.instance.currentUser;
                       } on FirebaseAuthException catch (e) {
@@ -137,6 +137,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         print('NOOOOOOOOOOOOOOOOOOOOOOO');
                       }
 
+                      // OJO que esto está interceptando la navegación a otra pantalla
+                      // Por eso no se ve ninguna instrucción de navegación que indique
+                    // a dónde tiene que ir después.
                   },
                 )
             ),
