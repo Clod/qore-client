@@ -13,8 +13,10 @@ class AddProductsScreen extends StatefulWidget {
 class _AddProductsScreenState extends State<AddProductsScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
-  String? dropdownDiag = null;
-  String? dropdownSubDiag = null;
+  bool? enGestacion = false;
+
+  String? dropdownDiag;
+  String? dropdownSubDiag;
 
   var diagnosticos = ['Diagnóstico 1', 'Diagnóstico 2', 'Diagnóstico 3'];
 
@@ -95,9 +97,11 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                   child: Row(
                     children: [
                       Expanded(
+                        flex: 1,
                         child: InputDecorator(
                           decoration: const InputDecoration(
-                              border: OutlineInputBorder()),
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(horizontal:10.0, vertical: 5.0)),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               value: dropdownDiag,
@@ -125,7 +129,7 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                                 );
                               }).toList(),
                               hint: const Text(
-                                "Seleccionar diagnóstico",
+                                "Diagnóstico",
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 14,
@@ -137,17 +141,22 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                       ),
                       const SizedBox(width: 20),
                       Expanded(
+                        flex: 1,
+                        // https://stackoverflow.com/questions/64425340/how-do-i-disable-any-widget-in-flutter
                         child: AbsorbPointer(
                           absorbing: inhabilitarSubDiag,
                           child: InputDecorator(
                             decoration: const InputDecoration(
-                                border: OutlineInputBorder()),
+                              // errorText: "Todo esto es un error",
+                                border: OutlineInputBorder(),
+                                contentPadding: EdgeInsets.symmetric(horizontal:10.0, vertical: 5.0)),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
                                 value: dropdownSubDiag,
                                 icon: const Icon(Icons.arrow_downward),
                                 elevation: 16,
-                                style: const TextStyle(color: Colors.deepPurple),
+                                style:
+                                    const TextStyle(color: Colors.deepPurple),
                                 // underline: Container(
                                 //   height: 2,
                                 //   color: Colors.deepPurpleAccent,
@@ -166,7 +175,7 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                                   );
                                 }).toList(),
                                 hint: const Text(
-                                  "Seleccionar subdiagnóstico",
+                                  "Subdiagnóstico",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -180,6 +189,18 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                     ],
                   )),
               Container(
+                  child: CheckboxListTile(
+                title: const Text("Paciente en gestación:"),
+                value: enGestacion,
+                onChanged: (newValue) {
+                  setState(() {
+                    enGestacion = newValue;
+                  });
+                },
+                // controlAffinity:
+                //     ListTileControlAffinity.leading, //  <-- leading Checkbox
+              )),
+              Container(
                   height: 50,
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: ElevatedButton(
@@ -189,10 +210,31 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                           "Intento dar de alta al paciente: ${firstNameController.text} ${lastNameController.text}");
 
                       var algo = diagnosticos.indexOf(dropdownDiag!) + 1;
-                      var olgo = subDiag[algo - 1].indexOf(dropdownSubDiag!) + 1;
+                      var olgo =
+                          subDiag[algo - 1].indexOf(dropdownSubDiag!) + 1;
 
                       print("Con diagnóstico: $algo - $dropdownDiag");
                       print("y SubDiagnóstico: $olgo - $dropdownSubDiag");
+                      print("En gestación: $enGestacion");
+
+                      String mensaje = "Paciente: ${firstNameController.text} ${lastNameController.text} \nDiagnóstico: $dropdownDiag \nSubDiagnóstico: $dropdownSubDiag \nGestación: $enGestacion";
+                      // y SubDiagnóstico: $olgo - $dropdownSubDiag
+                      // En gestación: $enGestacion";
+
+                      final snackBar = SnackBar(
+                        content: Text(mensaje),
+                        action: SnackBarAction(
+                          label: 'OK',
+                          onPressed: () {
+                            // Some code to undo the change.
+                          },
+                        ),
+                      );
+
+                      // Find the ScaffoldMessenger in the widget tree
+                      // and use it to show a SnackBar.
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
                     },
                   )),
               // Row(

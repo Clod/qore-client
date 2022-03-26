@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
+
 import 'Comentario.dart';
 import 'Paciente.dart';
 import 'dart:async';
 
 damePacientes() {
+
   Paciente uno = Paciente(
     nombre: 'Juan',
     apellido: 'Pérez',
@@ -46,23 +49,43 @@ damePacientes() {
   algunosPacientes.add(uno);
 
   // Generados en https://generatedata.com/generator para Python
-  List otrosPacientes = [
+  List<Paciente> otrosPacientes = [
     Paciente(
         nombre: "Drake",
         apellido: "Trujillo",
-        documento: "8011",
+        documento: "80118011",
         nacionalidad: "Austria",
         fechaNacimiento: DateTime.parse("2021-09-27 03:27:40")),
     Paciente(
         nombre: "Nash",
         apellido: "Steele",
-        documento: "9497",
+        documento: "94979497",
+        nacionalidad: "Sweden",
+        fechaNacimiento: DateTime.parse("2022-06-19 23:46:51")),
+    Paciente(
+        nombre: "Patiño",
+        apellido: "lUIS",
+        documento: "94979497",
+        nacionalidad: "Sweden",
+        fechaNacimiento: DateTime.parse("2022-06-19 23:46:51")),
+    Paciente(
+        nombre: "Gibb",
+        apellido: "Barry",
+        documento: "94979497",
+        nacionalidad: "Sweden",
+        fechaNacimiento: DateTime.parse("2022-06-19 23:46:51")),
+    Paciente(
+        nombre: "Mongo",
+        apellido: "Aurelio",
+        documento: "94979497",
         nacionalidad: "Sweden",
         fechaNacimiento: DateTime.parse("2022-06-19 23:46:51"))
   ];
 
   algunosPacientes.add(otrosPacientes[0]);
   algunosPacientes.add(otrosPacientes[1]);
+
+  algunosPacientes += otrosPacientes;
 
   return algunosPacientes;
 }

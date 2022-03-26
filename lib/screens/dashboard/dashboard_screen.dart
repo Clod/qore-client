@@ -11,7 +11,7 @@ class DashboardScreen extends StatelessWidget {
     return AutoTabsScaffold(
       routes: [
         const ProductsRoute(),
-        ProfileRoute(parametro: Paciente(nombre: "", apellido: "Cadorna", fechaNacimiento: DateTime.now(), documento: "", nacionalidad: "")),
+        ProfileRoute(parametro: Paciente(nombre: "", apellido: "", fechaNacimiento: DateTime.now(), documento: "", nacionalidad: "")),
       ],
       bottomNavigationBuilder: (context, tabsRouter) => BottomNavigationBar(
           onTap: tabsRouter.setActiveIndex,
@@ -20,13 +20,13 @@ class DashboardScreen extends StatelessWidget {
             BottomNavigationBarItem(
               label: 'Pacientes',
               icon: Icon(
-                Icons.person,
+                Icons.people,
               ),
             ),
             BottomNavigationBarItem(
-              label: 'Profile',
+              label: 'Paciente',
               icon: Icon(
-                Icons.access_alarm,
+                Icons.person,
               ),
             ),
           ]),

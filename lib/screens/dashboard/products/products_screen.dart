@@ -14,8 +14,13 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-
   List allPatients = damePacientes();
+
+  String optBuscar = 'Apellido(s)';
+  var dropDownBuscar = ['Apellido(s)', 'Documento'];
+
+  TextEditingController datoBusqueda = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,12 +39,78 @@ class _ProductsScreenState extends State<ProductsScreen> {
         onPressed: () {
           AutoRouter.of(context).push(const AddProductsRoute());
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.person_add),
+        tooltip: "Agregar paciente",
       ),
       body: Column(
         children: [
-          Text("Acá van los filtros para la búsqueda",
-          style: TextStyle(fontSize: 24),),
+          // Text("Buscar por: ",
+          //   style: TextStyle(fontSize: 24),),
+          const SizedBox(height: 20),
+          Container (
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            child: InputDecorator(
+              decoration: const InputDecoration(
+                  labelText: "Buscar por:", border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal:10.0, vertical: 5.0)),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: InputDecorator(
+                      decoration:
+                          const InputDecoration(border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(horizontal:10.0, vertical: 5.0)),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: optBuscar,
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 16,
+                          style: const TextStyle(color: Colors.black, fontSize: 10.0
+                          ),
+                          // underline: Container(
+                          //   height: 2,
+                          //   color: Colors.deepPurpleAccent,
+                          // ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              optBuscar = newValue!;
+                            });
+                          },
+                          items: dropDownBuscar
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        controller: datoBusqueda,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          //labelText: 'Apellido(s)',
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        print("Buscar con dato ${datoBusqueda}");
+                      },
+                      icon: Icon(Icons.search))
+                ],
+              ),
+            ),
+          ),
+         // const Divider(color: Colors.black),
           Expanded(
             child: ListView.builder(
                 // itemCount: 100,
@@ -49,8 +120,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 itemBuilder: (context, index) {
                   final item = allPatients[index];
                   return ListTile(
-                    title: Text(item.nombre + ' ' + item.apellido),
-                    subtitle: Text(item.nacionalidad),
+                    title: Text(item.nombre +
+                        ' ' +
+                        item.apellido +
+                        " (" +
+                        item.nacionalidad +
+                        ")"),
+                    subtitle: Text('Documento: ${item.documento}'),
+                    leading: const Icon(Icons.person),
                     onTap: () {
                       print('Hiciste click sobre: ${item.apellido}');
                       // AutoRouter.of(context).push(AboutRouter(parametro: item.apellido)); // Anda!
@@ -58,7 +135,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       // AutoRouter.of(context).pushNamed("/dashboard/profile"); // Navega!
                       // AutoRouter.of(context).push(ProfileRoute(parametro: "Fruta")); Explota
                       // AutoRouter.of(context).navigate(ProfileRoute(parametro: '${item.apellido}')); Anda!!!
-                      AutoRouter.of(context).navigate(ProfileRoute(parametro: allPatients[index]));
+                      AutoRouter.of(context).navigate(
+                          ProfileRoute(parametro: allPatients[index]));
                     },
                   );
                 }),
