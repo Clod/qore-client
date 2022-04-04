@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../../main.dart';
 
@@ -13,10 +16,23 @@ class AddProductsScreen extends StatefulWidget {
 class _AddProductsScreenState extends State<AddProductsScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
+  TextEditingController documentoController = TextEditingController();
+  TextEditingController dateinput = TextEditingController();
+  TextEditingController observacionesController = TextEditingController();
+
   bool? enGestacion = false;
 
   String? dropdownDiag;
   String? dropdownSubDiag;
+  String? dropdownPais;
+
+  @override
+  initState() {
+    dateinput.text = ""; //set the initial value of text field
+    super.initState();
+  }
+
+  var paises = ['Argentina', 'Bolivia', 'Brasil', 'Mongolia'];
 
   var diagnosticos = ['Diagnóstico 1', 'Diagnóstico 2', 'Diagnóstico 3'];
 
@@ -52,16 +68,6 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
                   child: const Text(
-                    'CardioGut',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 30),
-                  )),
-              Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
                     'Incorporar paciente al sistema',
                     style: TextStyle(fontSize: 20),
                   )),
@@ -85,7 +91,7 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               // TextButton(
               //   onPressed: () {
               //     //forgot password screen
@@ -101,7 +107,163 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                         child: InputDecorator(
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal:10.0, vertical: 5.0)),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 5.0)),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: dropdownPais,
+                              icon: const Icon(Icons.arrow_downward),
+                              elevation: 16,
+                              style: const TextStyle(color: Colors.deepPurple),
+                              // underline: Container(
+                              //   height: 2,
+                              //   color: Colors.deepPurpleAccent,
+                              // ),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  dropdownPais = newValue!;
+                                  // subDiagIndex =
+                                  //     diagnosticos.indexOf(dropdownDiag!);
+                                  // dropdownSubDiag = subDiag[subDiagIndex][0];
+                                  // inhabilitarSubDiag = false;
+                                });
+                              },
+                              items: paises.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              hint: const Text(
+                                "País",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          //padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: TextField(
+                            controller: documentoController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Documento',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4)),
+                        shape: BoxShape.rectangle,
+                        border: Border.all(
+                          color: Colors.black45,
+                          width: 1,
+                        )),
+                    child: CheckboxListTile(
+                      title: const Text(
+                        "Paciente en gestación:",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      value: enGestacion,
+                      onChanged: (newValue) {
+                        setState(() {
+                          enGestacion = newValue;
+                        });
+                      },
+                      // controlAffinity:
+                      //     ListTileControlAffinity.leading, //  <-- leading Checkbox
+                    ),
+                  )),
+                  const SizedBox(width: 20),
+                  Expanded(
+                      // padding: EdgeInsets.all(15),
+                      // height:150,
+                      child: Container(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4)),
+                        shape: BoxShape.rectangle,
+                        border: Border.all(
+                          color: Colors.black45,
+                          width: 1,
+                        )),
+                    child: Center(
+                        child: TextField(
+                      controller:
+                          dateinput, //editing controller of this TextField
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.calendar_today), //icon of text field
+                          border: InputBorder.none,
+                          labelText: "Fecha de nacimiento" //label text of field
+                          ),
+                      readOnly:
+                          true, //set it true, so that user will not able to edit text
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context, initialDate: DateTime.now(),
+                          firstDate: DateTime(
+                              1900), //DateTime.now() - not to allow to choose before today.
+                          lastDate: DateTime
+                              .now(), // Para evitar fechas futuras DateTime(2101)
+                        );
+
+                        if (pickedDate != null) {
+                          if (kDebugMode) {
+                            print(pickedDate);
+                          } //pickedDate output format => 2021-03-10 00:00:00.000
+                          String formattedDate =
+                              DateFormat('yyyy-MM-dd').format(pickedDate);
+                          if (kDebugMode) {
+                            print(formattedDate);
+                          } //formatted date output using intl package =>  2021-03-16
+                          //you can implement different kind of Date Format here according to your requirement
+
+                          setState(() {
+                            dateinput.text =
+                                formattedDate; //set output date to TextField value.
+                          });
+                        } else {
+                          if (kDebugMode) {
+                            print("Date is not selected");
+                          }
+                        }
+                      },
+                    )),
+                  )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+              Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: InputDecorator(
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 5.0)),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               value: dropdownDiag,
@@ -147,9 +309,10 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                           absorbing: inhabilitarSubDiag,
                           child: InputDecorator(
                             decoration: const InputDecoration(
-                              // errorText: "Todo esto es un error",
+                                // errorText: "Todo esto es un error",
                                 border: OutlineInputBorder(),
-                                contentPadding: EdgeInsets.symmetric(horizontal:10.0, vertical: 5.0)),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 5.0)),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
                                 value: dropdownSubDiag,
@@ -188,18 +351,23 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                       ),
                     ],
                   )),
+              // const SizedBox(
+              //   height: 5,
+              // ),
               Container(
-                  child: CheckboxListTile(
-                title: const Text("Paciente en gestación:"),
-                value: enGestacion,
-                onChanged: (newValue) {
-                  setState(() {
-                    enGestacion = newValue;
-                  });
-                },
-                // controlAffinity:
-                //     ListTileControlAffinity.leading, //  <-- leading Checkbox
-              )),
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  minLines: 3,
+                  maxLines: 5,
+                  controller: observacionesController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Observaciones',
+                  ),
+                ),
+              ),
               Container(
                   height: 50,
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -217,7 +385,8 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                       print("y SubDiagnóstico: $olgo - $dropdownSubDiag");
                       print("En gestación: $enGestacion");
 
-                      String mensaje = "Paciente: ${firstNameController.text} ${lastNameController.text} \nDiagnóstico: $dropdownDiag \nSubDiagnóstico: $dropdownSubDiag \nGestación: $enGestacion";
+                      String mensaje =
+                          "Paciente: ${firstNameController.text} ${lastNameController.text} \nDiagnóstico: $dropdownDiag \nSubDiagnóstico: $dropdownSubDiag \nGestación: $enGestacion";
                       // y SubDiagnóstico: $olgo - $dropdownSubDiag
                       // En gestación: $enGestacion";
 
@@ -234,7 +403,6 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                       // Find the ScaffoldMessenger in the widget tree
                       // and use it to show a SnackBar.
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
                     },
                   )),
               // Row(
