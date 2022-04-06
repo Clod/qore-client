@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../main.dart';
 import '../../../model/Paciente.dart';
+import 'package:cardio_gut/assets/Constants.dart' as constants;
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key, required this.parametro}) : super(key: key);
@@ -16,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
     if (parametro.apellido.isEmpty) {
       return Scaffold(
           appBar: AppBar(
-              title: const Text('CardioGut'),
+              title: const Text(constants.AppDisplayName),
               automaticallyImplyLeading:
                   false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
               actions: <Widget>[
@@ -39,7 +40,7 @@ class ProfileScreen extends StatelessWidget {
     } else {
       return Scaffold(
           appBar: AppBar(
-              title: const Text('CardioGut'),
+              title: const Text(constants.AppDisplayName),
               automaticallyImplyLeading:
                   false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
               actions: <Widget>[

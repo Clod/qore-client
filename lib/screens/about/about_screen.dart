@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cardio_gut/assets/Constants.dart' as constants;
 
 class AboutScreen extends StatelessWidget {
   AboutScreen ({Key? key, required this.parametro}) : super(key: key);
@@ -7,9 +8,9 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print ("Recibí el parámetro: " + parametro);
+    debugPrint ("Recibí el parámetro: " + parametro);
     return Scaffold(
-        appBar: AppBar(title: const Text("CardioGut - Ayuda")),
+        appBar: AppBar(title: const Text('${constants.AppDisplayName} - Ayuda')),
         body: Center(
           child: Text(
             'Acá va el texto de ayuda. ${parametro}',

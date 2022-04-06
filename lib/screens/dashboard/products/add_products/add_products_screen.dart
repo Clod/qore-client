@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-
+// import 'package:http/http.dart' as http;
+import 'package:cardio_gut/assets/Constants.dart' as constants;
 import '../../../../main.dart';
 
 class AddProductsScreen extends StatefulWidget {
@@ -49,7 +49,7 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('CardioGut'), actions: <Widget>[
+      appBar: AppBar(title: const Text(constants.AppDisplayName), actions: <Widget>[
         IconButton(
             icon: const Icon(Icons.logout_outlined),
             tooltip: 'Salir del sistema',
@@ -227,12 +227,12 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
 
                         if (pickedDate != null) {
                           if (kDebugMode) {
-                            print(pickedDate);
+                            debugPrint(pickedDate.toString());
                           } //pickedDate output format => 2021-03-10 00:00:00.000
                           String formattedDate =
                               DateFormat('yyyy-MM-dd').format(pickedDate);
                           if (kDebugMode) {
-                            print(formattedDate);
+                            debugPrint(formattedDate);
                           } //formatted date output using intl package =>  2021-03-16
                           //you can implement different kind of Date Format here according to your requirement
 
@@ -242,7 +242,7 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                           });
                         } else {
                           if (kDebugMode) {
-                            print("Date is not selected");
+                            debugPrint("Date is not selected");
                           }
                         }
                       },
@@ -374,16 +374,16 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                   child: ElevatedButton(
                     child: const Text('Incorporar'),
                     onPressed: () async {
-                      print(
+                      debugPrint(
                           "Intento dar de alta al paciente: ${firstNameController.text} ${lastNameController.text}");
 
                       var algo = diagnosticos.indexOf(dropdownDiag!) + 1;
                       var olgo =
                           subDiag[algo - 1].indexOf(dropdownSubDiag!) + 1;
 
-                      print("Con diagnóstico: $algo - $dropdownDiag");
-                      print("y SubDiagnóstico: $olgo - $dropdownSubDiag");
-                      print("En gestación: $enGestacion");
+                      debugPrint("Con diagnóstico: $algo - $dropdownDiag");
+                      debugPrint("y SubDiagnóstico: $olgo - $dropdownSubDiag");
+                      debugPrint("En gestación: $enGestacion");
 
                       String mensaje =
                           "Paciente: ${firstNameController.text} ${lastNameController.text} \nDiagnóstico: $dropdownDiag \nSubDiagnóstico: $dropdownSubDiag \nGestación: $enGestacion";

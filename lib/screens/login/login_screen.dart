@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-
+import 'package:cardio_gut/assets/Constants.dart' as constants;
 import '../../main.dart';
 import '../../routes/router.gr.dart';
 
@@ -22,7 +22,7 @@ class LoginScreen extends StatelessWidget {
   // onLoginCallback es una función que tiene un parámetro de tipo bool
   final Function(bool loggedIn) onLoginCallback;
 
-  static const String _title = 'CardioGut';
+  static const String _title = constants.AppDisplayName;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
                   child: const Text(
-                    'CardioGut',
+                    constants.AppDisplayName,
                     style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.w500,
@@ -141,8 +141,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   child: ElevatedButton(
                       child: const Text('Entrar'),
                       onPressed: () async {
-                        print(nameController.text);
-                        print(passwordController.text);
+                        debugPrint(nameController.text);
+                        debugPrint(passwordController.text);
 
                         if (_formKey.currentState!.validate()) {
                           User? user;
@@ -152,14 +152,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 .signInWithEmailAndPassword(
                                     email: nameController.text,
                                     password: passwordController.text);
-                            print("XXXXXXXXX " + uc.user.toString());
+                            debugPrint("XXXXXXXXX " + uc.user.toString());
 
                             user = FirebaseAuth.instance.currentUser;
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'user-not-found') {
-                              print('No user found for that email.');
+                              debugPrint('No user found for that email.');
                             } else if (e.code == 'wrong-password') {
-                              print('Wrong password provided for that user.');
+                              debugPrint('Wrong password provided for that user.');
                             }
                           }
 
@@ -190,7 +190,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       style: TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
-                      print("Intento ir a about");
+                      debugPrint("Intento ir a about");
                       //signup screen
                       AutoRouter.of(context)
                           .push(AboutRouter(parametro: "Un parámetro"));

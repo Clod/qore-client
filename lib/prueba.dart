@@ -1,5 +1,6 @@
 import 'dart:convert' as convert;
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 void main(List<String> arguments) async {
@@ -11,12 +12,12 @@ void main(List<String> arguments) async {
   // Await the http get response, then decode the json-formatted response.
   var response = await http.get(url);
   if (response.statusCode == 200) {
-    print(response.body);
+    debugPrint(response.body);
     var jsonResponse =
     convert.jsonDecode(response.body) as Map<String, dynamic>;
     var itemCount = jsonResponse['totalItems'];
-    print('Number of books about http: $itemCount.');
+    debugPrint('Number of books about http: $itemCount.');
   } else {
-    print('Request failed with status: ${response.statusCode}.');
+    debugPrint('Request failed with status: ${response.statusCode}.');
   }
 }
