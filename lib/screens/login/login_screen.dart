@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:cardio_gut/assets/Constants.dart' as constants;
 import '../../main.dart';
 import '../../routes/router.gr.dart';
+import '../../model/global_data.dart';
 
 // La pantalla de login la saqué de:
 // https://www.tutorialkart.com/flutter/flutter-login-screen/
@@ -162,7 +163,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       // OJO que esto sólo anda para WEB
                       // https://firebase.google.com/docs/auth/admin/verify-id-tokens
                       var token = await user?.getIdToken(false);
-                      debugPrint("Token: $token");
+                      // debugPrint("Token: $token");
+                      // Pongo el token en una variable global
+                      GlobalData.firebaseToken = token;
+
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         debugPrint('No user found for that email.');
@@ -178,7 +182,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     } else {
                       var snackBar = const SnackBar(
                         backgroundColor: Colors.red,
-                        content: const Text("Credenciales inválidas"),
+                        content: Text("Credenciales inválidas"),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }

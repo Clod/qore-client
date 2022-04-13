@@ -14,6 +14,7 @@ import 'package:cardio_gut/assets/Constants.dart' as constants;
 import '../../../main.dart';
 import '../../../routes/router.gr.dart';
 import 'dart:io';
+import '../../../model/global_data.dart';
 
 // Future Data
 // https://youtu.be/Pp3zoNDGZUI
@@ -37,10 +38,23 @@ class _ProductsScreenState extends State<ProductsScreen> {
     // dataFuture = traerPacientes();
     dataFuture =
         null; // Si lo pongo en null, usa initialData: allPatients del future builder
+
+    // debugPrint("Recibí el token: ${GlobalData.firebaseToken}");
   }
 
   Future<List<Paciente>> traerPacientes() async {
     debugPrint("Entrando ***********************************\n");
+
+/*    final response1 = await http.get(
+        Uri.parse('https://vcsinc.com.ar:8443/patients'),    // Andaaaaa
+      // Uri.parse('http://vcsinc.com.ar/patients/Mendoza'),
+      // Uri.parse('https://jsonplaceholder.typicode.com:443/albums/1'),
+      // Send authorization headers to the backend.
+      // headers: {
+      //   HttpHeaders.authorizationHeader: 'Basic your_api_token_here',
+      // },
+    );
+    debugPrint(response1.body);*/
 
     var retrievedPatients = <Paciente>[];
 
@@ -51,7 +65,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
     // https://stackoverflow.com/questions/45924474/how-do-you-detect-the-host-platform-from-dart-code
 
     if (kIsWeb) {
-      url = Uri.http('localhost:8080', '/patients');
+      // url = Uri.http('localhost:8080', '/patients');   // Sin header, anda
+      // Sin header anda con vcsinc.com.ar y vcsinc.com.ar:80
+      url = Uri.parse('http://localhost:8080/patients');        // Anda sin headers y con headers vacíos
+      // url = Uri.parse('https://vcsinc.com.ar:8443/patients');        // Anda sin headers y con headers vacíos
+      // url = Uri.parse('http://postman-echo.com/headers');   // No anda ni sin headers
     } else {
       if (Platform.isAndroid) {
         url = Uri.http('10.0.2.2:8080', '/patients');
@@ -61,16 +79,35 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
 
     // Meto un delay para probar el "progress circle"
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 2));
 
+    debugPrint("Antes del get ***********************************\n");
+
+    // EL HOST ACEPTA HEADERS SI SE LOS MANDO CON CURL Y LEE EL TOKEN
     // Await the http get response, then decode the json-formatted response.
-    var response = await http.get(url);
+    // https://stackoverflow.com/questions/65630743/how-to-solve-flutter-web-api-cors-error-only-with-dart-code
+    var response;
+    try {
+      // response = await http.get(url,);  // Anda
+      response = await http.get(url, headers: {
+        // "Access-Control-Allow-Origin": "*",
+        // "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE, HEAD"
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.authorizationHeader : "Bearer ${GlobalData.firebaseToken}" // https://jsonplaceholder.typicode.com:443/albums/1' lo digiere bien
+      });
+    } catch (e) {
+      print(e);
+    }
+
+    debugPrint("Después del get ***********************************\n");
+
+    // debugPrint(response.body);
 
     if (response.statusCode == 200) {
 
-      debugPrint(response.body.runtimeType.toString());
+/*      debugPrint(response.body.runtimeType.toString());
       debugPrint(response.body);
-      debugPrint("\n");
+      debugPrint("\n");*/
 
       var jsonResponse =
           convert.jsonDecode(response.body); // as List<Map<String, dynamic>>;
