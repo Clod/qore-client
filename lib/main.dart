@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -33,12 +32,16 @@ class MyAppState extends State<MyApp> {
   final authService = AuthService();
   // Clod: esta clase se genera a partir de router.dart
   // final _appRouter = AppRouter();
-  late final _appRouter = AppRouter(routeGuard: RouteGuard(authService));
+  late final _appRouter = AppRouter(
+    routeGuard: RouteGuard(authService),
+  );
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-        routeInformationParser: _appRouter.defaultRouteParser(),
-        routerDelegate: _appRouter.delegate());
+      debugShowCheckedModeBanner: true,
+      routeInformationParser: _appRouter.defaultRouteParser(),
+      routerDelegate: _appRouter.delegate(),
+    );
   }
 }

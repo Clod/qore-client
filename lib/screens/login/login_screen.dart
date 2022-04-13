@@ -75,132 +75,142 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Form(
       key: _formKey,
       child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ListView(
-            children: <Widget>[
-              Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
+        child: ListView(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                constants.AppDisplayName,
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 30,
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                'Ingreso',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Usuario',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese su usuario';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: TextFormField(
+                obscureText: true,
+                controller: passwordController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese su password';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+            // TextButton(
+            //   onPressed: () {
+            //     //forgot password screen
+            //   },
+            //   child: const Text('Forgot Password',),
+            // ),
+            Container(
+              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: ElevatedButton(
+                child: const Text('Entrar'),
+                onPressed: () async {
+                  debugPrint(nameController.text);
+                  debugPrint(passwordController.text);
+
+                  if (_formKey.currentState!.validate()) {
+                    User? user;
+
+                    try {
+                      UserCredential uc = await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: nameController.text,
+                              password: passwordController.text);
+                      debugPrint("XXXXXXXXX " + uc.user.toString());
+
+                      user = FirebaseAuth.instance.currentUser;
+
+                      // OJO que esto sólo anda para WEB
+                      // https://firebase.google.com/docs/auth/admin/verify-id-tokens
+                      var token = await user?.getIdToken(false);
+                      debugPrint("Token: $token");
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'user-not-found') {
+                        debugPrint('No user found for that email.');
+                      } else if (e.code == 'wrong-password') {
+                        debugPrint('Wrong password provided for that user.');
+                      }
+                    }
+
+                    if (user != null) {
+                      // Change value of auth in authservice (en route_guard.dart)
+                      MyApp.of(context).authService.authenticated = true;
+                      onLoginCallback.call(true);
+                    } else {
+                      var snackBar = const SnackBar(
+                        backgroundColor: Colors.red,
+                        content: const Text("Credenciales inválidas"),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+
+                    // OJO que esto está interceptando la navegación a otra pantalla
+                    // Por eso no se ve ninguna instrucción de navegación que indique
+                    // a dónde tiene que ir después.
+                  }
+                },
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                const Text('¿No conoce el sistema?'),
+                TextButton(
                   child: const Text(
-                    constants.AppDisplayName,
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 30),
-                  )),
-              Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Ingreso',
+                    'Ayuda',
                     style: TextStyle(fontSize: 20),
-                  )),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Usuario',
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingrese su usuario';
-                    }
-                    return null;
+                  onPressed: () {
+                    debugPrint("Intento ir a about");
+                    //signup screen
+                    AutoRouter.of(context)
+                        .push(AboutRouter(parametro: "Un parámetro"));
                   },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextFormField(
-                  obscureText: true,
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingrese su password';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              // TextButton(
-              //   onPressed: () {
-              //     //forgot password screen
-              //   },
-              //   child: const Text('Forgot Password',),
-              // ),
-              Container(
-                  height: 50,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ElevatedButton(
-                      child: const Text('Entrar'),
-                      onPressed: () async {
-                        debugPrint(nameController.text);
-                        debugPrint(passwordController.text);
-
-                        if (_formKey.currentState!.validate()) {
-                          User? user;
-
-                          try {
-                            UserCredential uc = await FirebaseAuth.instance
-                                .signInWithEmailAndPassword(
-                                    email: nameController.text,
-                                    password: passwordController.text);
-                            debugPrint("XXXXXXXXX " + uc.user.toString());
-
-                            user = FirebaseAuth.instance.currentUser;
-                          } on FirebaseAuthException catch (e) {
-                            if (e.code == 'user-not-found') {
-                              debugPrint('No user found for that email.');
-                            } else if (e.code == 'wrong-password') {
-                              debugPrint('Wrong password provided for that user.');
-                            }
-                          }
-
-                          if (user != null) {
-                            // Change value of auth in authservice (en route_guard.dart)
-                            MyApp.of(context).authService.authenticated = true;
-                            onLoginCallback.call(true);
-                          } else {
-
-                            var snackBar = const SnackBar(
-                              backgroundColor: Colors.red,
-                                content: const Text("Credenciales inválidas"),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          }
-
-                          // OJO que esto está interceptando la navegación a otra pantalla
-                          // Por eso no se ve ninguna instrucción de navegación que indique
-                          // a dónde tiene que ir después.
-                        }
-                      })),
-              Row(
-                children: <Widget>[
-                  const Text('¿No conoce el sistema?'),
-                  TextButton(
-                    child: const Text(
-                      'Ayuda',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    onPressed: () {
-                      debugPrint("Intento ir a about");
-                      //signup screen
-                      AutoRouter.of(context)
-                          .push(AboutRouter(parametro: "Un parámetro"));
-                    },
-                  )
-                ],
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
-            ],
-          )),
+                )
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

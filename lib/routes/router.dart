@@ -11,7 +11,7 @@ import 'package:cardio_gut/screens/home/home_screen.dart';
 
 import '../screens/login/login_screen.dart';
 
-
+// https://pub.dev/packages/auto_route#wrapping-routes
 @MaterialAutoRouter(
   routes: <AutoRoute>[
     AutoRoute(

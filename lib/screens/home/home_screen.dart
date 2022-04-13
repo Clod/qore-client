@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/Pacientes.dart';
@@ -9,20 +10,29 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // damePacientesSQL();
 
     return Scaffold(
-      appBar: AppBar(title: Text('Bienvendo - Benvenuto - Bemvindo - Welcome')),
+      appBar: AppBar(
+        title: Text('Bienvendo - Benvenuto - Bemvindo - Welcome'),
+      ),
       body: const Center(
-          child: Text(
-        'Sólo usuarios autorizados',
-        style: TextStyle(
-            color: Colors.red, fontWeight: FontWeight.w500, fontSize: 30),
-      )),
+        child: Text(
+          'Sólo usuarios autorizados',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            // color: Colors.red,
+            color: Colors.red,
+            fontWeight: FontWeight.w500,
+            fontSize: 30,
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          AutoRouter.of(context).push(DashboardRoute());
+          AutoRouter.of(context).push(
+            DashboardRoute(),
+          );
         },
         child: const Icon(Icons.login),
       ),

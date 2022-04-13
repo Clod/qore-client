@@ -35,7 +35,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
   void initState() {
     super.initState();
     // dataFuture = traerPacientes();
-    dataFuture = null; // Si lo pongo en null, usa initialData: allPatients del future builder
+    dataFuture =
+        null; // Si lo pongo en null, usa initialData: allPatients del future builder
   }
 
   Future<List<Paciente>> traerPacientes() async {
@@ -64,7 +65,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
     // Await the http get response, then decode the json-formatted response.
     var response = await http.get(url);
+
     if (response.statusCode == 200) {
+
       debugPrint(response.body.runtimeType.toString());
       debugPrint(response.body);
       debugPrint("\n");
@@ -106,8 +109,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(constants.AppDisplayName), actions: <Widget>[
-        IconButton(
+      appBar: AppBar(
+        title: const Text(constants.AppDisplayName),
+        actions: <Widget>[
+          IconButton(
             icon: const Icon(Icons.logout_outlined),
             tooltip: 'Salir del sistema',
             onPressed: () {
@@ -115,8 +120,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
               FirebaseAuth.instance.signOut();
               // Le "aviso" a route_guard
               MyApp.of(context).authService.authenticated = false;
-            })
-      ]),
+            },
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           AutoRouter.of(context).push(const AddProductsRoute());
@@ -131,143 +138,165 @@ class _ProductsScreenState extends State<ProductsScreen> {
           const SizedBox(height: 20),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
-            child: InputDecorator(
-              decoration: const InputDecoration(
-                  labelText: "Buscar por:",
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0)),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: InputDecorator(
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 5.0)),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: optBuscar,
-                          icon: const Icon(Icons.arrow_downward),
-                          elevation: 16,
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 10.0),
-                          // underline: Container(
-                          //   height: 2,
-                          //   color: Colors.deepPurpleAccent,
-                          // ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              optBuscar = newValue!;
-                            });
-                          },
-                          items: dropDownBuscar
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      child: TextField(
-                        controller: datoBusqueda,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          //labelText: 'Apellido(s)',
-                        ),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                      // onPressed: () async {
-                      //   print("Buscar con dato ${datoBusqueda}\n");
-                      //   dataFuture = traerPacientes();
-                      // },
-                      onPressed: () => setState(() {
-                            dataFuture = traerPacientes();
-                          }),
-                      icon: const Icon(Icons.search))
-                ],
-              ),
-            ),
+            child: searchPanel(),
           ),
           // const Divider(color: Colors.black),
           Expanded(
-            child: FutureBuilder<List<Paciente>>(
-              // https://youtu.be/Pp3zoNDGZUI?t=384 Ver el video para ver como usar initial data.
-              // initialData: allPatients, // Lo pone en el campo snapshot.data hasta que se resuelve el FUTURE.
-                // future: traerPacientes(),
-                future: dataFuture,
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      // return const CircularProgressIndicator();
-                      return HeartbeatProgressIndicator(child: const Center(child: Icon(
+            child: showPatientsList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  InputDecorator searchPanel() {
+    return InputDecorator(
+      decoration: const InputDecoration(
+        labelText: "Buscar por:",
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: InputDecorator(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: optBuscar,
+                  icon: const Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.black, fontSize: 10.0),
+                  // underline: Container(
+                  //   height: 2,
+                  //   color: Colors.deepPurpleAccent,
+                  // ),
+                  onChanged: (String? newValue) {
+                    setState(
+                      () {
+                        optBuscar = newValue!;
+                      },
+                    );
+                  },
+                  items: dropDownBuscar.map<DropdownMenuItem<String>>(
+                    (String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    },
+                  ).toList(),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
+                controller: datoBusqueda,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  //labelText: 'Apellido(s)',
+                ),
+              ),
+            ),
+          ),
+          IconButton(
+              // onPressed: () async {
+              //   print("Buscar con dato ${datoBusqueda}\n");
+              //   dataFuture = traerPacientes();
+              // },
+              onPressed: () => setState(
+                    () {
+                      dataFuture = traerPacientes();
+                    },
+                  ),
+              icon: const Icon(Icons.search))
+        ],
+      ),
+    );
+  }
+
+  FutureBuilder<List<Paciente>> showPatientsList() {
+    return FutureBuilder<List<Paciente>>(
+      // https://youtu.be/Pp3zoNDGZUI?t=384 Ver el video para ver como usar initial data.
+      // initialData: allPatients, // Lo pone en el campo snapshot.data hasta que se resuelve el FUTURE.
+      // future: traerPacientes(),
+      future: dataFuture,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            // return const CircularProgressIndicator();
+            return HeartbeatProgressIndicator(
+                child: const Center(
+                    child: Icon(
+              CupertinoIcons.heart_fill,
+              color: Colors.pink,
+              size: 60.0,
+              semanticLabel: 'Text to announce in accessibility modes',
+            )));
+          case ConnectionState.done:
+          default:
+            if (snapshot.hasError) {
+              final error = snapshot.error;
+              return Text('$error');
+            } else if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, index) {
+                  final item = snapshot.data?[index];
+                  return ListTile(
+                    title: Text(item!.id.toString() +
+                        ") " +
+                        item.nombre +
+                        ' ' +
+                        item.apellido +
+                        " (" +
+                        item.nacionalidad +
+                        ")"),
+                    subtitle: Text('Documento: ${item.documento}'),
+                    leading: const Icon(Icons.person),
+                    onTap: () {
+                      debugPrint('Hiciste click sobre: ${item.apellido}');
+                      // AutoRouter.of(context).push(AboutRouter(parametro: item.apellido)); // Anda!
+                      // AutoTabsRouter.of(context).setActiveIndex(1); // Navega pero no le paso parámetros
+                      // AutoRouter.of(context).pushNamed("/dashboard/profile"); // Navega!
+                      // AutoRouter.of(context).push(ProfileRoute(parametro: "Fruta")); Explota
+                      // AutoRouter.of(context).navigate(ProfileRoute(parametro: '${item.apellido}')); Anda!!!
+                      AutoRouter.of(context).navigate(
+                        ProfileRoute(
+                            // parametro: allPatients[index]
+                            parametro: item),
+                      );
+                    },
+                  );
+                },
+              );
+            } else {
+              return const Center(
+                child: Text(
+                  'Ingrese un criterio de búsqueda\n'
+                  'en el panel de arriba',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              );
+              // return const CircularProgressIndicator();
+              /*                      return HeartbeatProgressIndicator(child: const Center(child: Icon(
                         CupertinoIcons.heart_fill,
                         color: Colors.pink,
                         size: 60.0,
                         semanticLabel: 'Text to announce in accessibility modes',
-                      )));
-                    case ConnectionState.done:
-                    default:
-                      if (snapshot.hasError) {
-                        final error = snapshot.error;
-                        return Text('$error');
-                      } else if (snapshot.hasData) {
-                        return ListView.builder(
-                            itemCount: snapshot.data?.length,
-                            itemBuilder: (context, index) {
-                              final item = snapshot.data?[index];
-                              return ListTile(
-                                title: Text(item!.id.toString() +
-                                    ") " +
-                                    item.nombre +
-                                    ' ' +
-                                    item.apellido +
-                                    " (" +
-                                    item.nacionalidad +
-                                    ")"),
-                                subtitle: Text('Documento: ${item.documento}'),
-                                leading: const Icon(Icons.person),
-                                onTap: () {
-                                  debugPrint(
-                                      'Hiciste click sobre: ${item.apellido}');
-                                  // AutoRouter.of(context).push(AboutRouter(parametro: item.apellido)); // Anda!
-                                  // AutoTabsRouter.of(context).setActiveIndex(1); // Navega pero no le paso parámetros
-                                  // AutoRouter.of(context).pushNamed("/dashboard/profile"); // Navega!
-                                  // AutoRouter.of(context).push(ProfileRoute(parametro: "Fruta")); Explota
-                                  // AutoRouter.of(context).navigate(ProfileRoute(parametro: '${item.apellido}')); Anda!!!
-                                  AutoRouter.of(context).navigate(ProfileRoute(
-                                      // parametro: allPatients[index]
-                                      parametro: item
-                                  ));
-                                },
-                              );
-                            });
-                      } else {
-                        return const Center(child: Text('Ingrese un criterio de búsqueda\n'
-                            'en el panel de arriba', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),));
-                        // return const CircularProgressIndicator();
- /*                      return HeartbeatProgressIndicator(child: const Center(child: Icon(
-                          CupertinoIcons.heart_fill,
-                          color: Colors.pink,
-                          size: 60.0,
-                          semanticLabel: 'Text to announce in accessibility modes',
-                        )));*/
-                      }
-                  }
-                }),
-          ),
-        ],
-      ),
+                      )));*/
+            }
+        }
+      },
     );
   }
 }
