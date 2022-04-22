@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +7,13 @@ import 'package:http/http.dart' as http;
 void main(List<String> arguments) async {
   // This example uses the Google Books API to search for books about http.
   // https://developers.google.com/books/docs/overview
+
+  //https://stackoverflow.com/questions/64104688/can-i-use-custom-environment-variables-in-flutter
+  // var pindonga = const String.fromEnvironment('JAVA_HOME');
+  // print("Pindonga:" + pindonga);
+
+  Map<String, String> envVars = Platform.environment;
+  print(envVars['PATH']);
 
   var url = Uri.http('localhost:8080', '/patients');
 
