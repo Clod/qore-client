@@ -1,3 +1,4 @@
+import 'package:cardio_gut/model/PatientsDAO.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -384,6 +385,8 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                       debugPrint("Con diagnóstico: $algo - $dropdownDiag");
                       debugPrint("y SubDiagnóstico: $olgo - $dropdownSubDiag");
                       debugPrint("En gestación: $enGestacion");
+
+                      addPatient();
 
                       String mensaje =
                           "Paciente: ${firstNameController.text} ${lastNameController.text} \nDiagnóstico: $dropdownDiag \nSubDiagnóstico: $dropdownSubDiag \nGestación: $enGestacion";

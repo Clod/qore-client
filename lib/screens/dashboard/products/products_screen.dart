@@ -170,6 +170,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             //   dataFuture = traerPacientes();
             // },
             onPressed: () {
+              // https://stackoverflow.com/questions/44991968/how-can-i-dismiss-the-on-screen-keyboard
               FocusScope.of(context).requestFocus(FocusNode()); // Escondo el teclado virtual
               searchIconColor == Colors.redAccent
                   ? null

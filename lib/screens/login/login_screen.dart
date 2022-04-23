@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:cardio_gut/assets/Constants.dart' as constants;
 import '../../main.dart';
 import '../../routes/router.gr.dart';
-import '../../model/global_data.dart';
+import '../../assets/global_data.dart';
 
 // La pantalla de login la saqué de:
 // https://www.tutorialkart.com/flutter/flutter-login-screen/

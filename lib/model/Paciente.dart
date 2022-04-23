@@ -35,6 +35,15 @@ class Paciente {
   }
   final comentarios = <Comentario>[];
 
+  Map<String, dynamic> toJson() => {
+  'id': id,
+  'nombre': nombre,
+  'apellido': apellido,
+  'fechaNacimiento': fechaNacimiento,
+  'documento': documento,
+  'nacionalidad': nacionalidad,
+  };
+
   @override
   String toString() {
     return (id.toString() + " " + nombre + " " + apellido);
