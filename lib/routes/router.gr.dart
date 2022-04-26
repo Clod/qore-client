@@ -11,15 +11,16 @@
 // ignore_for_file: type=lint
 
 import 'package:auto_route/auto_route.dart' as _i5;
+import 'package:flutter/cupertino.dart' as _i11;
 import 'package:flutter/material.dart' as _i9;
 
-import '../model/Paciente.dart' as _i11;
+import '../model/Paciente.dart' as _i12;
 import '../screens/about/about_screen.dart' as _i4;
 import '../screens/dashboard/dashboard_screen.dart' as _i3;
-import '../screens/dashboard/products/add_products/add_products_screen.dart'
+import '../screens/dashboard/products/add_products/add_patient_screen.dart'
     as _i8;
 import '../screens/dashboard/products/products_screen.dart' as _i7;
-import '../screens/dashboard/profile/profile_screen.dart' as _i6;
+import '../screens/dashboard/profile/edit_patient_screen.dart' as _i6;
 import '../screens/home/home_screen.dart' as _i2;
 import '../screens/login/login_screen.dart' as _i1;
 import 'route_guard.dart' as _i10;
@@ -59,19 +60,20 @@ class AppRouter extends _i5.RootStackRouter {
       return _i5.MaterialPageX<_i5.EmptyRouterPage>(
           routeData: routeData, child: const _i5.EmptyRouterPage());
     },
-    ProfileRoute.name: (routeData) {
-      final args = routeData.argsAs<ProfileRouteArgs>();
+    EditPatientRoute.name: (routeData) {
+      final args = routeData.argsAs<EditPatientRouteArgs>();
       return _i5.MaterialPageX<dynamic>(
           routeData: routeData,
-          child: _i6.ProfileScreen(key: args.key, parametro: args.parametro));
+          child:
+              _i6.EditPatientScreen(key: args.key, parametro: args.parametro));
     },
     ProductsScreenRoute.name: (routeData) {
       return _i5.MaterialPageX<dynamic>(
           routeData: routeData, child: const _i7.ProductsScreen());
     },
-    AddProductsRoute.name: (routeData) {
+    AddPatientRoute.name: (routeData) {
       return _i5.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i8.AddProductsScreen());
+          routeData: routeData, child: const _i8.AddPatientScreen());
     }
   };
 
@@ -88,11 +90,11 @@ class AppRouter extends _i5.RootStackRouter {
               children: [
                 _i5.RouteConfig(ProductsScreenRoute.name,
                     path: '', parent: ProductsRoute.name),
-                _i5.RouteConfig(AddProductsRoute.name,
-                    path: 'add_products', parent: ProductsRoute.name)
+                _i5.RouteConfig(AddPatientRoute.name,
+                    path: 'add_patient', parent: ProductsRoute.name)
               ]),
-          _i5.RouteConfig(ProfileRoute.name,
-              path: 'profile', parent: DashboardRoute.name)
+          _i5.RouteConfig(EditPatientRoute.name,
+              path: 'edit_patient', parent: DashboardRoute.name)
         ]),
         _i5.RouteConfig(AboutRouter.name, path: '/about')
       ];
@@ -101,7 +103,7 @@ class AppRouter extends _i5.RootStackRouter {
 /// generated route for
 /// [_i1.LoginScreen]
 class LoginRoute extends _i5.PageRouteInfo<LoginRouteArgs> {
-  LoginRoute({_i9.Key? key, required dynamic Function(bool) onLoginCallback})
+  LoginRoute({_i11.Key? key, required dynamic Function(bool) onLoginCallback})
       : super(LoginRoute.name,
             path: 'login',
             args: LoginRouteArgs(key: key, onLoginCallback: onLoginCallback));
@@ -112,7 +114,7 @@ class LoginRoute extends _i5.PageRouteInfo<LoginRouteArgs> {
 class LoginRouteArgs {
   const LoginRouteArgs({this.key, required this.onLoginCallback});
 
-  final _i9.Key? key;
+  final _i11.Key? key;
 
   final dynamic Function(bool) onLoginCallback;
 
@@ -143,7 +145,7 @@ class DashboardRoute extends _i5.PageRouteInfo<void> {
 /// generated route for
 /// [_i4.AboutScreen]
 class AboutRouter extends _i5.PageRouteInfo<AboutRouterArgs> {
-  AboutRouter({_i9.Key? key, required String parametro})
+  AboutRouter({_i11.Key? key, required String parametro})
       : super(AboutRouter.name,
             path: '/about',
             args: AboutRouterArgs(key: key, parametro: parametro));
@@ -154,7 +156,7 @@ class AboutRouter extends _i5.PageRouteInfo<AboutRouterArgs> {
 class AboutRouterArgs {
   const AboutRouterArgs({this.key, required this.parametro});
 
-  final _i9.Key? key;
+  final _i11.Key? key;
 
   final String parametro;
 
@@ -174,26 +176,26 @@ class ProductsRoute extends _i5.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i6.ProfileScreen]
-class ProfileRoute extends _i5.PageRouteInfo<ProfileRouteArgs> {
-  ProfileRoute({_i9.Key? key, required _i11.Paciente parametro})
-      : super(ProfileRoute.name,
-            path: 'profile',
-            args: ProfileRouteArgs(key: key, parametro: parametro));
+/// [_i6.EditPatientScreen]
+class EditPatientRoute extends _i5.PageRouteInfo<EditPatientRouteArgs> {
+  EditPatientRoute({_i11.Key? key, required _i12.Paciente parametro})
+      : super(EditPatientRoute.name,
+            path: 'edit_patient',
+            args: EditPatientRouteArgs(key: key, parametro: parametro));
 
-  static const String name = 'ProfileRoute';
+  static const String name = 'EditPatientRoute';
 }
 
-class ProfileRouteArgs {
-  const ProfileRouteArgs({this.key, required this.parametro});
+class EditPatientRouteArgs {
+  const EditPatientRouteArgs({this.key, required this.parametro});
 
-  final _i9.Key? key;
+  final _i11.Key? key;
 
-  final _i11.Paciente parametro;
+  final _i12.Paciente parametro;
 
   @override
   String toString() {
-    return 'ProfileRouteArgs{key: $key, parametro: $parametro}';
+    return 'EditPatientRouteArgs{key: $key, parametro: $parametro}';
   }
 }
 
@@ -206,9 +208,9 @@ class ProductsScreenRoute extends _i5.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i8.AddProductsScreen]
-class AddProductsRoute extends _i5.PageRouteInfo<void> {
-  const AddProductsRoute() : super(AddProductsRoute.name, path: 'add_products');
+/// [_i8.AddPatientScreen]
+class AddPatientRoute extends _i5.PageRouteInfo<void> {
+  const AddPatientRoute() : super(AddPatientRoute.name, path: 'add_patient');
 
-  static const String name = 'AddProductsRoute';
+  static const String name = 'AddPatientRoute';
 }

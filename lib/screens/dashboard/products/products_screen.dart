@@ -33,10 +33,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   void initState() {
     super.initState();
-    // dataFuture = traerPacientes();
-    dataFuture =
-        null; // Si lo pongo en null, usa initialData: allPatients del future builder
-
+    dataFuture = null; // Si lo pongo en null, usa initialData: allPatients del future builder
     // debugPrint("Recibí el token: ${GlobalData.firebaseToken}");
   }
 
@@ -65,7 +62,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          AutoRouter.of(context).push(const AddProductsRoute());
+          AutoRouter.of(context).push(const AddPatientRoute());
         },
         child: const Icon(Icons.person_add),
         tooltip: "Agregar paciente",
@@ -243,7 +240,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       // AutoRouter.of(context).push(ProfileRoute(parametro: "Fruta")); Explota
                       // AutoRouter.of(context).navigate(ProfileRoute(parametro: '${item.apellido}')); Anda!!!
                       AutoRouter.of(context).navigate(
-                        ProfileRoute(
+                        EditPatientRoute(
                             // parametro: allPatients[index]
                             parametro: item),
                       );

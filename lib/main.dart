@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:cardio_gut/assets/global_data.dart';
 import 'package:cardio_gut/routes/route_guard.dart';
 import 'package:cardio_gut/routes/router.gr.dart';
@@ -6,6 +5,8 @@ import 'package:cardio_gut/util/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:form_builder_validators/localization/l10n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'firebase_options.dart';
 
@@ -27,16 +28,16 @@ Future<void> main() async {
   await dotenv.load(fileName: "abracadabra");
 
   GlobalData.URL_WEB_DEV=dotenv.get("URL_WEB_DEV");
-  GlobalData.URL_AND_DEV=dotenv.get("URL_AND_DEV");;
-  GlobalData.URL_PROD=dotenv.get("URL_PROD");;
+  GlobalData.URL_AND_DEV=dotenv.get("URL_AND_DEV");
+  GlobalData.URL_PROD=dotenv.get("URL_PROD");
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   // Flutter stores the widgets as a tree, and the states are stored along
   // with the widgets. If we want to access any member of a state up this
@@ -63,6 +64,15 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: true,
       routeInformationParser: _appRouter.defaultRouteParser(),
       routerDelegate: _appRouter.delegate(),
+      localizationsDelegates: const [
+        FormBuilderLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('es', ''),
+      ],
     );
   }
 }

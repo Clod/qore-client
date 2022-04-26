@@ -1,4 +1,3 @@
-import 'package:flutter/src/services/text_input.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/foundation.dart';
@@ -7,7 +6,7 @@ import 'Paciente.dart';
 import '../assets/global_data.dart';
 
 import 'dart:io';
-import '../assets/global_data.dart';
+
 
 Uri getURI(String value) {
   Uri url;
@@ -89,18 +88,18 @@ Future<List<Paciente>> traerPacientes(String value) async {
   return retrievedPatients;
 }
 
-void addPatient() async {
-  print('Sending PUT: ');
+void addPatient(Paciente patient) async {
+  debugPrint('Sending POST: ');
 
   Uri url = getURI("");
 
-  var paciente = Paciente(
-      id: 9999,
-      nombre: "Luigi",
-      apellido: "Cadorna",
-      fechaNacimiento: "1900-01-28",
-      documento: "123456789",
-      nacionalidad: "Italia");
+  // var paciente = Paciente(
+  //     id: 9999,
+  //     nombre: "Luigi",
+  //     apellido: "Cadorna",
+  //     fechaNacimiento: "1900-01-28",
+  //     documento: "123456789",
+  //     nacionalidad: "Italia");
   var response;
   try {
     // response = await http.get(url,);  // Anda
@@ -112,7 +111,38 @@ void addPatient() async {
           HttpHeaders.authorizationHeader:
               "Bearer ${GlobalData.firebaseToken}" // https://jsonplaceholder.typicode.com:443/albums/1' lo digiere bien
         },
-        body: convert.jsonEncode(paciente));
+        body: convert.jsonEncode(patient));
+    debugPrint("Respuesta del servidor:  $response");
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
+
+void updatePatient(Paciente patient) async {
+  debugPrint('Sending PUT: ');
+
+  Uri url = getURI("");
+
+  // var paciente = Paciente(
+  //     id: 9999,
+  //     nombre: "Luigi",
+  //     apellido: "Cadorna",
+  //     fechaNacimiento: "1900-01-28",
+  //     documento: "123456789",
+  //     nacionalidad: "Italia");
+  var response;
+  try {
+    // response = await http.get(url,);  // Anda
+    response = await http.put(url,
+        headers: {
+          // "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE, HEAD"
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader:
+          "Bearer ${GlobalData.firebaseToken}" // https://jsonplaceholder.typicode.com:443/albums/1' lo digiere bien
+        },
+        body: convert.jsonEncode(patient));
+    debugPrint("Respuesta del servidor:  $response");
   } catch (e) {
     debugPrint(e.toString());
   }

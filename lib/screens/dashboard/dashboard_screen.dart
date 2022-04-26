@@ -7,11 +7,12 @@ import '../../routes/router.gr.dart';
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen ({Key? key}) : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
       routes: [
         const ProductsRoute(),
-        ProfileRoute(parametro: Paciente(id: 0, nombre: "", apellido: "", fechaNacimiento: "", documento: "", nacionalidad: "")),
+        EditPatientRoute(parametro: Paciente(id: 0, nombre: "", apellido: "", fechaNacimiento: "", documento: "", nacionalidad: "")),
       ],
       bottomNavigationBuilder: (context, tabsRouter) => BottomNavigationBar(
           onTap: tabsRouter.setActiveIndex,

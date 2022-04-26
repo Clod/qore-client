@@ -1,14 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/routes/route_guard.dart';
-// import 'package:cardio_gut/routes/route_guard.dart';
 import 'package:cardio_gut/screens/about/about_screen.dart';
 import 'package:cardio_gut/screens/dashboard/dashboard_screen.dart';
-import 'package:cardio_gut/screens/dashboard/products/add_products/add_products_screen.dart';
 import 'package:cardio_gut/screens/dashboard/products/products_screen.dart';
-import 'package:cardio_gut/screens/dashboard/profile/profile_screen.dart';
-// import 'package:cardio_gut/screens/login/login_screen.dart';
 import 'package:cardio_gut/screens/home/home_screen.dart';
 
+import '../screens/dashboard/products/add_products/add_patient_screen.dart';
+import '../screens/dashboard/profile/edit_patient_screen.dart';
 import '../screens/login/login_screen.dart';
 
 // https://pub.dev/packages/auto_route#wrapping-routes
@@ -40,15 +38,15 @@ import '../screens/login/login_screen.dart';
               path: '',   // Clod: '' means this is the default screen when we hit this route.
             ),
             AutoRoute(
-                page: AddProductsScreen,
-                name: 'AddProductsRoute',
-                path: 'add_products'),
+                page: AddPatientScreen,
+                name: 'AddPatientRoute',
+                path: 'add_patient'),
           ],
         ),
         AutoRoute(
-            page: ProfileScreen,
-            name: 'ProfileRoute',
-            path: 'profile'
+            page: EditPatientScreen,
+            name: 'EditPatientRoute',
+            path: 'edit_patient'
         )
       ],
     ),
