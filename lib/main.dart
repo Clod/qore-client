@@ -61,6 +61,14 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      // https://stackoverflow.com/questions/56194440/flutter-default-font-size
+      // The resulting font size is (originalSize * fontSizeFactor + fontSizeDelta).
+      theme: ThemeData(
+        textTheme: Theme.of(context).textTheme.apply(
+          fontSizeFactor: 0.9,
+          fontSizeDelta: 0.0,
+        ),
+      ),
       debugShowCheckedModeBanner: true,
       routeInformationParser: _appRouter.defaultRouteParser(),
       routerDelegate: _appRouter.delegate(),

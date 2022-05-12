@@ -1,7 +1,8 @@
 import 'package:cardio_gut/screens/dashboard/products/patient_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cardio_gut/assets/Constants.dart' as constants;
+import 'package:cardio_gut/assets/constants.dart' as constants;
 import '../../../../main.dart';
 
 class AddPatientScreen extends StatefulWidget {
@@ -48,7 +49,8 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(constants.AppDisplayName),
+        automaticallyImplyLeading: true,
+        title: const Text(constants.appDisplayName),
         actions: <Widget>[
           IconButton(
               icon: const Icon(Icons.logout_outlined),
@@ -67,10 +69,10 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
           children: <Widget>[
             Container(
                 alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                 child: const Text(
                   'Incorporar paciente al sistema',
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 )),
             PatientWidget(),
           ],

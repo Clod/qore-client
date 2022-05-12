@@ -4,23 +4,25 @@ import 'package:flutter/material.dart';
 
 import '../../../main.dart';
 import '../../../model/Paciente.dart';
-import 'package:cardio_gut/assets/Constants.dart' as constants;
+import 'package:cardio_gut/assets/constants.dart' as constants;
 
 class EditPatientScreen extends StatelessWidget {
-  const EditPatientScreen({Key? key, required this.parametro}) : super(key: key);
+  const EditPatientScreen({Key? key, required this.parametro})
+      : super(key: key);
 
   final Paciente parametro;
 
   @override
   Widget build(BuildContext context) {
     debugPrint("Building profile screen de: " + parametro.apellido);
+    debugPrint("ObjectKey: ${ObjectKey(parametro).toString()}");
 
     if (parametro.apellido.isEmpty) {
       return Scaffold(
           appBar: AppBar(
-              title: const Text(constants.AppDisplayName),
-              automaticallyImplyLeading:
-              false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
+              title: const Text(constants.appDisplayName),
+              // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
+              automaticallyImplyLeading: true,
               actions: <Widget>[
                 IconButton(
                     icon: const Icon(Icons.logout_outlined),
@@ -41,9 +43,9 @@ class EditPatientScreen extends StatelessWidget {
     } else {
       return Scaffold(
           appBar: AppBar(
-              title: const Text(constants.AppDisplayName),
+              title: const Text(constants.appDisplayName),
               automaticallyImplyLeading:
-              false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
+                  false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
               actions: <Widget>[
                 IconButton(
                     icon: const Icon(Icons.logout_outlined),
@@ -58,7 +60,13 @@ class EditPatientScreen extends StatelessWidget {
           // Agrego UniqueKey() para forzar qe redibuje cada vez que vengo con un paciente distinto
           // Si no, se queda con el primero y no lo cambia más.
           // https://alex.domenici.net/archive/how-to-force-a-widget-to-redraw-in-flutter
-          body: PatientWidget(key: UniqueKey(), parametro: parametro,));
+          // Uso ObjectKey(parametro) para que redibuje sólo cuando cambia el
+          // objeto y no siempre, como hace con UniqueKey()
+          body: PatientWidget(
+            key: ObjectKey(parametro),
+            parametro: parametro,
+          ));
+      // body: PatientWidget(key: UniqueKey(), parametro: parametro,));
     }
   }
 }

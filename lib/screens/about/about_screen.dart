@@ -1,5 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cardio_gut/assets/Constants.dart' as constants;
+import 'package:cardio_gut/assets/constants.dart' as constants;
 
 class AboutScreen extends StatelessWidget {
   AboutScreen ({Key? key, required this.parametro}) : super(key: key);
@@ -10,13 +11,20 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint ("Recibí el parámetro: " + parametro);
     return Scaffold(
-        appBar: AppBar(title: const Text('${constants.AppDisplayName} - Ayuda')),
+        appBar: AppBar(title: const Text('${constants.appDisplayName} - Ayuda')),
         body: Center(
-          child: Text(
-            'Acá va el texto de ayuda. ${parametro}',
-            style: TextStyle(
-              fontSize: 16,
-            ),
+          child: Column(
+            children: [
+              ElevatedButton(onPressed: ()  {
+                 FirebaseAuth.instance.sendPasswordResetEmail(email: "j.claudio.grasso@gmail.com");
+              }, child: Text("Apretar")),
+              Text(
+                'Acá va el texto de ayuda. ${parametro}',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ],
           ),
         ));
   }

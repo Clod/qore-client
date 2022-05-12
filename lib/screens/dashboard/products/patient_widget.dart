@@ -23,12 +23,14 @@ class PatientWidgetState extends State<PatientWidget> {
   bool readOnly = false;
   bool showSegmentedControl = true;
   final _formKey = GlobalKey<FormBuilderState>();
-  bool _ageHasError = false;
+
   bool _diagHasError = false;
   bool _subDiagHasError = false;
   bool _countryHasError = false;
   bool _identHasError = false;
   bool _commentsHasError = false;
+  bool _lastNameHasError = false;
+  bool _firstNameHasError = false;
 
   String? dropdownDiag;
   String? dropdownSubDiag;
@@ -81,7 +83,7 @@ class PatientWidgetState extends State<PatientWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(30),
+      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 30.0),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -110,8 +112,10 @@ class PatientWidgetState extends State<PatientWidget> {
                     name: 'LastName',
                     decoration: InputDecoration(
                       labelText: 'Apellido(s)',
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
-                      suffixIcon: _ageHasError
+                      suffixIcon: _lastNameHasError
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
@@ -132,15 +136,17 @@ class PatientWidgetState extends State<PatientWidget> {
                     // keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 5),
                   // First Name
                   FormBuilderTextField(
                     // autovalidateMode: AutovalidateMode.always,
                     name: 'FirstName',
                     decoration: InputDecoration(
                       labelText: 'Nombre(s)',
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
-                      suffixIcon: _ageHasError
+                      suffixIcon: _firstNameHasError
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
@@ -161,13 +167,15 @@ class PatientWidgetState extends State<PatientWidget> {
                     // keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   // ¿Gestación? Fecha nacimiento
                   Row(
                     children: [
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                          // margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          height: 40.0,
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                           decoration: BoxDecoration(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(4)),
@@ -187,14 +195,6 @@ class PatientWidgetState extends State<PatientWidget> {
                                   TextSpan(
                                     text: 'Paciente en gestación',
                                     style: TextStyle(color: Colors.blue),
-                                    // Flutter doesn't allow a button inside a button
-                                    // https://github.com/flutter/flutter/issues/31437#issuecomment-492411086
-                                    /*
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        print('launch url');
-                                      },
-                                    */
                                   ),
                                 ],
                               ),
@@ -227,8 +227,9 @@ class PatientWidgetState extends State<PatientWidget> {
                             inputType: InputType.date,
                             decoration: InputDecoration(
                               border: InputBorder.none,
+                              isDense: true,
                               contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 15.0),
+                                  const EdgeInsets.symmetric(vertical: 5.0),
                               labelText:
                                   'Fecha de nacimiento o estimada de concepción',
                               suffixIcon: IconButton(
@@ -246,7 +247,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   // Country - Identification
                   Row(
                     children: [
@@ -256,6 +257,8 @@ class PatientWidgetState extends State<PatientWidget> {
                           // autovalidate: true,
                           name: 'Country',
                           decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                             border: const OutlineInputBorder(),
                             labelText: 'País',
                             suffix: _countryHasError
@@ -297,8 +300,10 @@ class PatientWidgetState extends State<PatientWidget> {
                           name: 'Identification',
                           decoration: InputDecoration(
                             labelText: 'Documento',
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 26.0, horizontal: 15.0),
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                            // contentPadding: const EdgeInsets.symmetric(
+                            //     vertical: 26.0, horizontal: 15.0),
                             // labelStyle: const TextStyle(fontSize: 10),
                             // contentPadding: const EdgeInsets.all(16),
                             border: const OutlineInputBorder(),
@@ -328,12 +333,14 @@ class PatientWidgetState extends State<PatientWidget> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   // Diagnóstico
                   FormBuilderDropdown<String>(
                     // autovalidate: true,
                     name: 'Diagnostico',
                     decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
                       labelText: 'Diagnóstico',
                       suffix: _diagHasError
@@ -376,7 +383,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     },
                     valueTransformer: (val) => val?.toString(),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   // Subdiagnóstico
                   AbsorbPointer(
                     absorbing: inhabilitarSubDiag,
@@ -387,6 +394,8 @@ class PatientWidgetState extends State<PatientWidget> {
                       name: 'SubDiag',
                       decoration: InputDecoration(
                         labelText: 'Sub Diagnóstico',
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
                         border: const OutlineInputBorder(),
                         suffix: _subDiagHasError
                             ? const Icon(Icons.error)
@@ -421,7 +430,7 @@ class PatientWidgetState extends State<PatientWidget> {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             // Comments
             FormBuilderTextField(
@@ -512,7 +521,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       }
                     },
                     child: const Text(
-                      'Submit',
+                      'Enviar',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

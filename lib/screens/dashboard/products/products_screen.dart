@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
-import 'package:cardio_gut/assets/Constants.dart' as constants;
+import 'package:cardio_gut/assets/constants.dart' as constants;
 
 import '../../../main.dart';
 import '../../../model/PatientsDAO.dart';
@@ -46,7 +46,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(constants.AppDisplayName),
+        title: const Text(constants.appDisplayName),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.logout_outlined),

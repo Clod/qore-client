@@ -27,6 +27,8 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // Navigate to DashBoardScreen. If user is not authenticated
+          // navigation will be intercepted by login screen
           AutoRouter.of(context).push(
             const DashboardRoute(),
           );

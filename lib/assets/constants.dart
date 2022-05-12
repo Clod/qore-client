@@ -1,0 +1,1 @@
+const String appDisplayName= "Q-ORE";

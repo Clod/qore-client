@@ -25,6 +25,8 @@ class RouteGuard extends AutoRedirectGuard {
     router.push(
       LoginRoute(
         onLoginCallback: (_) {
+          // The resolver object has the data about where the user wanted to navigate
+          // in case of deep-linking
           resolver.next();
           // Clod: Remove this login screen from our navigation stack, so when
           // user presses the back button they are not taken to a login screen again.

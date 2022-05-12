@@ -13,15 +13,16 @@ import '../screens/login/login_screen.dart';
 @MaterialAutoRouter(
   routes: <AutoRoute>[
     AutoRoute(
-        page: LoginScreen,
-        name: 'LoginRoute',
-        path: 'login'
+      page: LoginScreen,
+      name: 'LoginRoute',
+      path: 'login',
     ),
     AutoRoute(
       page: HomeScreen,
       name: 'HomeRoute',
       path: '/',
     ),
+    // All routes within Dashboard are guarded
     AutoRoute(
       page: DashboardScreen,
       name: 'DashboardRoute',
@@ -29,14 +30,19 @@ import '../screens/login/login_screen.dart';
       guards: [RouteGuard],
       children: <AutoRoute>[
         AutoRoute<EmptyRouterPage>(
+          // Empty screen used to host either Patients´ list screen or
+          // add patient screen
           name: 'ProductsRoute',
           path: 'products',
           page: EmptyRouterPage,
           children: [
+            // Patient´s list screen
             AutoRoute(
               page: ProductsScreen,
-              path: '',   // Clod: '' means this is the default screen when we hit this route.
+              path:
+                  '', // Clod: '' means this is the default screen when we hit this route.
             ),
+            // Add patient screen
             AutoRoute(
                 page: AddPatientScreen,
                 name: 'AddPatientRoute',
@@ -46,18 +52,14 @@ import '../screens/login/login_screen.dart';
         AutoRoute(
             page: EditPatientScreen,
             name: 'EditPatientRoute',
-            path: 'edit_patient'
-        )
+            path: 'edit_patient')
       ],
     ),
-    AutoRoute(
-        page: AboutScreen,
-        name: 'AboutRouter',
-        path: '/about'
-    )
+    AutoRoute(page: AboutScreen, name: 'AboutRouter', path: '/about')
   ],
 )
-class $AppRouter {}   // Clod: AppRouter se va a crear automáticamente con el comando de abajo
+class $AppRouter {
+} // Clod: AppRouter se va a crear automáticamente con el comando de abajo
 
 // Clod: Después de armar este archivo se corre
 // D:\flutter\bin\flutter packages pub run build_runner build --delete-conflicting-outputs
