@@ -11,7 +11,6 @@ import '../../../main.dart';
 import '../../../model/PatientsDAO.dart';
 import '../../../routes/router.gr.dart';
 
-
 // Future Data
 // https://youtu.be/Pp3zoNDGZUI
 
@@ -24,7 +23,7 @@ class ProductsScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<ProductsScreen> {
   // List allPatients = damePacientes();
-  List<Paciente> allPatients = damePacientes();
+  // List<Paciente> allPatients = damePacientes();
 
   var searchIconColor = Colors.redAccent;
 
@@ -33,7 +32,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   void initState() {
     super.initState();
-    dataFuture = null; // Si lo pongo en null, usa initialData: allPatients del future builder
+    dataFuture =
+        null; // Si lo pongo en null, usa initialData: allPatients del future builder
     // debugPrint("Recibí el token: ${GlobalData.firebaseToken}");
   }
 
@@ -168,7 +168,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
             // },
             onPressed: () {
               // https://stackoverflow.com/questions/44991968/how-can-i-dismiss-the-on-screen-keyboard
-              FocusScope.of(context).requestFocus(FocusNode()); // Escondo el teclado virtual
+              FocusScope.of(context)
+                  .requestFocus(FocusNode()); // Escondo el teclado virtual
               searchIconColor == Colors.redAccent
                   ? null
                   : setState(
@@ -196,13 +197,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
           case ConnectionState.waiting:
             // return const CircularProgressIndicator();
             return HeartbeatProgressIndicator(
-                child: const Center(
-                    child: Icon(
-              CupertinoIcons.heart_fill,
-              color: Colors.pink,
-              size: 60.0,
-              semanticLabel: 'Text to announce in accessibility modes',
-            )));
+              child: const Center(
+                child: Icon(
+                  CupertinoIcons.heart_fill,
+                  color: Colors.pink,
+                  size: 60.0,
+                  semanticLabel: 'Text to announce in accessibility modes',
+                ),
+              ),
+            );
           case ConnectionState.done:
           default:
             if (snapshot.hasError) {

@@ -3,14 +3,15 @@ import 'package:cardio_gut/routes/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:intl/intl.dart';
 
 import '../../../model/Paciente.dart';
 import '../../../model/PatientsDAO.dart';
 
 class PatientWidget extends StatefulWidget {
-  PatientWidget({Key? key, Paciente? this.parametro}) : super(key: key);
+   PatientWidget({Key? key, this.parametro}) : super(key: key);
 
-  final Paciente? parametro;
+  Paciente? parametro;
 
   @override
   PatientWidgetState createState() {
@@ -24,6 +25,8 @@ class PatientWidgetState extends State<PatientWidget> {
   bool showSegmentedControl = true;
   final _formKey = GlobalKey<FormBuilderState>();
 
+  String unbornNameLabel = " de la madre";
+
   bool _diagHasError = false;
   bool _subDiagHasError = false;
   bool _countryHasError = false;
@@ -31,6 +34,7 @@ class PatientWidgetState extends State<PatientWidget> {
   bool _commentsHasError = false;
   bool _lastNameHasError = false;
   bool _firstNameHasError = false;
+  bool _weeksOfPregnancyHasError = false;
 
   String? dropdownDiag;
   String? dropdownSubDiag;
@@ -38,6 +42,7 @@ class PatientWidgetState extends State<PatientWidget> {
   bool inhabilitarSubDiag = true;
 
   bool creation = true;
+  bool unbornPatient = false;
 
   int patientRow = 0;
 
@@ -78,7 +83,13 @@ class PatientWidgetState extends State<PatientWidget> {
   //Create key for subdiagnóstico
   final _dropDownKey = GlobalKey<FormBuilderFieldState>();
 
-  void _onChanged(dynamic val) => debugPrint(val.toString());
+  void _onUnbornChanged(dynamic val) {
+    debugPrint(val.toString());
+    unbornPatient = val;
+    setState(() {});
+  }
+
+  var formatter = DateFormat('dd-MM-yyy');
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +112,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     : null,
                 'Country': widget.parametro?.nacionalidad,
                 'Identification': widget.parametro?.documento,
+                'FechaCreacionFicha' : widget.parametro?.fechaCreacionFicha
               },
               skipDisabled: true,
               child: Column(
@@ -111,9 +123,12 @@ class PatientWidgetState extends State<PatientWidget> {
                     // autovalidateMode: AutovalidateMode.always,
                     name: 'LastName',
                     decoration: InputDecoration(
-                      labelText: 'Apellido(s)',
+                      labelText: unbornPatient
+                          ? 'Apellido(s) de la madre'
+                          : 'Apellido(s)',
                       isDense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
                       suffixIcon: _lastNameHasError
                           ? const Icon(Icons.error, color: Colors.red)
@@ -142,9 +157,11 @@ class PatientWidgetState extends State<PatientWidget> {
                     // autovalidateMode: AutovalidateMode.always,
                     name: 'FirstName',
                     decoration: InputDecoration(
-                      labelText: 'Nombre(s)',
+                      labelText:
+                          unbornPatient ? 'Nombre(s) de la madre' : 'Nombre(s)',
                       isDense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
                       suffixIcon: _firstNameHasError
                           ? const Icon(Icons.error, color: Colors.red)
@@ -172,38 +189,24 @@ class PatientWidgetState extends State<PatientWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: Container(
-                          // margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          height: 40.0,
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                            shape: BoxShape.rectangle,
-                            border: Border.all(
-                              color: Colors.black45,
-                              width: 1,
+                        child: FormBuilderCheckbox(
+                          name: 'unborn',
+                          initialValue: false,
+                          decoration: const InputDecoration(
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 10.0),
+                              border: OutlineInputBorder()),
+                          onChanged: _onUnbornChanged,
+                          title: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Diagnóstico prenatal',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ],
                             ),
-                          ),
-                          child: FormBuilderCheckbox(
-                            name: 'unborn',
-                            initialValue: false,
-                            onChanged: _onChanged,
-                            title: RichText(
-                              text: const TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Paciente en gestación',
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // validator: FormBuilderValidators.equal(
-                            //   true,
-                            //   errorText:
-                            //   'You must accept terms and conditions to continue',
-                            // ),
                           ),
                         ),
                       ),
@@ -211,27 +214,32 @@ class PatientWidgetState extends State<PatientWidget> {
                         width: 20,
                       ),
                       Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(4)),
-                              shape: BoxShape.rectangle,
-                              border: Border.all(
-                                color: Colors.black45,
-                                width: 1,
-                              )),
+                        child: Visibility(
+                          visible: !unbornPatient,
+                          replacement: FormBuilderTextField(
+                            name: 'WeeksOfPregnacy',
+                            decoration: InputDecoration(
+                              labelText: 'Semanas de gestación',
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 14.0, horizontal: 10.0),
+                              border: const OutlineInputBorder(),
+                              suffixIcon: _weeksOfPregnancyHasError
+                                  ? const Icon(Icons.error, color: Colors.red)
+                                  : const Icon(Icons.check,
+                                      color: Colors.green),
+                            ),
+                          ),
                           child: FormBuilderDateTimePicker(
                             name: 'BirthDate',
                             // initialValue: DateTime.now(),
                             inputType: InputType.date,
                             decoration: InputDecoration(
-                              border: InputBorder.none,
+                              border: const OutlineInputBorder(),
                               isDense: true,
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
-                              labelText:
-                                  'Fecha de nacimiento o estimada de concepción',
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10.0),
+                              labelText: 'Fecha de nacimiento',
                               suffixIcon: IconButton(
                                   icon: const Icon(Icons.close),
                                   onPressed: () {
@@ -243,6 +251,32 @@ class PatientWidgetState extends State<PatientWidget> {
                             locale:
                                 const Locale.fromSubtags(languageCode: 'es'),
                           ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: FormBuilderChoiceChip<String>(
+                          name: 'sexo',
+                          initialValue: "",
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            label: Text("Sexo"),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 10.0),
+                            border: OutlineInputBorder(),
+                          ),
+                          alignment: WrapAlignment.center,
+                          options: const [
+                            FormBuilderFieldOption(value: "Masculino"),
+                            FormBuilderFieldOption(value: "Femenino"),
+                            FormBuilderFieldOption(value: "No informado"),
+                          ],
+                          selectedColor: Colors.blueAccent,
+                          onChanged: (value) {
+                            debugPrint(value);
+                          },
                         ),
                       ),
                     ],
@@ -258,7 +292,8 @@ class PatientWidgetState extends State<PatientWidget> {
                           name: 'Country',
                           decoration: InputDecoration(
                             isDense: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 10.0),
                             border: const OutlineInputBorder(),
                             labelText: 'País',
                             suffix: _countryHasError
@@ -301,11 +336,8 @@ class PatientWidgetState extends State<PatientWidget> {
                           decoration: InputDecoration(
                             labelText: 'Documento',
                             isDense: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
-                            // contentPadding: const EdgeInsets.symmetric(
-                            //     vertical: 26.0, horizontal: 15.0),
-                            // labelStyle: const TextStyle(fontSize: 10),
-                            // contentPadding: const EdgeInsets.all(16),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12.0, horizontal: 10.0),
                             border: const OutlineInputBorder(),
                             suffixIcon: _identHasError
                                 ? const Icon(Icons.error, color: Colors.red)
@@ -340,7 +372,8 @@ class PatientWidgetState extends State<PatientWidget> {
                     name: 'Diagnostico',
                     decoration: InputDecoration(
                       isDense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
                       labelText: 'Diagnóstico',
                       suffix: _diagHasError
@@ -395,7 +428,8 @@ class PatientWidgetState extends State<PatientWidget> {
                       decoration: InputDecoration(
                         labelText: 'Sub Diagnóstico',
                         isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 10.0),
                         border: const OutlineInputBorder(),
                         suffix: _subDiagHasError
                             ? const Icon(Icons.error)
@@ -428,6 +462,59 @@ class PatientWidgetState extends State<PatientWidget> {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: FormBuilderTextField(
+                    name: 'nroHistClinPapel',
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 10.0),
+                      border: const OutlineInputBorder(),
+                      labelText: 'Nro. historia clínica en papel',
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10.0,
+                ),
+                Expanded(
+                  child: FormBuilderTextField(
+                    name: 'FechaCreacionFicha',
+                    enabled: false,
+                    initialValue: formatter.format(DateTime.now()),
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 10.0),
+                      border: OutlineInputBorder(),
+                      labelText: 'Fecha de creación de la ficha',
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10.0,
+                ),
+                SizedBox(
+                  // height: 40.0,
+                  width: 260.0,
+                  child: FormBuilderSwitch(
+                    name: "fallecido",
+                    contentPadding: const EdgeInsets.only(top: 1.0),
+                    title: const Text("Paciente fallecido"),
+                    decoration: const InputDecoration(
+                      // border: InputBorder.none,
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                  ),
+                )
+              ],
             ),
             const SizedBox(
               height: 10,
@@ -493,6 +580,7 @@ class PatientWidgetState extends State<PatientWidget> {
                         fechaNacimiento: base!.fields["BirthDate"]!.value!
                             .toString()
                             .substring(0, 10),
+                        fechaCreacionFicha: base.fields["FechaCreacionFicha"]!.value!.toString()
                       );
 
                       if (creation) {

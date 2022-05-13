@@ -68,12 +68,13 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
         child: ListView(
           children: <Widget>[
             Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                child: const Text(
-                  'Incorporar paciente al sistema',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                )),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+              child: const Text(
+                'Incorporar paciente al sistema',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
             PatientWidget(),
           ],
         ),

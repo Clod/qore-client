@@ -36,4 +36,7 @@ class RouteGuard extends AutoRedirectGuard {
     );
 
   }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

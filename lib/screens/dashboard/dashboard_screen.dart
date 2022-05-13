@@ -12,7 +12,7 @@ class DashboardScreen extends StatelessWidget {
     return AutoTabsScaffold(
       routes: [
         const ProductsRoute(),
-        EditPatientRoute(parametro: Paciente(id: 0, nombre: "", apellido: "", fechaNacimiento: "", documento: "", nacionalidad: "")),
+        EditPatientRoute(parametro: Paciente(id: 0, nombre: "", apellido: "", fechaNacimiento: "", documento: "", nacionalidad: "", fechaCreacionFicha: "")),
       ],
       bottomNavigationBuilder: (context, tabsRouter) => BottomNavigationBar(
           onTap: tabsRouter.setActiveIndex,
