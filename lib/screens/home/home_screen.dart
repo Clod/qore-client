@@ -13,15 +13,27 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Bienvendo - Benvenuto - Bemvindo - Welcome'),
       ),
-      body: const Center(
-        child: Text(
-          'Sólo usuarios autorizados',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            // color: Colors.red,
-            color: Colors.red,
-            fontWeight: FontWeight.w500,
-            fontSize: 30,
+      body: Center(
+        child: Container(
+          alignment: AlignmentDirectional.center,
+          // color: Colors.black,
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              FittedBox(
+                child: Text(
+                  'Sólo usuarios autorizados',
+                  // textAlign: TextAlign.center,
+                  style: TextStyle(
+                    // color: Colors.red,
+                    color: Colors.red,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -22,8 +22,6 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  // List allPatients = damePacientes();
-  // List<Paciente> allPatients = damePacientes();
 
   var searchIconColor = Colors.redAccent;
 
@@ -56,6 +54,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               FirebaseAuth.instance.signOut();
               // Le "aviso" a route_guard
               MyApp.of(context).authService.authenticated = false;
+              debugPrint("Después de invalidar authenticated");
             },
           )
         ],
@@ -231,7 +230,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         ' ' +
                         item.apellido +
                         " (" +
-                        item.nacionalidad +
+                        (item.nacionalidad ?? "Nac. no informada") +
                         ")"),
                     subtitle: Text('Documento: ${item.documento}'),
                     leading: const Icon(Icons.person),

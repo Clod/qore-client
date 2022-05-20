@@ -9,9 +9,9 @@ import '../../../model/Paciente.dart';
 import '../../../model/PatientsDAO.dart';
 
 class PatientWidget extends StatefulWidget {
-  const PatientWidget({Key? key, this.parametro}) : super(key: key);
+  PatientWidget({Key? key, this.parametro}) : super(key: key);
 
-  final Paciente? parametro;
+  Paciente? parametro;
 
   @override
   PatientWidgetState createState() {
@@ -31,9 +31,11 @@ class PatientWidgetState extends State<PatientWidget> {
   bool _subDiagHasError = false;
   bool _countryHasError = false;
   bool _identHasError = false;
+  bool _commentsHasError = false;
   bool _lastNameHasError = false;
   bool _firstNameHasError = false;
   bool _weeksOfPregnancyHasError = false;
+  bool _fechaCreacionFichaHasError = false;
 
   String? dropdownDiag;
   String? dropdownSubDiag;
@@ -65,33 +67,22 @@ class PatientWidgetState extends State<PatientWidget> {
     "Otro (mencionarlo en comentarios)",
   ];
 
-  DateTime? _birthDate;
+  var formatter = DateFormat('dd-MM-yyy');
+  String? _todaysDate;
 
   @override
   void initState() {
     super.initState();
-    debugPrint("patient_widget recibió: ${widget.parametro?.toString()}");
+    debugPrint("patient_widget recibió: ${widget.parametro?.apellido}");
     if (widget.parametro == null) {
       creation = true;
       patientRow = 0;
+      _todaysDate = formatter.format(DateTime.now());
     } else {
       creation = false;
       patientRow = widget.parametro!.id;
     }
-
-    String? _birthDateStr = widget.parametro?.fechaNacimiento;
-
-    // De la base de datos me viene "null" pero cuando estoy en alta me viene null
-    if (_birthDateStr != null) {
-      // Vengo de la base
-      if (_birthDateStr == "null") {
-        // En la base está en null
-        _birthDate = null;
-      } else {
-        _birthDate = DateTime.parse(widget.parametro!.fechaNacimiento!);
-      }
-    }
-    debugPrint("Fecha de Nacimiento: ${_birthDate}");
+    ; // Creation or update?
   }
 
   //Create key for subdiagnóstico
@@ -102,8 +93,6 @@ class PatientWidgetState extends State<PatientWidget> {
     unbornPatient = val;
     setState(() {});
   }
-
-  var formatter = DateFormat('dd-MM-yyy');
 
   @override
   Widget build(BuildContext context) {
@@ -119,21 +108,27 @@ class PatientWidgetState extends State<PatientWidget> {
               initialValue: {
                 'LastName': widget.parametro?.apellido,
                 'FirstName': widget.parametro?.nombre,
-                'BirthDate': _birthDate,
+                // Si vino el parámetro y la fecha es no vacía, la uso. Si no, mando null
+                'BirthDate': (widget.parametro != null &&
+                    widget.parametro!.fechaNacimiento != null)
+                    ? DateTime.parse(widget.parametro!.fechaNacimiento!)
+                    : null,
                 'Country': widget.parametro?.nacionalidad,
                 'Identification': widget.parametro?.documento,
-                'FechaCreacionFicha': widget.parametro?.fechaCreacionFicha,
+                // 'FechaCreacionFicha': widget.parametro?.fechaCreacionFicha != null ? widget.parametro?.fechaCreacionFicha : _todaysDate,
+                'FechaCreacionFicha': '2022-02-0',
                 'Sexo': widget.parametro?.sexo,
                 'DiagnosticoPrenatal': widget.parametro?.diagnosticoPrenatal,
                 'PacienteFallecido': (widget.parametro != null &&
-                        widget.parametro!.pacienteFallecido != null &&
-                        widget.parametro!.pacienteFallecido == "V")
+                    widget.parametro!.pacienteFallecido != null &&
+                    widget.parametro!.pacienteFallecido == "V")
                     ? true
                     : false,
                 // final semanasGestacion = data['semanasGestacion'] as int;
                 // final diagnostico = data['diagnostico'] as String;
                 // final subDiagnostico = data['subDiagnostico'] as String;
                 // final fechaPrimerDiagnostico = data['fechaPrimerDiagnostico'] as String;
+                // final nroHistClinicaPapel = data['nroHistClinicaPapel'] as String;
                 'NroHistClinicaPapel': widget.parametro?.nroHistClinicaPapel,
                 'Comentarios': widget.parametro?.comentarios,
                 // final comentarios = data['comentarios'] as String;
@@ -161,18 +156,20 @@ class PatientWidgetState extends State<PatientWidget> {
                     onChanged: (val) {
                       setState(() {
                         _lastNameHasError = !(_formKey
-                                .currentState?.fields['LastName']
-                                ?.validate() ??
+                            .currentState?.fields['LastName']
+                            ?.validate() ??
                             false);
                       });
                     },
                     // valueTransformer: (text) => num.tryParse(text),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                      // FormBuilderValidators.numeric(),
-                      FormBuilderValidators.max(70),
-                      FormBuilderValidators.min(2),
-                    ]),
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(),
+                        // FormBuilderValidators.numeric(),
+                        FormBuilderValidators.max(70),
+                        FormBuilderValidators.min(2),
+                      ],
+                    ),
                     // initialValue: '12',
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
@@ -184,7 +181,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     name: 'FirstName',
                     decoration: InputDecoration(
                       labelText:
-                          unbornPatient ? 'Nombre(s) de la madre' : 'Nombre(s)',
+                      unbornPatient ? 'Nombre(s) de la madre' : 'Nombre(s)',
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 12.0, horizontal: 10.0),
@@ -258,7 +255,7 @@ class PatientWidgetState extends State<PatientWidget> {
                               suffixIcon: _weeksOfPregnancyHasError
                                   ? const Icon(Icons.error, color: Colors.red)
                                   : const Icon(Icons.check,
-                                      color: Colors.green),
+                                  color: Colors.green),
                             ),
                           ),
                           child: FormBuilderDateTimePicker(
@@ -280,7 +277,7 @@ class PatientWidgetState extends State<PatientWidget> {
                             ),
                             // initialTime: const TimeOfDay(hour: 8, minute: 0),
                             locale:
-                                const Locale.fromSubtags(languageCode: 'es'),
+                            const Locale.fromSubtags(languageCode: 'es'),
                           ),
                         ),
                       ),
@@ -339,17 +336,17 @@ class PatientWidgetState extends State<PatientWidget> {
                           items: countries
                               .map(
                                 (ctry) => DropdownMenuItem(
-                                  value: ctry,
-                                  child: Text(ctry),
-                                ),
-                              )
+                              value: ctry,
+                              child: Text(ctry),
+                            ),
+                          )
                               .toList(),
                           onChanged: (val) {
                             debugPrint("Cambió el país");
                             setState(() {
                               _countryHasError = !(_formKey
-                                      .currentState?.fields['Country']
-                                      ?.validate() ??
+                                  .currentState?.fields['Country']
+                                  ?.validate() ??
                                   false);
                             });
                           },
@@ -376,7 +373,7 @@ class PatientWidgetState extends State<PatientWidget> {
                           ),
                           onChanged: (val) {
                             setState(
-                              () {
+                                  () {
                                 // _ageHasError = !(_formKey.currentState?.fields['age']
                                 //     ?.validate() ??
                                 //     false);
@@ -419,10 +416,10 @@ class PatientWidgetState extends State<PatientWidget> {
                     items: diagnosticos
                         .map(
                           (diag) => DropdownMenuItem(
-                            value: diag,
-                            child: Text(diag),
-                          ),
-                        )
+                        value: diag,
+                        child: Text(diag),
+                      ),
+                    )
                         .toList(),
                     onChanged: (val) {
                       debugPrint("Cambió el diagnóstico");
@@ -440,8 +437,8 @@ class PatientWidgetState extends State<PatientWidget> {
                         _dropDownKey.currentState!.setValue(null);
 
                         _diagHasError = !(_formKey
-                                .currentState?.fields['diagnostico']
-                                ?.validate() ??
+                            .currentState?.fields['diagnostico']
+                            ?.validate() ??
                             false);
                       });
                     },
@@ -474,17 +471,17 @@ class PatientWidgetState extends State<PatientWidget> {
                       items: subDiags[subDiagIndex]
                           .map(
                             (subDiagIt) => DropdownMenuItem(
-                              value: subDiagIt,
-                              child: Text(subDiagIt),
-                            ),
-                          )
+                          value: subDiagIt,
+                          child: Text(subDiagIt),
+                        ),
+                      )
                           .toList(),
                       onChanged: (val) {
                         debugPrint("Cambió el subdiagnóstico");
                         setState(() {
                           _subDiagHasError = !(_formKey
-                                  .currentState?.fields['SubDiagnostico']
-                                  ?.validate() ??
+                              .currentState?.fields['SubDiagnostico']
+                              ?.validate() ??
                               false);
                         });
                       },
@@ -536,17 +533,71 @@ class PatientWidgetState extends State<PatientWidget> {
                       const SizedBox(
                         width: 10.0,
                       ),
+                      // Text(
+                      //     '$_todaysDate'
+                      // ),
+                      // Expanded(
+                      //   child: FormBuilderTextField(
+                      //     // autovalidateMode: AutovalidateMode.always,
+                      //     name: 'FechaCreacionFicha',
+                      //     decoration: InputDecoration(
+                      //       labelText: unbornPatient
+                      //           ? 'Apellido(s) de la madre'
+                      //           : 'Apellido(s)',
+                      //       isDense: true,
+                      //       contentPadding: const EdgeInsets.symmetric(
+                      //           vertical: 12.0, horizontal: 10.0),
+                      //       border: const OutlineInputBorder(),
+                      //       suffixIcon: _fechaCreacionFichaHasError
+                      //           ? const Icon(Icons.error, color: Colors.red)
+                      //           : const Icon(Icons.check, color: Colors.green),
+                      //     ),
+                      //     onChanged: (val) {
+                      //       setState(() {
+                      //         _fechaCreacionFichaHasError = !(_formKey
+                      //             .currentState?.fields['FechaCreacionFicha']
+                      //             ?.validate() ??
+                      //             false);
+                      //       });
+                      //     },
+                      //     // valueTransformer: (text) => num.tryParse(text),
+                      //     validator: FormBuilderValidators.compose(
+                      //       [
+                      //         FormBuilderValidators.required(),
+                      //         // FormBuilderValidators.numeric(),
+                      //         FormBuilderValidators.max(70),
+                      //         FormBuilderValidators.min(2),
+                      //       ],
+                      //     ),
+                      //     // initialValue: '12',
+                      //     keyboardType: TextInputType.text,
+                      //     textInputAction: TextInputAction.next,
+                      //   ),
+                      // ),
                       Expanded(
                         child: FormBuilderTextField(
                           name: 'FechaCreacionFicha',
-                          enabled: false,
-                          initialValue: formatter.format(DateTime.now()),
                           decoration: const InputDecoration(
                             isDense: true,
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 12.0, horizontal: 10.0),
                             border: OutlineInputBorder(),
                             labelText: 'Fecha de creación de la ficha',
+                          ),
+                          // enabled: false,
+                          onChanged: (_) {
+                            setState(() {
+                              _fechaCreacionFichaHasError = !(_formKey
+                                  .currentState?.fields['FechaCreacionFicha']
+                                  ?.validate() ??
+                                  false);
+                            });
+                          },
+                          //initialValue: formatter.format(DateTime.now()), // NO ENTIENDO PERO EVITA QUE SE DISPAREN LAS VALIDACIONES
+                          validator: FormBuilderValidators.compose(
+                            [
+                              FormBuilderValidators.required(),
+                            ],
                           ),
                         ),
                       ),
@@ -578,9 +629,12 @@ class PatientWidgetState extends State<PatientWidget> {
                     name: 'Comentarios',
                     minLines: 3,
                     maxLines: 3,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Comentarios',
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: _commentsHasError
+                          ? const Icon(Icons.error, color: Colors.red)
+                          : const Icon(Icons.check, color: Colors.green),
                     ),
                     onChanged: (val) {
                       setState(() {
@@ -591,9 +645,9 @@ class PatientWidgetState extends State<PatientWidget> {
                     },
                     // valueTransformer: (text) => num.tryParse(text),
                     validator: FormBuilderValidators.compose([
-                      // FormBuilderValidators.required(),
+                      FormBuilderValidators.required(),
                       // // FormBuilderValidators.numeric(),
-                      // FormBuilderValidators.max(70),
+                      FormBuilderValidators.max(70),
                     ]),
                     // initialValue: '12',
                     // keyboardType: TextInputType.number,
@@ -609,27 +663,6 @@ class PatientWidgetState extends State<PatientWidget> {
               children: <Widget>[
                 Expanded(
                   child: MaterialButton(
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    color: Theme.of(context).colorScheme.error,
-                    onPressed: () {
-                      if (creation) {
-                        AutoRouter.of(context).pop();
-                      } else {
-                        // Vuelvo a la pantalla anterior manteniendo la lista de pacientes.
-                        AutoRouter.of(context).navigateBack();
-                      }
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: MaterialButton(
-                    child: const Text(
-                      'Enviar',
-                      style: TextStyle(color: Colors.white),
-                    ),
                     color: Theme.of(context).colorScheme.secondary,
                     onPressed: () {
                       if (_formKey.currentState?.saveAndValidate() ?? false) {
@@ -638,17 +671,17 @@ class PatientWidgetState extends State<PatientWidget> {
                       } else {
                         debugPrint(_formKey.currentState?.value.toString());
                         debugPrint('validation failed');
-                        return;
                       }
 
                       debugPrint(
                           "Intento dar de alta al paciente: ${_formKey.currentState?.value.toString()}");
 
-                      FormBuilderState base = _formKey.currentState!;
+                      // FormBuilderState base = _formKey.currentState!;
+                      var base = _formKey.currentState;
 
                       var sex = "";
 
-                      switch (base.fields["Sexo"]?.value.toString()) {
+                      switch (base!.fields["Sexo"]?.value.toString()) {
                         case "Masculino":
                           sex = "M";
                           break;
@@ -668,17 +701,20 @@ class PatientWidgetState extends State<PatientWidget> {
                         _weeksOfPregnacy =
                             base.fields["WeeksOfPregnacy"]?.value;
                       } else {
+                        // birthDate = base.fields["BirthDate"]!.value!
+                        //     .toString()
+                        //     .substring(0, 10);
                         birthDate = (base.fields["BirthDate"]?.value != null)
                             ? base.fields["BirthDate"]?.value
-                                .toString()
-                                .substring(0, 10)
+                            .toString()
+                            .substring(0, 10)
                             : null;
                         _weeksOfPregnacy = 0;
                       }
 
                       // Paso la vecha de creación de la ficha en formato yyyy-MM-dd como lo espera la BD. Viene dd-MM-yyyy
                       String _fechaCreacionFicha =
-                          base.fields["FechaCreacionFicha"]!.value!.toString();
+                      base.fields["FechaCreacionFicha"]!.value!.toString();
                       _fechaCreacionFicha =
                           _fechaCreacionFicha.substring(6, 10) +
                               "-" +
@@ -689,33 +725,33 @@ class PatientWidgetState extends State<PatientWidget> {
                       var paciente = Paciente(
                         id: patientRow,
                         apellido:
-                            base.fields["LastName"]!.value.toString().trim(),
+                        base.fields["LastName"]!.value.toString().trim(),
                         nombre:
-                            base.fields["FirstName"]!.value.toString().trim(),
+                        base.fields["FirstName"]!.value.toString().trim(),
                         documento: base.fields["Identification"]?.value,
                         nacionalidad: base.fields["Country"]?.value,
                         fechaNacimiento: birthDate,
                         fechaCreacionFicha: _fechaCreacionFicha,
                         sexo: sex,
                         diagnosticoPrenatal:
-                            base.fields["DiagnosticoPrenatal"]?.value
-                                ? "V"
-                                : "F",
+                        base.fields["DiagnosticoPrenatal"]?.value
+                            ? "V"
+                            : "F",
                         pacienteFallecido:
-                            base.fields["PacienteFallecido"]?.value ? "V" : "F",
+                        base.fields["PacienteFallecido"]?.value ? "V" : "F",
                         semanasGestacion: _weeksOfPregnacy,
                         diagnostico: base.fields["Diagnostico"]?.value,
                         subDiagnostico: base.fields["SubDiagnostico"]?.value,
                         // fechaPrimerDiagnostico: base?.fields["FechaPrimerDiagnostico"]?.value.toString().substring(0, 10),
                         fechaPrimerDiagnostico:
-                            (base.fields["FechaPrimerDiagnostico"]?.value !=
-                                    null)
-                                ? base.fields["FechaPrimerDiagnostico"]?.value
-                                    .toString()
-                                    .substring(0, 10)
-                                : null,
+                        (base.fields["FechaPrimerDiagnostico"]?.value !=
+                            null)
+                            ? base.fields["FechaPrimerDiagnostico"]?.value
+                            .toString()
+                            .substring(0, 10)
+                            : null,
                         nroHistClinicaPapel:
-                            base.fields["NroHistClinicaPapel"]?.value,
+                        base.fields["NroHistClinicaPapel"]?.value,
                         comentarios: base.fields["Comentarios"]?.value,
                       );
 
@@ -744,6 +780,10 @@ class PatientWidgetState extends State<PatientWidget> {
                         AutoRouter.of(context).push(const DashboardRoute());
                       }
                     },
+                    child: const Text(
+                      'Enviar',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ],

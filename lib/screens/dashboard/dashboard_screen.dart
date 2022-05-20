@@ -14,23 +14,23 @@ class DashboardScreen extends StatelessWidget {
         const ProductsRoute(),
         EditPatientRoute(parametro: Paciente(id: 0, nombre: "", apellido: "", fechaNacimiento: "", documento: "", nacionalidad: "", fechaCreacionFicha: "")),
       ],
-      bottomNavigationBuilder: (context, tabsRouter) => BottomNavigationBar(
-          onTap: tabsRouter.setActiveIndex,
-          currentIndex: tabsRouter.activeIndex,
-          items: const [
-            BottomNavigationBarItem(
-              label: 'Pacientes',
-              icon: Icon(
-                Icons.people,
-              ),
-            ),
-            BottomNavigationBarItem(
-              label: 'Paciente',
-              icon: Icon(
-                Icons.person,
-              ),
-            ),
-          ]),
+      // bottomNavigationBuilder: (context, tabsRouter) => BottomNavigationBar(
+      //     onTap: tabsRouter.setActiveIndex,
+      //     currentIndex: tabsRouter.activeIndex,
+      //     items: const [
+      //       BottomNavigationBarItem(
+      //         label: 'Pacientes',
+      //         icon: Icon(
+      //           Icons.people,
+      //         ),
+      //       ),
+      //       BottomNavigationBarItem(
+      //         label: 'Paciente',
+      //         icon: Icon(
+      //           Icons.person,
+      //         ),
+      //       ),
+      //     ]),
     );
   }
 }

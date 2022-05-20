@@ -65,7 +65,7 @@ Future<List<Paciente>> traerPacientes(String value) async {
 
   debugPrint("Después del get ***********************************\n");
 
-  // debugPrint(response.body);
+  debugPrint(response.body);
 
   if (response.statusCode == 200) {
     var jsonResponse =
