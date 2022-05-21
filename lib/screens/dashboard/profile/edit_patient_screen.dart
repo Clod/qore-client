@@ -62,9 +62,23 @@ class EditPatientScreen extends StatelessWidget {
           // https://alex.domenici.net/archive/how-to-force-a-widget-to-redraw-in-flutter
           // Uso ObjectKey(parametro) para que redibuje sólo cuando cambia el
           // objeto y no siempre, como hace con UniqueKey()
-          body: PatientWidget(
-            key: ObjectKey(parametro),
-            parametro: parametro,
+          body: ListView(
+            children: [
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 0.0),
+                child: const FittedBox(
+                  child: Text(
+                    'Modificar datos del paciente',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              PatientWidget(
+                key: ObjectKey(parametro),
+                parametro: parametro,
+              ),
+            ],
           ));
       // body: PatientWidget(key: UniqueKey(), parametro: parametro,));
     }

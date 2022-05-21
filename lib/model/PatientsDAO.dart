@@ -19,14 +19,16 @@ Uri getURI(String value) {
       url = Uri.parse(GlobalData.URL_WEB_DEV.toString() + value);
     } else {
       if (Platform.isAndroid) {
-        // url = Uri.http('10.0.2.2:8080', '/patients/' + value);
-        url = Uri.parse(GlobalData.URL_AND_DEV.toString() + value);
+        //   static String? URL_AND_DEV="http://10.0.2.2:8080/patients/";
+//        url = Uri.parse(GlobalData.URL_AND_DEV.toString() + value);
+        url = Uri.parse("http://192.168.0.94:8080/patients"+ value);
       } else {
         url = Uri.parse('http://localhost:8080/patients' + value);
       }
     }
   } else {
-    url = Uri.parse(GlobalData.URL_PROD.toString());
+    // url = Uri.parse(GlobalData.URL_PROD.toString());
+    url = Uri.parse("http://192.168.0.94:8080/patients"+ value);
   }
 
   return url;

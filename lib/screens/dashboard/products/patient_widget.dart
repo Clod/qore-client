@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/routes/router.gr.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -20,6 +21,7 @@ class PatientWidget extends StatefulWidget {
 }
 
 class PatientWidgetState extends State<PatientWidget> {
+  int kMinWidthOfLargeScreen = 900;
   bool autoValidate = true;
   bool readOnly = false;
   bool showSegmentedControl = true;
@@ -91,7 +93,7 @@ class PatientWidgetState extends State<PatientWidget> {
         _birthDate = DateTime.parse(widget.parametro!.fechaNacimiento!);
       }
     }
-    debugPrint("Fecha de Nacimiento: ${_birthDate}");
+    debugPrint("Fecha de Nacimiento: $_birthDate");
   }
 
   //Create key for subdiagnóstico
@@ -107,8 +109,11 @@ class PatientWidgetState extends State<PatientWidget> {
 
   @override
   Widget build(BuildContext context) {
+    bool isScreenWide =
+        MediaQuery.of(context).size.width >= kMinWidthOfLargeScreen;
+    debugPrint("Screen width: ${MediaQuery.of(context).size.width}");
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 30.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -177,7 +182,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 10),
                   // First Name
                   FormBuilderTextField(
                     // autovalidateMode: AutovalidateMode.always,
@@ -211,9 +216,12 @@ class PatientWidgetState extends State<PatientWidget> {
                   ),
                   const SizedBox(height: 5),
                   // ¿Gestación? Fecha nacimiento
-                  Row(
+                  Flex(
+                    direction: isScreenWide ? Axis.horizontal : Axis.vertical,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
+                      Flexible(
+                        flex:1,
                         child: FormBuilderCheckbox(
                           name: 'DiagnosticoPrenatal',
                           initialValue: false,
@@ -223,22 +231,15 @@ class PatientWidgetState extends State<PatientWidget> {
                                   vertical: 8.0, horizontal: 10.0),
                               border: OutlineInputBorder()),
                           onChanged: _onUnbornChanged,
-                          title: RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Diagnóstico prenatal',
-                                  style: TextStyle(color: Colors.blue),
-                                ),
-                              ],
-                            ),
-                          ),
+                          title: const Text("Diag. prenatal"),
                         ),
                       ),
                       const SizedBox(
-                        width: 20,
+                        width: 10,
+                        height: 15,
                       ),
-                      Expanded(
+                      Flexible(
+                        flex: 2,
                         child: Visibility(
                           visible: !unbornPatient,
                           replacement: FormBuilderTextField(
@@ -261,33 +262,66 @@ class PatientWidgetState extends State<PatientWidget> {
                                       color: Colors.green),
                             ),
                           ),
-                          child: FormBuilderDateTimePicker(
-                            name: 'BirthDate',
-                            // initialValue: DateTime.now(),
-                            inputType: InputType.date,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10.0),
-                              labelText: 'Fecha de nacimiento',
-                              suffixIcon: IconButton(
-                                  icon: const Icon(Icons.close),
-                                  onPressed: () {
-                                    _formKey.currentState!.fields['date']
-                                        ?.didChange(null);
-                                  }),
-                            ),
-                            // initialTime: const TimeOfDay(hour: 8, minute: 0),
-                            locale:
-                                const Locale.fromSubtags(languageCode: 'es'),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: FormBuilderDateTimePicker(
+                                  name: 'BirthDate',
+                                  // initialValue: DateTime.now(),
+                                  inputType: InputType.date,
+                                  decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10.0),
+                                    labelText: isScreenWide ? 'Fecha de nacimiento' : 'Fecha de\nnacimiento',
+                                    suffixIcon: IconButton(
+                                        icon: const Icon(Icons.close),
+                                        onPressed: () {
+                                          _formKey.currentState!.fields['date']
+                                              ?.didChange(null);
+                                        }),
+                                  ),
+                                  // initialTime: const TimeOfDay(hour: 8, minute: 0),
+                                  locale: const Locale.fromSubtags(
+                                      languageCode: 'es'),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: FormBuilderTextField(
+                                  // autovalidateMode: AutovalidateMode.always,
+                                  name: 'FichaDiagPren',
+                                  decoration: const InputDecoration(
+                                    labelText: kIsWeb ? 'Nro. ficha diag. prenatal' : 'Nro. ficha\ndiag. prenatal',
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 12.0, horizontal: 10.0),
+                                    border: OutlineInputBorder(),
+                                    // suffixIcon: _lastNameHasError
+                                    //     ? const Icon(Icons.error, color: Colors.red)
+                                    //     : const Icon(Icons.check, color: Colors.green),
+                                  ),
+                                  validator: FormBuilderValidators.compose([
+                                    FormBuilderValidators.numeric(),
+                                  ]),
+                                  // initialValue: '12',
+                                  keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.next,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       const SizedBox(
-                        width: 20,
+                        width: 10,
+                        height: 10,
                       ),
-                      Expanded(
+                      Flexible(
+                        flex: 1,
                         child: FormBuilderChoiceChip<String>(
                           name: 'Sexo',
                           initialValue: "No informado",
@@ -298,11 +332,11 @@ class PatientWidgetState extends State<PatientWidget> {
                                 vertical: 8.0, horizontal: 10.0),
                             border: OutlineInputBorder(),
                           ),
-                          alignment: WrapAlignment.center,
+                          alignment: WrapAlignment.spaceAround,
                           options: const [
-                            FormBuilderFieldOption(value: "Masculino"),
-                            FormBuilderFieldOption(value: "Femenino"),
-                            FormBuilderFieldOption(value: "No informado"),
+                            FormBuilderFieldOption(value: "M"),
+                            FormBuilderFieldOption(value: "F"),
+                            FormBuilderFieldOption(value: "N/I"),
                           ],
                           selectedColor: Colors.blueAccent,
                           onChanged: (value) {
@@ -331,11 +365,10 @@ class PatientWidgetState extends State<PatientWidget> {
                                 ? const Icon(Icons.error)
                                 : const Icon(Icons.check),
                           ),
-                          // initialValue: 'Male',
                           allowClear: true,
-                          hint: const Text('Seleccione el país'),
-                          validator: FormBuilderValidators.compose(
-                              [FormBuilderValidators.required()]),
+                          hint: const Text('País'),
+                          // validator: FormBuilderValidators.compose(
+                          //     [FormBuilderValidators.required()]),
                           items: countries
                               .map(
                                 (ctry) => DropdownMenuItem(
@@ -494,9 +527,11 @@ class PatientWidgetState extends State<PatientWidget> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Row(
+                  Flex(
+                    direction: isScreenWide ? Axis.horizontal : Axis.vertical,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
+                      Flexible(
                         child: FormBuilderTextField(
                           name: 'NroHistClinicaPapel',
                           decoration: const InputDecoration(
@@ -509,9 +544,10 @@ class PatientWidgetState extends State<PatientWidget> {
                         ),
                       ),
                       const SizedBox(
-                        width: 10.0,
+                        width: 10,
+                        height: 10,
                       ),
-                      Expanded(
+                      Flexible(
                         child: FormBuilderDateTimePicker(
                           name: 'FechaPrimerDiagnostico',
                           // initialValue: DateTime.now(),
@@ -534,9 +570,10 @@ class PatientWidgetState extends State<PatientWidget> {
                         ),
                       ),
                       const SizedBox(
-                        width: 10.0,
+                        width: 10,
+                        height: 10,
                       ),
-                      Expanded(
+                      Flexible(
                         child: FormBuilderTextField(
                           name: 'FechaCreacionFicha',
                           enabled: false,
@@ -551,7 +588,8 @@ class PatientWidgetState extends State<PatientWidget> {
                         ),
                       ),
                       const SizedBox(
-                        width: 10.0,
+                        width: 10,
+                        height: 10,
                       ),
                       SizedBox(
                         // width: 260.0,
@@ -620,6 +658,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       } else {
                         // Vuelvo a la pantalla anterior manteniendo la lista de pacientes.
                         AutoRouter.of(context).navigateBack();
+                        // AutoRouter.of(context).pop();
                       }
                     },
                   ),

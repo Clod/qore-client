@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/model/Paciente.dart';
-import 'package:cardio_gut/model/Pacientes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -211,11 +210,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
               final error = snapshot.error;
               return Text('$error');
             } else if (snapshot.hasData) {
-              if (snapshot.data?.length == 0) {
+              if (snapshot.data!.isEmpty) {
                 return const Center(
-                  child: Text(
-                    'No se encontraron pacientes',
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                  child: Padding(
+                    padding: EdgeInsets.all(30.0),
+                    child: Text(
+                      'No se encontraron pacientes que cumplan con el criterio de búsqueda.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 );
               }
@@ -252,10 +255,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
               );
             } else {
               return const Center(
-                child: Text(
-                  'Ingrese un criterio de búsqueda\n'
-                  'en el panel de arriba',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                child: Padding(
+                  padding: EdgeInsets.all(30.0),
+                  child: Text(
+                    'Ingrese un criterio de búsqueda en el panel de arriba',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                 ),
               );
               // return const CircularProgressIndicator();
