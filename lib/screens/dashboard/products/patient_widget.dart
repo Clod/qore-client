@@ -780,7 +780,8 @@ class PatientWidgetState extends State<PatientWidget> {
                       if (creation) {
                         AutoRouter.of(context).pop();
                       } else {
-                        AutoRouter.of(context).push(const DashboardRoute());
+                        // AutoRouter.of(context).push(const DashboardRoute());
+                        AutoRouter.of(context).push(const PatientsRoute());
                       }
                     },
                   ),

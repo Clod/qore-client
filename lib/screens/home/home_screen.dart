@@ -42,7 +42,8 @@ class HomeScreen extends StatelessWidget {
           // Navigate to DashBoardScreen. If user is not authenticated
           // navigation will be intercepted by login screen
           AutoRouter.of(context).push(
-            const DashboardRoute(),
+            // const DashboardRoute(),
+            const PatientsRoute(),
           );
         },
         child: const Icon(Icons.login),

@@ -6,6 +6,7 @@ import 'package:cardio_gut/screens/dashboard/products/products_screen.dart';
 import 'package:cardio_gut/screens/home/home_screen.dart';
 
 import '../screens/dashboard/products/add_products/add_patient_screen.dart';
+import '../screens/dashboard/products/patients_screen.dart';
 import '../screens/dashboard/profile/edit_patient_screen.dart';
 import '../screens/login/login_screen.dart';
 
@@ -22,8 +23,31 @@ import '../screens/login/login_screen.dart';
       name: 'HomeRoute',
       path: '/',
     ),
-    // All routes within Dashboard are guarded
     AutoRoute(
+      page: PatientsScreen,
+      name: 'PatientsRoute',
+      path: 'patients',
+      guards: [RouteGuard],
+    ),
+    AutoRoute(
+      page: AddPatientScreen,
+      name: 'AddPatientRoute',
+      path: 'add_patient',
+      guards: [RouteGuard],
+    ),
+    AutoRoute(
+      page: AboutScreen,
+      name: 'AboutRouter',
+      path: '/about',
+    ),
+    AutoRoute(
+      page: EditPatientScreen,
+      name: 'EditPatientRoute',
+      guards: [RouteGuard],
+      path: 'edit_patient',
+    )
+    // All routes within Dashboard are guarded
+/*    AutoRoute(
       page: DashboardScreen,
       name: 'DashboardRoute',
       path: '/dashboard',
@@ -54,8 +78,8 @@ import '../screens/login/login_screen.dart';
             name: 'EditPatientRoute',
             path: 'edit_patient')
       ],
-    ),
-    AutoRoute(page: AboutScreen, name: 'AboutRouter', path: '/about')
+    ),*/
+    // AutoRoute(page: AboutScreen, name: 'AboutRouter', path: '/about')
   ],
 )
 class $AppRouter {

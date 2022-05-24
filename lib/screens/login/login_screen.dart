@@ -190,7 +190,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     // OJO que esto está interceptando la navegación a otra pantalla
                     // Por eso no se ve ninguna instrucción de navegación que indique
                     // a dónde tiene que ir después.
-                    AutoRouter.of(context).push(DashboardRoute());
+                    //AutoRouter.of(context).push(DashboardRoute());
+                    AutoRouter.of(context).push(PatientsRoute());
                   }
                 },
               ),
