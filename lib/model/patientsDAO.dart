@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/foundation.dart';
 
-import 'Paciente.dart';
+import 'paciente.dart';
 import '../assets/global_data.dart';
 
 import 'dart:io';
@@ -37,7 +37,7 @@ Uri getURI(String value) {
 Future<List<Paciente>> traerPacientes(String value) async {
   debugPrint("Entrando ***********************************\n");
 
-  var retrievedPatients = <Paciente>[];
+  List<Paciente> retrievedPatients = <Paciente>[];
 
   // Si se ejecuta desde Android hay que usar 10.0.2.2:8080 y anda
   // https://stackoverflow.com/questions/55785581/socketexception-os-error-connection-refused-errno-111-in-flutter-using-djan

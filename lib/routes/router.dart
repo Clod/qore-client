@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/routes/route_guard.dart';
 import 'package:cardio_gut/screens/about/about_screen.dart';
-import 'package:cardio_gut/screens/dashboard/dashboard_screen.dart';
-import 'package:cardio_gut/screens/dashboard/products/products_screen.dart';
 import 'package:cardio_gut/screens/home/home_screen.dart';
 
 import '../screens/dashboard/products/add_products/add_patient_screen.dart';

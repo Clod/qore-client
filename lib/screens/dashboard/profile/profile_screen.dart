@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../main.dart';
-import '../../../model/Paciente.dart';
+import '../../../model/paciente.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
 
 class ProfileScreen extends StatelessWidget {
@@ -12,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Building profile screen " + parametro.apellido);
+    debugPrint("Building profile screen " + parametro.apellido);
 
     if (parametro.apellido.isEmpty) {
       return Scaffold(
@@ -32,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
                     })
               ]),
           body: const Center(
-            child: const Text(
+            child: Text(
               'No hay paciente seleccionado',
               style: TextStyle(fontSize: 24),
             ),
@@ -59,14 +59,14 @@ class ProfileScreen extends StatelessWidget {
               //mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
-                Text(
+                const Text(
                   "Información del paciente",
                   style: TextStyle(fontSize: 24),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Text(
@@ -75,7 +75,7 @@ class ProfileScreen extends StatelessWidget {
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 Text(
@@ -84,7 +84,7 @@ class ProfileScreen extends StatelessWidget {
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 Text(

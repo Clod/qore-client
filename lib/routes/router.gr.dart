@@ -13,7 +13,7 @@
 import 'package:auto_route/auto_route.dart' as _i7;
 import 'package:flutter/material.dart' as _i8;
 
-import '../model/Paciente.dart' as _i10;
+import '../model/paciente.dart' as _i10;
 import '../screens/about/about_screen.dart' as _i5;
 import '../screens/dashboard/products/add_products/add_patient_screen.dart'
     as _i4;

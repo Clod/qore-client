@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../main.dart';
-import '../../../model/Paciente.dart';
+import '../../../model/paciente.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
 
 class EditPatientScreen extends StatelessWidget {
@@ -35,7 +35,7 @@ class EditPatientScreen extends StatelessWidget {
                     })
               ]),
           body: const Center(
-            child: const Text(
+            child: Text(
               'No hay paciente seleccionado',
               style: TextStyle(fontSize: 24),
             ),

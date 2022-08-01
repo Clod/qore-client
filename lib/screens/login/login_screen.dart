@@ -191,7 +191,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     // Por eso no se ve ninguna instrucción de navegación que indique
                     // a dónde tiene que ir después.
                     //AutoRouter.of(context).push(DashboardRoute());
-                    AutoRouter.of(context).push(PatientsRoute());
+                    AutoRouter.of(context).push(const PatientsRoute());
                   }
                 },
               ),

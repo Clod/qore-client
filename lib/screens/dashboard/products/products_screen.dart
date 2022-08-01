@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cardio_gut/model/Paciente.dart';
+import 'package:cardio_gut/model/paciente.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:progress_indicators/progress_indicators.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
 
 import '../../../main.dart';
-import '../../../model/PatientsDAO.dart';
+import '../../../model/patientsDAO.dart';
 import '../../../routes/router.gr.dart';
 
 // Future Data

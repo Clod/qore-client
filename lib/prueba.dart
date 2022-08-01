@@ -13,7 +13,7 @@ void main(List<String> arguments) async {
   // print("Pindonga:" + pindonga);
 
   Map<String, String> envVars = Platform.environment;
-  print(envVars['PATH']);
+  debugPrint(envVars['PATH']);
 
   var url = Uri.http('localhost:8080', '/patients');
 

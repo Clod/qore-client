@@ -1,5 +1,3 @@
-import 'package:cardio_gut/model/Comentario.dart';
-
 class Paciente {
   Paciente({
     required this.id,

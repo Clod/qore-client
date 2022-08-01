@@ -17,10 +17,10 @@ class AboutScreen extends StatelessWidget {
             children: [
               ElevatedButton(onPressed: ()  {
                  FirebaseAuth.instance.sendPasswordResetEmail(email: "j.claudio.grasso@gmail.com");
-              }, child: Text("Apretar")),
+              }, child: const Text("Apretar")),
               Text(
-                'Acá va el texto de ayuda. ${parametro}',
-                style: TextStyle(
+                'Acá va el texto de ayuda. $parametro',
+                style: const TextStyle(
                   fontSize: 16,
                 ),
               ),

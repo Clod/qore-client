@@ -1,6 +1,5 @@
 import 'package:cardio_gut/screens/dashboard/products/patient_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
 import '../../../../main.dart';
@@ -52,7 +51,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                 ),
               ),
             ),
-            PatientWidget(),
+            const PatientWidget(),
           ],
         ),
       ),

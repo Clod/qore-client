@@ -6,8 +6,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
-import '../../../model/Paciente.dart';
-import '../../../model/PatientsDAO.dart';
+import '../../../model/paciente.dart';
+import '../../../model/patientsDAO.dart';
 
 class PatientWidget extends StatefulWidget {
   const PatientWidget({Key? key, this.parametro}) : super(key: key);
