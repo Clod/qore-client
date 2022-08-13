@@ -37,21 +37,62 @@ class PatientWidgetState extends State<PatientWidget> {
   bool _firstNameHasError = false;
   bool _weeksOfPregnancyHasError = false;
 
-  String? dropdownDiag;
-  String? dropdownSubDiag;
-  int subDiagIndex = 0;
-  bool inhabilitarSubDiag = true;
+  String? dropdownDiag1;
+  String? dropdownDiag2;
+  int diag1Index = 0;
+  int diag2Index = 0;
+  int diag3Index = 0;
+  int diag4Index = 0;
+
+  // No habilito la selección de un subnivel hasta que el anterior esté seleccionado.
+  bool inhabilitarDiag2 = true;
+  bool inhabilitarDiag3 = true;
+  bool inhabilitarDiag4 = true;
 
   bool creation = true;
   bool unbornPatient = false;
 
   int patientRow = 0;
 
-  var diagnosticos = ['Diagnóstico 1', 'Diagnóstico 2', 'Diagnóstico 3'];
-  var subDiags = [
-    ['Diagnóstico 1A', 'Diagnóstico 1B', 'Diagnóstico 1C', 'Diagnóstico 1D'],
-    ['Diagnóstico 2A', 'Diagnóstico 2B', 'Diagnóstico 2C', 'Diagnóstico 2D'],
-    ['Diagnóstico 3A', 'Diagnóstico 3B', 'Diagnóstico 3C', 'Diagnóstico 3D']
+  var diag1 = ['Diagnóstico 1', 'Diagnóstico 2'];
+
+  var diag2 = [
+    ['Diagnóstico 11', 'Diagnóstico 12'],
+    ['Diagnóstico 21', 'Diagnóstico 22']
+  ];
+
+  var diag3 = [
+    [
+      ['Diagnóstico 111', 'Diagnóstico 112'],
+      ['Diagnóstico 121', 'Diagnóstico 122']
+    ],
+    [
+      ['Diagnóstico 211', 'Diagnóstico 212'],
+      ['Diagnóstico 221', 'Diagnóstico 222']
+    ]
+  ];
+
+  var diag4 = [
+    [
+      [
+        ['Diagnóstico 1111', 'Diagnóstico 1112'],
+        ['Diagnóstico 1121', 'Diagnóstico 1122']
+      ]
+    ],
+    [
+      ['Diagnóstico 1211', 'Diagnóstico 1212'],
+      ['Diagnóstico 1221', 'Diagnóstico 1222']
+    ],
+    [
+      [
+        ['Diagnóstico 2111', 'Diagnóstico 2112'],
+        ['Diagnóstico 2121', 'Diagnóstico 2122']
+      ]
+    ],
+    [
+      ['Diagnóstico 2211', 'Diagnóstico 2212'],
+      ['Diagnóstico 2221', 'Diagnóstico 2222']
+    ]
   ];
 
   var countries = [
@@ -97,7 +138,8 @@ class PatientWidgetState extends State<PatientWidget> {
   }
 
   //Create key for subdiagnóstico
-  final _dropDownKey = GlobalKey<FormBuilderFieldState>();
+  final _dropDownKey2 = GlobalKey<FormBuilderFieldState>();
+  final _dropDownKey3 = GlobalKey<FormBuilderFieldState>();
 
   void _onUnbornChanged(dynamic val) {
     debugPrint(val.toString());
@@ -221,7 +263,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Flexible(
-                        flex:1,
+                        flex: 1,
                         child: FormBuilderCheckbox(
                           name: 'DiagnosticoPrenatal',
                           initialValue: false,
@@ -274,7 +316,9 @@ class PatientWidgetState extends State<PatientWidget> {
                                     isDense: true,
                                     contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 10.0),
-                                    labelText: isScreenWide ? 'Fecha de nacimiento' : 'Fecha de\nnacimiento',
+                                    labelText: isScreenWide
+                                        ? 'Fecha de nacimiento'
+                                        : 'Fecha de\nnacimiento',
                                     suffixIcon: IconButton(
                                         icon: const Icon(Icons.close),
                                         onPressed: () {
@@ -295,7 +339,9 @@ class PatientWidgetState extends State<PatientWidget> {
                                   // autovalidateMode: AutovalidateMode.always,
                                   name: 'FichaDiagPren',
                                   decoration: const InputDecoration(
-                                    labelText: kIsWeb ? 'Nro. ficha diag. prenatal' : 'Nro. ficha\ndiag. prenatal',
+                                    labelText: kIsWeb
+                                        ? 'Nro. ficha diag. prenatal'
+                                        : 'Nro. ficha\ndiag. prenatal',
                                     isDense: true,
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 12.0, horizontal: 10.0),
@@ -430,26 +476,26 @@ class PatientWidgetState extends State<PatientWidget> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  // Diagnóstico
+                  /***************** Diagnósticos *****************/
                   FormBuilderDropdown<String>(
                     // autovalidate: true,
-                    name: 'Diagnostico',
+                    name: 'Diag1',
                     decoration: InputDecoration(
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
-                      labelText: 'Diagnóstico',
+                      labelText: 'Diag1',
                       suffix: _diagHasError
                           ? const Icon(Icons.error)
                           : const Icon(Icons.check),
                     ),
                     // initialValue: 'Male',
                     allowClear: true,
-                    hint: const Text('Seleccione el diagnóstico'),
+                    hint: const Text('Seleccione el diagnóstico nivel 1'),
                     validator: FormBuilderValidators.compose(
                         [FormBuilderValidators.required()]),
-                    items: diagnosticos
+                    items: diag1
                         .map(
                           (diag) => DropdownMenuItem(
                             value: diag,
@@ -458,22 +504,27 @@ class PatientWidgetState extends State<PatientWidget> {
                         )
                         .toList(),
                     onChanged: (val) {
-                      debugPrint("Cambió el diagnóstico");
-                      // El diagnósitco elegido me indica la fila de la matriz de subdiagnósticos
-                      dropdownDiag = val!;
-                      subDiagIndex = diagnosticos.indexOf(dropdownDiag!);
-                      dropdownSubDiag = subDiags[subDiagIndex][0];
+                      debugPrint("Cambió el diag1");
+                      // El diag1 elegido me indica la fila de la matriz de diag2
+                      dropdownDiag1 = val!;
+                      diag2Index = diag1.indexOf(dropdownDiag1!);
+                      dropdownDiag2 = diag2[diag2Index][0];
                       // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
-                      inhabilitarSubDiag = false;
+                      inhabilitarDiag2 = false;
+                      // Desahbilito 3 por si estoy cambiando de idea con Diag1
+                      inhabilitarDiag3 = true;
+
                       setState(() {
                         // Reseteo el valor de subdiagnóstico para que no vuele por el aire si llego
                         // a cambiar el diagnóstico una vez que ya elegí el subdiagnóstico
                         // https://stackoverflow.com/questions/60057028/how-to-change-formbuilderdropdown-selected-value-using-setstate
-                        _dropDownKey.currentState!.reset();
-                        _dropDownKey.currentState!.setValue(null);
+                        _dropDownKey2.currentState!.reset();
+                        _dropDownKey2.currentState!.setValue(null);
 
-                        _diagHasError = !(_formKey
-                                .currentState?.fields['diagnostico']
+                        _dropDownKey3.currentState!.reset();
+                        _dropDownKey3.currentState!.setValue(null);
+
+                        _diagHasError = !(_formKey.currentState?.fields['Diag1']
                                 ?.validate() ??
                             false);
                       });
@@ -481,16 +532,17 @@ class PatientWidgetState extends State<PatientWidget> {
                     valueTransformer: (val) => val?.toString(),
                   ),
                   const SizedBox(height: 10),
-                  // Subdiagnóstico
+
+                  // Diag2
                   AbsorbPointer(
-                    absorbing: inhabilitarSubDiag,
+                    absorbing: inhabilitarDiag2,
                     child: FormBuilderDropdown<String>(
                       //Reference the key
-                      key: _dropDownKey,
+                      key: _dropDownKey2,
                       // autovalidate: true,
-                      name: 'SubDiagnostico',
+                      name: 'Diag2',
                       decoration: InputDecoration(
-                        labelText: 'Sub Diagnóstico',
+                        labelText: 'Diag2',
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 10.0),
@@ -501,10 +553,10 @@ class PatientWidgetState extends State<PatientWidget> {
                       ),
                       // initialValue: 'Male',
                       allowClear: true,
-                      hint: const Text('Seleccione el sub-diagnóstico'),
+                      hint: const Text('Seleccione el diagnóstico nivel 2'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required()]),
-                      items: subDiags[subDiagIndex]
+                      items: diag2[diag2Index]
                           .map(
                             (subDiagIt) => DropdownMenuItem(
                               value: subDiagIt,
@@ -513,10 +565,19 @@ class PatientWidgetState extends State<PatientWidget> {
                           )
                           .toList(),
                       onChanged: (val) {
-                        debugPrint("Cambió el subdiagnóstico");
+                        debugPrint("Cambió el diagnóstico nivel 2");
+                        // El diag2 elegido me indica el segundo íncdice de la matriz de diag3
+                        dropdownDiag2 = val!;
+                        diag3Index = diag2[diag2Index].indexOf(dropdownDiag2!);
+                        dropdownDiag2 = diag2[diag2Index][0];
+                        // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
+                        inhabilitarDiag3 = false;
                         setState(() {
+                          _dropDownKey3.currentState!.reset();
+                          _dropDownKey3.currentState!.setValue(null);
+
                           _subDiagHasError = !(_formKey
-                                  .currentState?.fields['SubDiagnostico']
+                                  .currentState?.fields['Diag2']
                                   ?.validate() ??
                               false);
                         });
@@ -527,6 +588,54 @@ class PatientWidgetState extends State<PatientWidget> {
                   const SizedBox(
                     height: 10,
                   ),
+
+                  // Diag3
+                  AbsorbPointer(
+                    absorbing: inhabilitarDiag3,
+                    child: FormBuilderDropdown<String>(
+                      //Reference the key
+                      key: _dropDownKey3,
+                      // autovalidate: true,
+                      name: 'Diag3',
+                      decoration: InputDecoration(
+                        labelText: 'Diag3',
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 10.0),
+                        border: const OutlineInputBorder(),
+                        suffix: _subDiagHasError
+                            ? const Icon(Icons.error)
+                            : const Icon(Icons.check),
+                      ),
+                      // initialValue: 'Male',
+                      allowClear: true,
+                      hint: const Text('Seleccione el diagnóstico nivel 3'),
+                      validator: FormBuilderValidators.compose(
+                          [FormBuilderValidators.required()]),
+                      items: diag3[diag2Index][diag3Index]
+                          .map(
+                            (subDiagIt) => DropdownMenuItem(
+                              value: subDiagIt,
+                              child: Text(subDiagIt),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (val) {
+                        debugPrint("Cambió el diagnóstico nivel 3");
+                        setState(() {
+                          _subDiagHasError = !(_formKey
+                                  .currentState?.fields['Diag3']
+                                  ?.validate() ??
+                              false);
+                        });
+                      },
+                      valueTransformer: (val) => val?.toString(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+
                   Flex(
                     direction: isScreenWide ? Axis.horizontal : Axis.vertical,
                     mainAxisSize: MainAxisSize.min,
@@ -715,7 +824,7 @@ class PatientWidgetState extends State<PatientWidget> {
                         _weeksOfPregnacy = 0;
                       }
 
-                      // Paso la vecha de creación de la ficha en formato yyyy-MM-dd como lo espera la BD. Viene dd-MM-yyyy
+                      // Paso la fecha de creación de la ficha en formato yyyy-MM-dd como lo espera la BD. Viene dd-MM-yyyy
                       String _fechaCreacionFicha =
                           base.fields["FechaCreacionFicha"]!.value!.toString();
                       _fechaCreacionFicha =
@@ -743,8 +852,10 @@ class PatientWidgetState extends State<PatientWidget> {
                         pacienteFallecido:
                             base.fields["PacienteFallecido"]?.value ? "V" : "F",
                         semanasGestacion: _weeksOfPregnacy,
-                        diagnostico: base.fields["Diagnostico"]?.value,
-                        subDiagnostico: base.fields["SubDiagnostico"]?.value,
+                        diag1: base.fields["Diag1"]?.value,
+                        diag2: base.fields["Diag2"]?.value,
+                        diag3: base.fields["Diag3"]?.value,
+                        diag4: base.fields["Diag4"]?.value,
                         // fechaPrimerDiagnostico: base?.fields["FechaPrimerDiagnostico"]?.value.toString().substring(0, 10),
                         fechaPrimerDiagnostico:
                             (base.fields["FechaPrimerDiagnostico"]?.value !=

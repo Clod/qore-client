@@ -11,8 +11,10 @@ class Paciente {
     this.diagnosticoPrenatal,
     this.pacienteFallecido,
     this.semanasGestacion,
-    this.diagnostico,
-    this.subDiagnostico,
+    this.diag1,
+    this.diag2,
+    this.diag3,
+    this.diag4,
     this.fechaPrimerDiagnostico,
     this.nroHistClinicaPapel,
     this.comentarios,
@@ -29,8 +31,10 @@ class Paciente {
   String? diagnosticoPrenatal;
   String? pacienteFallecido;
   int? semanasGestacion;
-  String? diagnostico;
-  String? subDiagnostico;
+  String? diag1;
+  String? diag2;
+  String? diag3;
+  String? diag4;
   String? fechaPrimerDiagnostico;
   String? nroHistClinicaPapel;
   String? comentarios;
@@ -49,8 +53,10 @@ class Paciente {
     final diagnosticoPrenatal = data['diagnosticoPrenatal'] as String?;
     final pacienteFallecido = data['pacienteFallecido'] as String?;
     final semanasGestacion = data['semanasGestacion'] as int?;
-    final diagnostico = data['diagnostico'] as String?;
-    final subDiagnostico = data['subDiagnostico'] as String?;
+    final diag1 = data['diag1'] as String?;
+    final diag2 = data['diag2'] as String?;
+    final diag3 = data['diag3'] as String?;
+    final diag4 = data['diag4'] as String?;
     final fechaPrimerDiagnostico = data['fechaPrimerDiagnostico'] as String?;
     final nroHistClinicaPapel = data['nroHistClinicaPapel'] as String?;
     final comentarios = data['comentarios'] as String?;
@@ -67,8 +73,10 @@ class Paciente {
       diagnosticoPrenatal: diagnosticoPrenatal,
       pacienteFallecido: pacienteFallecido,
       semanasGestacion: semanasGestacion,
-      diagnostico: diagnostico,
-      subDiagnostico: subDiagnostico,
+      diag1: diag1,
+      diag2: diag2,
+      diag3: diag3,
+      diag4: diag4,
       fechaPrimerDiagnostico: fechaPrimerDiagnostico,
       nroHistClinicaPapel: nroHistClinicaPapel,
       comentarios: comentarios,
@@ -87,8 +95,10 @@ class Paciente {
         'diagnosticoPrenatal': diagnosticoPrenatal,
         'pacienteFallecido': pacienteFallecido,
         'semanasGestacion': semanasGestacion,
-        'diagnostico': diagnostico,
-        'subDiagnostico': subDiagnostico,
+        'diag1': diag1,
+        'diag2': diag2,
+        'diag3': diag3,
+        'diag4': diag4,
         'fechaPrimerDiagnostico': fechaPrimerDiagnostico,
         'nroHistClinicaPapel': nroHistClinicaPapel,
         'comentarios': comentarios,
