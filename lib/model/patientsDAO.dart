@@ -43,6 +43,8 @@ Future<List<Paciente>> traerPacientes(String value) async {
   // https://stackoverflow.com/questions/55785581/socketexception-os-error-connection-refused-errno-111-in-flutter-using-djan
   Uri url = getURI(value);
 
+  debugPrint("Intentando traer pacientes de: " + url.toString());
+
   // Meto un delay para probar el "progress circle"
   await Future.delayed(const Duration(seconds: 2));
 
@@ -91,7 +93,7 @@ Future<List<Paciente>> traerPacientes(String value) async {
 }
 
 void addPatient(Paciente patient) async {
-  debugPrint('Sending POST: ');
+  debugPrint('Enviando POST: ');
 
   Uri url = getURI("");
 
@@ -102,7 +104,7 @@ void addPatient(Paciente patient) async {
   //     fechaNacimiento: "1900-01-28",
   //     documento: "123456789",
   //     nacionalidad: "Italia");
-  var response;
+  http.Response response;
   try {
     // response = await http.get(url,);  // Anda
     response = await http.post(url,
@@ -114,14 +116,14 @@ void addPatient(Paciente patient) async {
               "Bearer ${GlobalData.firebaseToken}" // https://jsonplaceholder.typicode.com:443/albums/1' lo digiere bien
         },
         body: convert.jsonEncode(patient));
-    debugPrint("Respuesta del servidor:  $response");
+    debugPrint("Respuesta del servidor:  ${response.statusCode} - ${response.body}");
   } catch (e) {
-    debugPrint(e.toString());
+    debugPrint("Error en el alta: " + e.toString());
   }
 }
 
 void updatePatient(Paciente patient) async {
-  debugPrint('Sending PUT: ');
+  debugPrint('Enviando PUT: ');
 
   Uri url = getURI("");
 
@@ -132,7 +134,7 @@ void updatePatient(Paciente patient) async {
   //     fechaNacimiento: "1900-01-28",
   //     documento: "123456789",
   //     nacionalidad: "Italia");
-  var response;
+  http.Response response;
   try {
     // response = await http.get(url,);  // Anda
     response = await http.put(url,
@@ -144,7 +146,7 @@ void updatePatient(Paciente patient) async {
           "Bearer ${GlobalData.firebaseToken}" // https://jsonplaceholder.typicode.com:443/albums/1' lo digiere bien
         },
         body: convert.jsonEncode(patient));
-    debugPrint("Respuesta del servidor:  $response");
+    debugPrint("Respuesta del servidor:  ${response.body}");
   } catch (e) {
     debugPrint(e.toString());
   }
