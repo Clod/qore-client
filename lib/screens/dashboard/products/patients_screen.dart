@@ -13,6 +13,8 @@ import '../../../routes/router.gr.dart';
 // Future Data
 // https://youtu.be/Pp3zoNDGZUI
 
+const int minLastNameLength = 2;
+
 class PatientsScreen extends StatefulWidget {
   const PatientsScreen({Key? key}) : super(key: key);
 
@@ -137,7 +139,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                 controller: datoBusqueda,
                 onChanged: (value) => {
                   setState(() {
-                    searchIconColor = (value.length < 3)
+                    searchIconColor = (value.length < minLastNameLength)
                         ? Colors.redAccent
                         : Colors.greenAccent;
                   })

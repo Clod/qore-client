@@ -67,10 +67,10 @@ class EditPatientScreen extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 0.0),
-                child: const FittedBox(
+                child: FittedBox(
                   child: Text(
-                    'Modificar datos del paciente',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    'Modificar datos paciente ${parametro.id}',
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

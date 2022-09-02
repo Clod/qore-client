@@ -39,9 +39,9 @@ class PatientWidgetState extends State<PatientWidget> {
   bool _firstNameHasError = false;
   bool _weeksOfPregnancyHasError = false;
 
-  String? dropdownDiag1;
-  String? dropdownDiag2;
-  String? dropdownDiag3;
+  // String? dropdownDiag1;
+  // String? dropdownDiag2;
+  // String? dropdownDiag3;
   int diag1Index = 0;
   int diag2Index = 0;
   int diag3Index = 0;
@@ -56,44 +56,128 @@ class PatientWidgetState extends State<PatientWidget> {
 
   int patientRow = 0;
 
-  var diag1 = ['Diagnóstico 1', 'Diagnóstico 2'];
+  var diag1 = ['Diagnóstico 1', 'Diagnóstico 2', 'Diagnóstico 3'];
 
   var diag2 = [
-    ['Diagnóstico 11', 'Diagnóstico 12'],
-    ['Diagnóstico 21', 'Diagnóstico 22']
+    // Rama Diagnóstico 1
+    ['Diagnóstico 11', 'Diagnóstico 12', 'Diagnóstico 13'],
+    // Rama Diagnóstico 2
+    ['Diagnóstico 21', 'Diagnóstico 22'],
+    // Rama Diagnóstico 3
+    ['Diagnóstico 31', 'Diagnóstico 32', 'Diagnostico 33', 'Diagnostico 34']
   ];
 
   var diag3 = [
+    // Ramas del Diagnóstico 1
     [
+      // Rama Diagnostico 1 - Diagnóstico 11
       ['Diagnóstico 111', 'Diagnóstico 112'],
-      ['Diagnóstico 121', 'Diagnóstico 122']
+      // Rama Diagnostico 1 - Diagnóstico 12
+      ['Diagnóstico 121', 'Diagnóstico 122'],
+      // Rama Diagnostico 1 - Diagnóstico 13
+      ['Diagnóstico 131', 'Diagnóstico 132', 'Diagnóstico 133']
     ],
+    // Ramas del Diagnóstico 2
     [
+      // Rama Diagnostico 2 - Diagnóstico 21
       ['Diagnóstico 211', 'Diagnóstico 212'],
+      // Rama Diagnostico 2 - Diagnóstico 22
       ['Diagnóstico 221', 'Diagnóstico 222']
+    ],
+    // Ramas Diagnostico 3
+    [
+      // Rama Diagnostico 31
+      ['Diagnóstico 311'],
+      // Rama Diagnostico 32
+      ['Diagnóstico 321'],
+      // Rama Diagnostico 33
+      ['Diagnóstico 331'],
+      // Rama Diagnostico 34
+      ['Diagnóstico 341'],
     ]
   ];
 
   var diag4 = [
+    // Ramas diagnóstico 1
     [
+      // Ramas diagnóstico 11
       [
+        // Ramas diagnóstico 111
         ['Diagnóstico 1111', 'Diagnóstico 1112'],
+        // Ramas diagnóstico 112
         ['Diagnóstico 1121', 'Diagnóstico 1122']
       ],
+      // Ramas diagnóstico 12
       [
+        // Ramas diagnóstico 121
         ['Diagnóstico 1211', 'Diagnóstico 1212'],
+        // Ramas diagnóstico 122
         ['Diagnóstico 1221', 'Diagnóstico 1222']
       ]
     ],
+    // Ramas diagnóstico 2
     [
+      // Ramas del diagnóstico 21
       [
+        // Ramas del diagnóstico 211
         ['Diagnóstico 2111', 'Diagnóstico 2112'],
+        // Ramas del diagnóstico 212
         ['Diagnóstico 2121', 'Diagnóstico 2122']
       ],
+      // Ramas del diagnóstico 22
       [
+        // Ramas del diagnóstico 221
         ['Diagnóstico 2211', 'Diagnóstico 2212'],
+        // Ramas del diagnóstico 222
         ['Diagnóstico 2221', 'Diagnóstico 2222']
       ]
+    ],
+    // Ramas diagnóstico 3
+    [
+      // Ramas del diagnostico 31
+      [
+        // Ramas del diagnóstico 311
+        ['Diagnóstico 3111'],
+        // Ramas del diagnóstico 312
+        ['Diagnóstico 3121'],
+        // Ramas del diagnóstico 313
+        ['Diagnóstico 3131'],
+        // Ramas del diagnóstico 314
+        ['Diagnóstico 3141'],
+      ],
+      // Ramas del diagnostico 32
+      [
+        // Ramas del diagnóstico 321
+        ['Diagnóstico 3211'],
+        // Ramas del diagnóstico 322
+        ['Diagnóstico 3221'],
+        // Ramas del diagnóstico 323
+        ['Diagnóstico 3231'],
+        // Ramas del diagnóstico 324
+        ['Diagnóstico 3241'],
+      ],
+      // Ramas del diagnostico 33
+      [
+        // Ramas del diagnóstico 331
+        ['Diagnóstico 3311'],
+        // Ramas del diagnóstico 332
+        ['Diagnóstico 3321'],
+        // Ramas del diagnóstico 333
+        ['Diagnóstico 3331'],
+        // Ramas del diagnóstico 334
+        ['Diagnóstico 3341'],
+      ],
+      // Ramas del diagnostico 34
+      [
+        // Ramas del diagnóstico 341
+        ['Diagnóstico 3411'],
+        // Ramas del diagnóstico 342
+        ['Diagnóstico 3421'],
+        // Ramas del diagnóstico 343
+        ['Diagnóstico 3431'],
+        // Ramas del diagnóstico 344
+        ['Diagnóstico 3441'],
+      ],
     ]
   ];
 
@@ -104,24 +188,40 @@ class PatientWidgetState extends State<PatientWidget> {
     "Bolivia",
     "Paraguay",
     "Uruguay",
-    "Italia",
-    "Spain",
-    "South Africa",
     "Otro (mencionarlo en comentarios)",
   ];
 
   DateTime? _birthDate;
+  String _sex = 'N/I';
 
   @override
   void initState() {
     super.initState();
     debugPrint("patient_widget recibió: ${widget.parametro?.toString()}");
+
+    // Me fijo se entré desde crear paciente o desde modificar
     if (widget.parametro == null) {
+      // Creando
       creation = true;
       patientRow = 0;
     } else {
+      // Modificando
       creation = false;
       patientRow = widget.parametro!.id;
+
+      // Busco las listas de los distintos niveles de diagnóstico
+      diag1Index = diag1.indexOf(widget.parametro!.diag1!);
+      diag2Index = diag2[diag1Index].indexOf(widget.parametro!.diag2!);
+      diag3Index =
+          diag3[diag1Index][diag2Index].indexOf(widget.parametro!.diag3!);
+
+      // Sexo
+      if (widget.parametro!.sexo! == 'D') {
+        _sex = 'N/I';
+      } else {
+        _sex = widget.parametro!.sexo!;
+      }
+
     }
 
     String? _birthDateStr = widget.parametro?.fechaNacimiento;
@@ -137,7 +237,7 @@ class PatientWidgetState extends State<PatientWidget> {
       }
     }
     debugPrint("Fecha de Nacimiento: $_birthDate");
-  }
+  } // Fin initState
 
   //Create key for subdiagnóstico
   final _dropDownKey2 = GlobalKey<FormBuilderFieldState>();
@@ -150,13 +250,13 @@ class PatientWidgetState extends State<PatientWidget> {
     setState(() {});
   }
 
-  var formatter = DateFormat('dd-MM-yyy');
+  var formatter = DateFormat('dd/MM/yyy');
 
   @override
   Widget build(BuildContext context) {
     bool isScreenWide =
         MediaQuery.of(context).size.width >= kMinWidthOfLargeScreen;
-    debugPrint("Screen width: ${MediaQuery.of(context).size.width}");
+    // debugPrint("Screen width: ${MediaQuery.of(context).size.width}");
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
       child: SingleChildScrollView(
@@ -173,16 +273,18 @@ class PatientWidgetState extends State<PatientWidget> {
                 'Country': widget.parametro?.nacionalidad,
                 'Identification': widget.parametro?.documento,
                 'FechaCreacionFicha': widget.parametro?.fechaCreacionFicha,
-                'Sexo': widget.parametro?.sexo,
+                'Sexo': _sex,
                 'DiagnosticoPrenatal': widget.parametro?.diagnosticoPrenatal,
                 'PacienteFallecido': (widget.parametro != null &&
                         widget.parametro!.pacienteFallecido != null &&
                         widget.parametro!.pacienteFallecido == "V")
                     ? true
                     : false,
+                'Diag1': widget.parametro?.diag1,
+                'Diag2': widget.parametro?.diag2,
+                'Diag3': widget.parametro?.diag3,
+                'Diag4': widget.parametro?.diag4,
                 // final semanasGestacion = data['semanasGestacion'] as int;
-                // final diagnostico = data['diagnostico'] as String;
-                // final subDiagnostico = data['subDiagnostico'] as String;
                 // final fechaPrimerDiagnostico = data['fechaPrimerDiagnostico'] as String;
                 'NroHistClinicaPapel': widget.parametro?.nroHistClinicaPapel,
                 'Comentarios': widget.parametro?.comentarios,
@@ -373,7 +475,7 @@ class PatientWidgetState extends State<PatientWidget> {
                         flex: 1,
                         child: FormBuilderChoiceChip<String>(
                           name: 'Sexo',
-                          initialValue: "No informado",
+                          // initialValue: "N/I",
                           decoration: const InputDecoration(
                             isDense: true,
                             label: Text("Sexo"),
@@ -458,18 +560,12 @@ class PatientWidgetState extends State<PatientWidget> {
                           ),
                           onChanged: (val) {
                             setState(
-                              () {
-                                // _ageHasError = !(_formKey.currentState?.fields['age']
-                                //     ?.validate() ??
-                                //     false);
-                              },
+                              () {},
                             );
                           },
                           // valueTransformer: (text) => num.tryParse(text),
                           validator: FormBuilderValidators.compose([
-                            // FormBuilderValidators.required(),
-                            // FormBuilderValidators.numeric(),
-                            // FormBuilderValidators.max(15),
+                            // FormBuilderValidators.required(), FormBuilderValidators.numeric(), FormBuilderValidators.max(15),
                           ]),
                           // initialValue: '12',
                           // keyboardType: TextInputType.number,
@@ -485,16 +581,15 @@ class PatientWidgetState extends State<PatientWidget> {
                     // autovalidate: true,
                     name: 'Diag1',
                     decoration: InputDecoration(
+                      labelText: 'Diag1',
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
-                      labelText: 'Diag1',
                       suffix: _diag1HasError
                           ? const Icon(Icons.error)
                           : const Icon(Icons.check),
                     ),
-                    // initialValue: 'Male',
                     allowClear: true,
                     hint: const Text('Seleccione el diagnóstico nivel 1'),
                     validator: FormBuilderValidators.compose(
@@ -508,11 +603,10 @@ class PatientWidgetState extends State<PatientWidget> {
                         )
                         .toList(),
                     onChanged: (val) {
-                      debugPrint("Cambió el diag1");
+                      debugPrint("Cambió el diag1 a $val");
                       // El diag1 elegido me indica la fila de la matriz de diag2
-                      dropdownDiag1 = val!;
-                      diag1Index = diag1.indexOf(dropdownDiag1!);
-                      dropdownDiag2 = diag2[diag1Index][0];
+                      diag1Index = diag1.indexOf(val!);
+                      // xxx dropdownDiag2 = diag2[diag1Index][0];
                       // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
                       inhabilitarDiag2 = false;
                       // Desahbilito 3 por si estoy cambiando de idea con Diag1
@@ -532,7 +626,8 @@ class PatientWidgetState extends State<PatientWidget> {
                         _dropDownKey4.currentState!.reset();
                         _dropDownKey4.currentState!.setValue(null);
 
-                        _diag1HasError = !(_formKey.currentState?.fields['Diag1']
+                        _diag1HasError = !(_formKey
+                                .currentState?.fields['Diag1']
                                 ?.validate() ??
                             false);
                       });
@@ -559,25 +654,25 @@ class PatientWidgetState extends State<PatientWidget> {
                             ? const Icon(Icons.error)
                             : const Icon(Icons.check),
                       ),
-                      // initialValue: 'Male',
                       allowClear: true,
                       hint: const Text('Seleccione el diagnóstico nivel 2'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required()]),
                       items: diag2[diag1Index]
                           .map(
-                            (subDiagIt) => DropdownMenuItem(
-                              value: subDiagIt,
-                              child: Text(subDiagIt),
+                            (diag2It) => DropdownMenuItem(
+                              value: diag2It,
+                              child: Text(diag2It),
                             ),
                           )
                           .toList(),
                       onChanged: (val) {
-                        debugPrint("Cambió el diagnóstico nivel 2");
-                        // El diag2 elegido me indica el segundo íncdice de la matriz de diag3
-                        dropdownDiag2 = val!;
+                        debugPrint("Cambió el diagnóstico nivel 2 a $val");
+                        // El diag2 elegido me indica el segundo índice de la matriz de diag3
+/* xxx                       dropdownDiag2 = val!;
                         diag2Index = diag2[diag1Index].indexOf(dropdownDiag2!);
-                        dropdownDiag2 = diag2[diag1Index][0];
+                        dropdownDiag2 = diag2[diag1Index][0];*/
+                        diag2Index = diag2[diag1Index].indexOf(val!);
                         // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
                         inhabilitarDiag3 = false;
                         inhabilitarDiag4 = false;
@@ -626,9 +721,9 @@ class PatientWidgetState extends State<PatientWidget> {
                           [FormBuilderValidators.required()]),
                       items: diag3[diag1Index][diag2Index]
                           .map(
-                            (subDiagIt) => DropdownMenuItem(
-                              value: subDiagIt,
-                              child: Text(subDiagIt),
+                            (diag3It) => DropdownMenuItem(
+                              value: diag3It,
+                              child: Text(diag3It),
                             ),
                           )
                           .toList(),
@@ -636,14 +731,15 @@ class PatientWidgetState extends State<PatientWidget> {
                         debugPrint("Cambió el diagnóstico nivel 3");
 
                         // El diag3 elegido me indica el segundo íncdice de la matriz de diag3
-                        dropdownDiag3 = val!;
-                        diag3Index = diag3[diag1Index][diag2Index].indexOf(dropdownDiag3!);
-                        dropdownDiag3 = diag3[diag1Index][diag2Index][0];
-
+/* xxx                       dropdownDiag3 = val!;
+                        diag3Index = diag3[diag1Index][diag2Index]
+                            .indexOf(dropdownDiag3!);
+                        dropdownDiag3 = diag3[diag1Index][diag2Index][0];*/
+                        diag3Index =
+                            diag3[diag1Index][diag2Index].indexOf(val!);
                         inhabilitarDiag4 = false;
 
                         setState(() {
-
                           _dropDownKey4.currentState!.reset();
                           _dropDownKey4.currentState!.setValue(null);
 
@@ -683,11 +779,11 @@ class PatientWidgetState extends State<PatientWidget> {
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required()]),
                       items: diag4[diag1Index][diag2Index][diag3Index]
-                      // items: diag4[0][0][0]
+                          // items: diag4[0][0][0]
                           .map(
-                            (subDiagIt) => DropdownMenuItem(
-                              value: subDiagIt,
-                              child: Text(subDiagIt),
+                            (diag4It) => DropdownMenuItem(
+                              value: diag4It,
+                              child: Text(diag4It),
                             ),
                           )
                           .toList(),
@@ -850,7 +946,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       style: TextStyle(color: Colors.white),
                     ),
                     color: Theme.of(context).colorScheme.secondary,
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState?.saveAndValidate() ?? false) {
                         debugPrint(
                             "Valor de los campos: ${_formKey.currentState?.value.toString()}");
@@ -868,10 +964,10 @@ class PatientWidgetState extends State<PatientWidget> {
                       var sex = "";
 
                       switch (base.fields["Sexo"]?.value.toString()) {
-                        case "Masculino":
+                        case "M":
                           sex = "M";
                           break;
-                        case "Femenino":
+                        case "F":
                           sex = "F";
                           break;
                         default:
@@ -940,18 +1036,24 @@ class PatientWidgetState extends State<PatientWidget> {
                         comentarios: base.fields["Comentarios"]?.value,
                       );
 
+                      String respuesta = "";
+
                       if (creation) {
-                        addPatient(paciente);
+                        respuesta = await addPatient(paciente);
                       } else {
                         updatePatient(paciente);
                       }
 
                       final snackBar = SnackBar(
-                        content: Text(_formKey.currentState!.value.toString()),
+                        duration: Duration(seconds: 30),
+                        content: Text(respuesta +
+                            "---" +
+                            _formKey.currentState!.value.toString()),
                         action: SnackBarAction(
                           label: 'OK',
                           onPressed: () {
                             // Some code to undo the change.
+                            // debugPrint("Listo");
                           },
                         ),
                       );

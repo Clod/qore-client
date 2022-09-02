@@ -106,6 +106,7 @@ class Paciente {
 
   @override
   String toString() {
-    return (id.toString() + " " + nombre + " " + apellido);
+    // return (id.toString() + " " + nombre + " " + apellido);
+    return this.toJson().toString();
   }
 }

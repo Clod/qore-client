@@ -92,19 +92,14 @@ Future<List<Paciente>> traerPacientes(String value) async {
   return retrievedPatients;
 }
 
-void addPatient(Paciente patient) async {
+Future<String> addPatient(Paciente patient) async {
+
   debugPrint('Enviando POST: ');
-
   Uri url = getURI("");
-
-  // var paciente = Paciente(
-  //     id: 9999,
-  //     nombre: "Luigi",
-  //     apellido: "Cadorna",
-  //     fechaNacimiento: "1900-01-28",
-  //     documento: "123456789",
-  //     nacionalidad: "Italia");
   http.Response response;
+  String idPaciente = "";
+  RegExp exp = RegExp(r'(\{\d+\})');
+
   try {
     // response = await http.get(url,);  // Anda
     response = await http.post(url,
@@ -117,9 +112,13 @@ void addPatient(Paciente patient) async {
         },
         body: convert.jsonEncode(patient));
     debugPrint("Respuesta del servidor:  ${response.statusCode} - ${response.body}");
+    RegExpMatch? id = exp.firstMatch(response.body);
+    idPaciente = id![0].toString();
+    debugPrint("Id del paciente creado: " + idPaciente);
   } catch (e) {
     debugPrint("Error en el alta: " + e.toString());
   }
+  return idPaciente;
 }
 
 void updatePatient(Paciente patient) async {
