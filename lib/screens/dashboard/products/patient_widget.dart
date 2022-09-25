@@ -6,7 +6,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
+import '../../../model/arbol_diagnosticos.dart';
 import '../../../model/paciente.dart';
+import '../../../model/paises.dart';
 import '../../../model/patientsDAO.dart';
 
 class PatientWidget extends StatefulWidget {
@@ -29,6 +31,27 @@ class PatientWidgetState extends State<PatientWidget> {
 
   String unbornNameLabel = " de la madre";
 
+  // Campos de paciente
+  int _idRegistroPaciente = 0;
+  String? _lastName = '';
+  String? _firstName = '';
+  DateTime? _fechaNacimiento;
+  String? _nroFichaDiagPrenatal = '';
+  String? _paisOrigen;
+  String? _idDocumento = '';
+  DateTime? _fechaPrimerDiagnostico;
+  String? _fechaCreacionFicha = '';
+  String _sex = 'N/I';
+  String? _diagnosticoPrenatal = '';
+  bool _pacienteFallecido = false;
+  String? _diag1;
+  String? _diag2;
+  String? _diag3;
+  String? _diag4;
+  String? _semanasGestacion;
+  String? _nroHistClinicaPapel = '';
+  String? _comentarios = '';
+
   bool _diag1HasError = false;
   bool _diag2HasError = false;
   bool _diag3HasError = false;
@@ -39,160 +62,17 @@ class PatientWidgetState extends State<PatientWidget> {
   bool _firstNameHasError = false;
   bool _weeksOfPregnancyHasError = false;
 
-  // String? dropdownDiag1;
-  // String? dropdownDiag2;
-  // String? dropdownDiag3;
-  int diag1Index = 0;
-  int diag2Index = 0;
-  int diag3Index = 0;
+  int _diag1Index = 0;
+  int _diag2Index = 0;
+  int _diag3Index = 0;
 
   // No habilito la selección de un subnivel hasta que el anterior esté seleccionado.
-  bool inhabilitarDiag2 = true;
-  bool inhabilitarDiag3 = true;
-  bool inhabilitarDiag4 = true;
+  bool _inhabilitarDiag2 = true;
+  bool _inhabilitarDiag3 = true;
+  bool _inhabilitarDiag4 = true;
 
-  bool creation = true;
-  bool unbornPatient = false;
-
-  int patientRow = 0;
-
-  var diag1 = ['Diagnóstico 1', 'Diagnóstico 2', 'Diagnóstico 3'];
-
-  var diag2 = [
-    // Rama Diagnóstico 1
-    ['Diagnóstico 11', 'Diagnóstico 12', 'Diagnóstico 13'],
-    // Rama Diagnóstico 2
-    ['Diagnóstico 21', 'Diagnóstico 22'],
-    // Rama Diagnóstico 3
-    ['Diagnóstico 31', 'Diagnóstico 32', 'Diagnostico 33', 'Diagnostico 34']
-  ];
-
-  var diag3 = [
-    // Ramas del Diagnóstico 1
-    [
-      // Rama Diagnostico 1 - Diagnóstico 11
-      ['Diagnóstico 111', 'Diagnóstico 112'],
-      // Rama Diagnostico 1 - Diagnóstico 12
-      ['Diagnóstico 121', 'Diagnóstico 122'],
-      // Rama Diagnostico 1 - Diagnóstico 13
-      ['Diagnóstico 131', 'Diagnóstico 132', 'Diagnóstico 133']
-    ],
-    // Ramas del Diagnóstico 2
-    [
-      // Rama Diagnostico 2 - Diagnóstico 21
-      ['Diagnóstico 211', 'Diagnóstico 212'],
-      // Rama Diagnostico 2 - Diagnóstico 22
-      ['Diagnóstico 221', 'Diagnóstico 222']
-    ],
-    // Ramas Diagnostico 3
-    [
-      // Rama Diagnostico 31
-      ['Diagnóstico 311'],
-      // Rama Diagnostico 32
-      ['Diagnóstico 321'],
-      // Rama Diagnostico 33
-      ['Diagnóstico 331'],
-      // Rama Diagnostico 34
-      ['Diagnóstico 341'],
-    ]
-  ];
-
-  var diag4 = [
-    // Ramas diagnóstico 1
-    [
-      // Ramas diagnóstico 11
-      [
-        // Ramas diagnóstico 111
-        ['Diagnóstico 1111', 'Diagnóstico 1112'],
-        // Ramas diagnóstico 112
-        ['Diagnóstico 1121', 'Diagnóstico 1122']
-      ],
-      // Ramas diagnóstico 12
-      [
-        // Ramas diagnóstico 121
-        ['Diagnóstico 1211', 'Diagnóstico 1212'],
-        // Ramas diagnóstico 122
-        ['Diagnóstico 1221', 'Diagnóstico 1222']
-      ]
-    ],
-    // Ramas diagnóstico 2
-    [
-      // Ramas del diagnóstico 21
-      [
-        // Ramas del diagnóstico 211
-        ['Diagnóstico 2111', 'Diagnóstico 2112'],
-        // Ramas del diagnóstico 212
-        ['Diagnóstico 2121', 'Diagnóstico 2122']
-      ],
-      // Ramas del diagnóstico 22
-      [
-        // Ramas del diagnóstico 221
-        ['Diagnóstico 2211', 'Diagnóstico 2212'],
-        // Ramas del diagnóstico 222
-        ['Diagnóstico 2221', 'Diagnóstico 2222']
-      ]
-    ],
-    // Ramas diagnóstico 3
-    [
-      // Ramas del diagnostico 31
-      [
-        // Ramas del diagnóstico 311
-        ['Diagnóstico 3111'],
-        // Ramas del diagnóstico 312
-        ['Diagnóstico 3121'],
-        // Ramas del diagnóstico 313
-        ['Diagnóstico 3131'],
-        // Ramas del diagnóstico 314
-        ['Diagnóstico 3141'],
-      ],
-      // Ramas del diagnostico 32
-      [
-        // Ramas del diagnóstico 321
-        ['Diagnóstico 3211'],
-        // Ramas del diagnóstico 322
-        ['Diagnóstico 3221'],
-        // Ramas del diagnóstico 323
-        ['Diagnóstico 3231'],
-        // Ramas del diagnóstico 324
-        ['Diagnóstico 3241'],
-      ],
-      // Ramas del diagnostico 33
-      [
-        // Ramas del diagnóstico 331
-        ['Diagnóstico 3311'],
-        // Ramas del diagnóstico 332
-        ['Diagnóstico 3321'],
-        // Ramas del diagnóstico 333
-        ['Diagnóstico 3331'],
-        // Ramas del diagnóstico 334
-        ['Diagnóstico 3341'],
-      ],
-      // Ramas del diagnostico 34
-      [
-        // Ramas del diagnóstico 341
-        ['Diagnóstico 3411'],
-        // Ramas del diagnóstico 342
-        ['Diagnóstico 3421'],
-        // Ramas del diagnóstico 343
-        ['Diagnóstico 3431'],
-        // Ramas del diagnóstico 344
-        ['Diagnóstico 3441'],
-      ],
-    ]
-  ];
-
-  var countries = [
-    "Argentina",
-    "Chile",
-    "Perú",
-    "Bolivia",
-    "Paraguay",
-    "Uruguay",
-    "Otro (mencionarlo en comentarios)",
-  ];
-
-  DateTime? _birthDate;
-  String _sex = 'N/I';
+  bool _creandoFicha = true;
+  bool _esDiagPrenatal = false;
 
   @override
   void initState() {
@@ -202,41 +82,88 @@ class PatientWidgetState extends State<PatientWidget> {
     // Me fijo se entré desde crear paciente o desde modificar
     if (widget.parametro == null) {
       // Creando
-      creation = true;
-      patientRow = 0;
+      _creandoFicha = true;
+      _idRegistroPaciente = 0;
+      debugPrint("Países: $countries");
     } else {
       // Modificando
-      creation = false;
-      patientRow = widget.parametro!.id;
+      _creandoFicha = false;
+      _idRegistroPaciente = widget.parametro!.id;
 
-      // Busco las listas de los distintos niveles de diagnóstico
-      diag1Index = diag1.indexOf(widget.parametro!.diag1!);
-      diag2Index = diag2[diag1Index].indexOf(widget.parametro!.diag2!);
-      diag3Index =
-          diag3[diag1Index][diag2Index].indexOf(widget.parametro!.diag3!);
+      if (widget.parametro!.diagnosticoPrenatal != null &&
+          widget.parametro!.diagnosticoPrenatal == "V") {
+        _esDiagPrenatal = true;
+        if (widget.parametro!.semanasGestacion != null) {
+          _semanasGestacion = widget.parametro!.semanasGestacion.toString();
+        }
+      }
+      ;
 
+      _lastName = widget.parametro?.apellido;
+      _firstName = widget.parametro?.nombre;
+      String? _fechaNacimientoStr = widget.parametro?.fechaNacimiento;
+
+      // De la base de datos me viene "null" pero cuando estoy en alta me viene null
+      if (_fechaNacimientoStr != null) {
+        // Vengo de la base
+        if (_fechaNacimientoStr == "null") {
+          // En la base está en null
+          _fechaNacimiento = null;
+        } else {
+          _fechaNacimiento = DateTime.parse(widget.parametro!.fechaNacimiento!);
+        }
+      }
+      debugPrint("Fecha nacimiento: $_fechaNacimiento");
+
+      _nroFichaDiagPrenatal = widget.parametro?.nroFichaDiagPrenatal;
+
+      _paisOrigen = widget.parametro?.nacionalidad;
+      _idDocumento = widget.parametro?.documento;
+      _fechaCreacionFicha = widget.parametro?.fechaCreacionFicha;
       // Sexo
       if (widget.parametro!.sexo! == 'D') {
         _sex = 'N/I';
       } else {
         _sex = widget.parametro!.sexo!;
       }
+      _diagnosticoPrenatal = widget.parametro?.diagnosticoPrenatal;
+      _pacienteFallecido = (widget.parametro != null &&
+              widget.parametro!.pacienteFallecido != null &&
+              widget.parametro!.pacienteFallecido == "V")
+          ? true
+          : false;
+      _diag1 = widget.parametro?.diag1;
+      _diag2 = widget.parametro?.diag2;
+      _diag3 = widget.parametro?.diag3;
+      _diag4 = widget.parametro?.diag4;
+      // final semanasGestacion = data[semanasGestacion] as int;
+      // final fechaPrimerDiagnostico = data[fechaPrimerDiagnostico] as String;
+      _nroHistClinicaPapel = widget.parametro?.nroHistClinicaPapel;
 
-    }
+      String? _fechaPrimerDiag = widget.parametro?.fechaPrimerDiagnostico;
 
-    String? _birthDateStr = widget.parametro?.fechaNacimiento;
-
-    // De la base de datos me viene "null" pero cuando estoy en alta me viene null
-    if (_birthDateStr != null) {
-      // Vengo de la base
-      if (_birthDateStr == "null") {
-        // En la base está en null
-        _birthDate = null;
-      } else {
-        _birthDate = DateTime.parse(widget.parametro!.fechaNacimiento!);
+      // De la base de datos me viene "null" pero cuando estoy en alta me viene null
+      if (_fechaPrimerDiag != null) {
+        // Vengo de la base
+        if (_fechaPrimerDiag == "null") {
+          // En la base está en null
+          _fechaPrimerDiagnostico = null;
+        } else {
+          _fechaPrimerDiagnostico =
+              DateTime.parse(widget.parametro!.fechaPrimerDiagnostico!);
+        }
       }
+      debugPrint("Fecha primer diagnóstico: $_fechaPrimerDiagnostico");
+
+      _comentarios = widget.parametro?.comentarios;
+      // final comentarios = data['comentarios'] as String;
+
+      // Busco las listas de los distintos niveles de diagnóstico
+      _diag1Index = diag1.indexOf(widget.parametro!.diag1!);
+      _diag2Index = diag2[_diag1Index].indexOf(widget.parametro!.diag2!);
+      _diag3Index =
+          diag3[_diag1Index][_diag2Index].indexOf(widget.parametro!.diag3!);
     }
-    debugPrint("Fecha de Nacimiento: $_birthDate");
   } // Fin initState
 
   //Create key for subdiagnóstico
@@ -246,7 +173,7 @@ class PatientWidgetState extends State<PatientWidget> {
 
   void _onUnbornChanged(dynamic val) {
     debugPrint(val.toString());
-    unbornPatient = val;
+    _esDiagPrenatal = val;
     setState(() {});
   }
 
@@ -267,28 +194,24 @@ class PatientWidgetState extends State<PatientWidget> {
               // enabled: false,
               autovalidateMode: AutovalidateMode.disabled,
               initialValue: {
-                'LastName': widget.parametro?.apellido,
-                'FirstName': widget.parametro?.nombre,
-                'BirthDate': _birthDate,
-                'Country': widget.parametro?.nacionalidad,
-                'Identification': widget.parametro?.documento,
-                'FechaCreacionFicha': widget.parametro?.fechaCreacionFicha,
+                'LastName': _lastName,
+                'FirstName': _firstName,
+                'FechaNacimiento': _fechaNacimiento,
+                'Country': _paisOrigen,
+                'Identification': _idDocumento,
+                'FechaCreacionFicha': _fechaCreacionFicha,
+                'NroFichaDiagPrenatal': _nroFichaDiagPrenatal,
                 'Sexo': _sex,
-                'DiagnosticoPrenatal': widget.parametro?.diagnosticoPrenatal,
-                'PacienteFallecido': (widget.parametro != null &&
-                        widget.parametro!.pacienteFallecido != null &&
-                        widget.parametro!.pacienteFallecido == "V")
-                    ? true
-                    : false,
-                'Diag1': widget.parametro?.diag1,
-                'Diag2': widget.parametro?.diag2,
-                'Diag3': widget.parametro?.diag3,
-                'Diag4': widget.parametro?.diag4,
-                // final semanasGestacion = data['semanasGestacion'] as int;
-                // final fechaPrimerDiagnostico = data['fechaPrimerDiagnostico'] as String;
-                'NroHistClinicaPapel': widget.parametro?.nroHistClinicaPapel,
-                'Comentarios': widget.parametro?.comentarios,
-                // final comentarios = data['comentarios'] as String;
+                'DiagnosticoPrenatal': _esDiagPrenatal,
+                'PacienteFallecido': _pacienteFallecido,
+                'Diag1': _diag1,
+                'Diag2': _diag2,
+                'Diag3': _diag3,
+                'Diag4': _diag4,
+                'SemanasGestacion': _semanasGestacion,
+                'NroHistClinicaPapel': _nroHistClinicaPapel,
+                'FechaPrimerDiagnostico': _fechaPrimerDiagnostico,
+                'Comentarios': _comentarios,
               },
               skipDisabled: true,
               child: Column(
@@ -299,7 +222,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     // autovalidateMode: AutovalidateMode.always,
                     name: 'LastName',
                     decoration: InputDecoration(
-                      labelText: unbornPatient
+                      labelText: _esDiagPrenatal
                           ? 'Apellido(s) de la madre'
                           : 'Apellido(s)',
                       isDense: true,
@@ -335,8 +258,9 @@ class PatientWidgetState extends State<PatientWidget> {
                     // autovalidateMode: AutovalidateMode.always,
                     name: 'FirstName',
                     decoration: InputDecoration(
-                      labelText:
-                          unbornPatient ? 'Nombre(s) de la madre' : 'Nombre(s)',
+                      labelText: _esDiagPrenatal
+                          ? 'Nombre(s) de la madre'
+                          : 'Nombre(s)',
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 12.0, horizontal: 10.0),
@@ -371,7 +295,7 @@ class PatientWidgetState extends State<PatientWidget> {
                         flex: 1,
                         child: FormBuilderCheckbox(
                           name: 'DiagnosticoPrenatal',
-                          initialValue: false,
+                          // initialValue: false,
                           decoration: const InputDecoration(
                               isDense: true,
                               contentPadding: EdgeInsets.symmetric(
@@ -388,9 +312,9 @@ class PatientWidgetState extends State<PatientWidget> {
                       Flexible(
                         flex: 2,
                         child: Visibility(
-                          visible: !unbornPatient,
+                          visible: !_esDiagPrenatal,
                           replacement: FormBuilderTextField(
-                            name: 'WeeksOfPregnacy',
+                            name: 'SemanasGestacion',
                             keyboardType: TextInputType.number,
                             validator: FormBuilderValidators.compose([
                               // FormBuilderValidators.required(),
@@ -413,7 +337,7 @@ class PatientWidgetState extends State<PatientWidget> {
                             children: [
                               Expanded(
                                 child: FormBuilderDateTimePicker(
-                                  name: 'BirthDate',
+                                  name: 'FechaNacimiento',
                                   // initialValue: DateTime.now(),
                                   inputType: InputType.date,
                                   decoration: InputDecoration(
@@ -442,7 +366,7 @@ class PatientWidgetState extends State<PatientWidget> {
                               Expanded(
                                 child: FormBuilderTextField(
                                   // autovalidateMode: AutovalidateMode.always,
-                                  name: 'FichaDiagPren',
+                                  name: 'NroFichaDiagPrenatal',
                                   decoration: const InputDecoration(
                                     labelText: kIsWeb
                                         ? 'Nro. ficha diag. prenatal'
@@ -605,13 +529,13 @@ class PatientWidgetState extends State<PatientWidget> {
                     onChanged: (val) {
                       debugPrint("Cambió el diag1 a $val");
                       // El diag1 elegido me indica la fila de la matriz de diag2
-                      diag1Index = diag1.indexOf(val!);
+                      _diag1Index = diag1.indexOf(val!);
                       // xxx dropdownDiag2 = diag2[diag1Index][0];
                       // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
-                      inhabilitarDiag2 = false;
+                      _inhabilitarDiag2 = false;
                       // Desahbilito 3 por si estoy cambiando de idea con Diag1
-                      inhabilitarDiag3 = true;
-                      inhabilitarDiag4 = true;
+                      _inhabilitarDiag3 = true;
+                      _inhabilitarDiag4 = true;
 
                       setState(() {
                         // Reseteo el valor de subdiagnóstico para que no vuele por el aire si llego
@@ -638,7 +562,7 @@ class PatientWidgetState extends State<PatientWidget> {
 
                   // Diag2
                   AbsorbPointer(
-                    absorbing: inhabilitarDiag2,
+                    absorbing: _inhabilitarDiag2,
                     child: FormBuilderDropdown<String>(
                       //Reference the key
                       key: _dropDownKey2,
@@ -658,7 +582,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       hint: const Text('Seleccione el diagnóstico nivel 2'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required()]),
-                      items: diag2[diag1Index]
+                      items: diag2[_diag1Index]
                           .map(
                             (diag2It) => DropdownMenuItem(
                               value: diag2It,
@@ -669,13 +593,10 @@ class PatientWidgetState extends State<PatientWidget> {
                       onChanged: (val) {
                         debugPrint("Cambió el diagnóstico nivel 2 a $val");
                         // El diag2 elegido me indica el segundo índice de la matriz de diag3
-/* xxx                       dropdownDiag2 = val!;
-                        diag2Index = diag2[diag1Index].indexOf(dropdownDiag2!);
-                        dropdownDiag2 = diag2[diag1Index][0];*/
-                        diag2Index = diag2[diag1Index].indexOf(val!);
+                        _diag2Index = diag2[_diag1Index].indexOf(val!);
                         // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
-                        inhabilitarDiag3 = false;
-                        inhabilitarDiag4 = false;
+                        _inhabilitarDiag3 = false;
+
                         setState(() {
                           _dropDownKey3.currentState!.reset();
                           _dropDownKey3.currentState!.setValue(null);
@@ -698,7 +619,7 @@ class PatientWidgetState extends State<PatientWidget> {
 
                   // Diag3
                   AbsorbPointer(
-                    absorbing: inhabilitarDiag3,
+                    absorbing: _inhabilitarDiag3,
                     child: FormBuilderDropdown<String>(
                       //Reference the key
                       key: _dropDownKey3,
@@ -719,7 +640,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       hint: const Text('Seleccione el diagnóstico nivel 3'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required()]),
-                      items: diag3[diag1Index][diag2Index]
+                      items: diag3[_diag1Index][_diag2Index]
                           .map(
                             (diag3It) => DropdownMenuItem(
                               value: diag3It,
@@ -729,16 +650,10 @@ class PatientWidgetState extends State<PatientWidget> {
                           .toList(),
                       onChanged: (val) {
                         debugPrint("Cambió el diagnóstico nivel 3");
-
                         // El diag3 elegido me indica el segundo íncdice de la matriz de diag3
-/* xxx                       dropdownDiag3 = val!;
-                        diag3Index = diag3[diag1Index][diag2Index]
-                            .indexOf(dropdownDiag3!);
-                        dropdownDiag3 = diag3[diag1Index][diag2Index][0];*/
-                        diag3Index =
-                            diag3[diag1Index][diag2Index].indexOf(val!);
-                        inhabilitarDiag4 = false;
-
+                        _diag3Index =
+                            diag3[_diag1Index][_diag2Index].indexOf(val!);
+                        _inhabilitarDiag4 = false;
                         setState(() {
                           _dropDownKey4.currentState!.reset();
                           _dropDownKey4.currentState!.setValue(null);
@@ -756,9 +671,9 @@ class PatientWidgetState extends State<PatientWidget> {
                     height: 10,
                   ),
 
-                  // Diag4
+                  //Diag4
                   AbsorbPointer(
-                    absorbing: inhabilitarDiag4,
+                    absorbing: _inhabilitarDiag4,
                     child: FormBuilderDropdown<String>(
                       //Reference the key
                       key: _dropDownKey4,
@@ -778,7 +693,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       hint: const Text('Seleccione el diagnóstico nivel 4'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required()]),
-                      items: diag4[diag1Index][diag2Index][diag3Index]
+                      items: diag4[_diag1Index][_diag2Index][_diag3Index]
                           // items: diag4[0][0][0]
                           .map(
                             (diag4It) => DropdownMenuItem(
@@ -929,7 +844,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     ),
                     color: Theme.of(context).colorScheme.error,
                     onPressed: () {
-                      if (creation) {
+                      if (_creandoFicha) {
                         AutoRouter.of(context).pop();
                       } else {
                         // Vuelvo a la pantalla anterior manteniendo la lista de pacientes.
@@ -961,34 +876,41 @@ class PatientWidgetState extends State<PatientWidget> {
 
                       FormBuilderState base = _formKey.currentState!;
 
-                      var sex = "";
+                      var _sexChar = "";
 
                       switch (base.fields["Sexo"]?.value.toString()) {
                         case "M":
-                          sex = "M";
+                          _sexChar = "M";
                           break;
                         case "F":
-                          sex = "F";
+                          _sexChar = "F";
                           break;
                         default:
-                          sex = "D";
+                          _sexChar = "D";
                           break;
                       }
 
-                      String? birthDate;
-                      int _weeksOfPregnacy;
+                      String? _fechaNacimientoEnviar;
+                      int? _semanasGestacionEnviar;
+                      String? _nroFichaDiagPreEnviar;
 
-                      if (unbornPatient) {
-                        birthDate = "1810-05-25";
-                        _weeksOfPregnacy =
-                            base.fields["WeeksOfPregnacy"]?.value;
+                      if (_esDiagPrenatal) {
+                        _fechaNacimientoEnviar = null;
+                        debugPrint("Semanas gestación: " +
+                            base.fields["SemanasGestacion"]?.value);
+                        _semanasGestacionEnviar =
+                            int.parse(base.fields["SemanasGestacion"]?.value);
+                        _nroFichaDiagPreEnviar = null;
                       } else {
-                        birthDate = (base.fields["BirthDate"]?.value != null)
-                            ? base.fields["BirthDate"]?.value
-                                .toString()
-                                .substring(0, 10)
-                            : null;
-                        _weeksOfPregnacy = 0;
+                        _fechaNacimientoEnviar =
+                            (base.fields["FechaNacimiento"]?.value != null)
+                                ? base.fields["FechaNacimiento"]?.value
+                                    .toString()
+                                    .substring(0, 10)
+                                : null;
+                        _nroFichaDiagPreEnviar =
+                            base.fields["NroFichaDiagPrenatal"]?.value;
+                        _semanasGestacionEnviar = null;
                       }
 
                       // Paso la fecha de creación de la ficha en formato yyyy-MM-dd como lo espera la BD. Viene dd-MM-yyyy
@@ -1002,23 +924,24 @@ class PatientWidgetState extends State<PatientWidget> {
                               _fechaCreacionFicha.substring(0, 2);
 
                       var paciente = Paciente(
-                        id: patientRow,
+                        id: _idRegistroPaciente,
                         apellido:
                             base.fields["LastName"]!.value.toString().trim(),
                         nombre:
                             base.fields["FirstName"]!.value.toString().trim(),
                         documento: base.fields["Identification"]?.value,
                         nacionalidad: base.fields["Country"]?.value,
-                        fechaNacimiento: birthDate,
+                        fechaNacimiento: _fechaNacimientoEnviar,
+                        nroFichaDiagPrenatal: _nroFichaDiagPreEnviar,
                         fechaCreacionFicha: _fechaCreacionFicha,
-                        sexo: sex,
+                        sexo: _sexChar,
                         diagnosticoPrenatal:
                             base.fields["DiagnosticoPrenatal"]?.value
                                 ? "V"
                                 : "F",
                         pacienteFallecido:
                             base.fields["PacienteFallecido"]?.value ? "V" : "F",
-                        semanasGestacion: _weeksOfPregnacy,
+                        semanasGestacion: _semanasGestacionEnviar,
                         diag1: base.fields["Diag1"]?.value,
                         diag2: base.fields["Diag2"]?.value,
                         diag3: base.fields["Diag3"]?.value,
@@ -1036,19 +959,24 @@ class PatientWidgetState extends State<PatientWidget> {
                         comentarios: base.fields["Comentarios"]?.value,
                       );
 
-                      String respuesta = "";
+                      String _respuesta = "";
+                      String _accion = "";
 
-                      if (creation) {
-                        respuesta = await addPatient(paciente);
+                      if (_creandoFicha) {
+                        _respuesta = await addPatient(paciente);
+                        _accion = 'creó';
                       } else {
-                        updatePatient(paciente);
+                        _respuesta = await updatePatient(paciente);
+                        _accion = 'modificó';
                       }
 
                       final snackBar = SnackBar(
-                        duration: Duration(seconds: 30),
-                        content: Text(respuesta +
+                        duration: const Duration(seconds: 10),
+                        content: Text(
+                            'Se $_accion la ficha Nro.:  $_respuesta' /*+
                             "---" +
-                            _formKey.currentState!.value.toString()),
+                            _formKey.currentState!.value.toString()*/
+                            ),
                         action: SnackBarAction(
                           label: 'OK',
                           onPressed: () {
@@ -1061,7 +989,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       // Find the ScaffoldMessenger in the widget tree
                       // and use it to show a SnackBar.
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      if (creation) {
+                      if (_creandoFicha) {
                         AutoRouter.of(context).pop();
                       } else {
                         // AutoRouter.of(context).push(const DashboardRoute());

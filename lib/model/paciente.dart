@@ -17,6 +17,7 @@ class Paciente {
     this.diag4,
     this.fechaPrimerDiagnostico,
     this.nroHistClinicaPapel,
+    this.nroFichaDiagPrenatal,
     this.comentarios,
   });
 
@@ -37,6 +38,7 @@ class Paciente {
   String? diag4;
   String? fechaPrimerDiagnostico;
   String? nroHistClinicaPapel;
+  String? nroFichaDiagPrenatal;
   String? comentarios;
 
   factory Paciente.fromJson(Map<String, dynamic> data) {
@@ -59,6 +61,7 @@ class Paciente {
     final diag4 = data['diag4'] as String?;
     final fechaPrimerDiagnostico = data['fechaPrimerDiagnostico'] as String?;
     final nroHistClinicaPapel = data['nroHistClinicaPapel'] as String?;
+    final nroFichaDiagPrenatal = data['nroFichaDiagPrenatal'] as String?;
     final comentarios = data['comentarios'] as String?;
 
     return Paciente(
@@ -79,6 +82,7 @@ class Paciente {
       diag4: diag4,
       fechaPrimerDiagnostico: fechaPrimerDiagnostico,
       nroHistClinicaPapel: nroHistClinicaPapel,
+      nroFichaDiagPrenatal: nroFichaDiagPrenatal,
       comentarios: comentarios,
     );
   }
@@ -101,6 +105,7 @@ class Paciente {
         'diag4': diag4,
         'fechaPrimerDiagnostico': fechaPrimerDiagnostico,
         'nroHistClinicaPapel': nroHistClinicaPapel,
+        'nroFichaDiagPrenatal': nroFichaDiagPrenatal,
         'comentarios': comentarios,
       };
 

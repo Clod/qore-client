@@ -121,21 +121,15 @@ Future<String> addPatient(Paciente patient) async {
   return idPaciente;
 }
 
-void updatePatient(Paciente patient) async {
+Future<String>  updatePatient(Paciente patient) async {
   debugPrint('Enviando PUT: ');
 
   Uri url = getURI("");
+  String idPaciente = "";
+  RegExp exp = RegExp(r'(\{\d+\})');
 
-  // var paciente = Paciente(
-  //     id: 9999,
-  //     nombre: "Luigi",
-  //     apellido: "Cadorna",
-  //     fechaNacimiento: "1900-01-28",
-  //     documento: "123456789",
-  //     nacionalidad: "Italia");
   http.Response response;
   try {
-    // response = await http.get(url,);  // Anda
     response = await http.put(url,
         headers: {
           // "Access-Control-Allow-Origin": "*",
@@ -145,8 +139,13 @@ void updatePatient(Paciente patient) async {
           "Bearer ${GlobalData.firebaseToken}" // https://jsonplaceholder.typicode.com:443/albums/1' lo digiere bien
         },
         body: convert.jsonEncode(patient));
-    debugPrint("Respuesta del servidor:  ${response.body}");
+    debugPrint("Respuesta del servidor:  ${response.statusCode} - ${response.body}");
+    RegExpMatch? id = exp.firstMatch(response.body);
+    idPaciente = id![0].toString();
+    debugPrint("Id del paciente creado: " + idPaciente);
   } catch (e) {
     debugPrint(e.toString());
   }
+
+  return idPaciente;
 }
