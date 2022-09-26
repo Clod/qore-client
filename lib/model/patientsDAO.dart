@@ -13,6 +13,7 @@ Uri getURI(String value) {
 
   if (value.isNotEmpty) value = "/" + value;
 
+  // https://stackoverflow.com/questions/55004302/how-do-you-pass-arguments-from-command-line-to-main-in-flutter-dart
   if (GlobalData.executionMode == ExecutionMode.DEV) {
     // https://stackoverflow.com/questions/45924474/how-do-you-detect-the-host-platform-from-dart-code
     if (kIsWeb) {
@@ -27,8 +28,8 @@ Uri getURI(String value) {
       }
     }
   } else {
-    // url = Uri.parse(GlobalData.URL_PROD.toString());
-    url = Uri.parse("http://192.168.0.94:8080/patients"+ value);
+    url = Uri.parse(GlobalData.URL_PROD.toString() + value);
+    // url = Uri.parse("http://192.168.0.94:8080/patients"+ value);
   }
 
   return url;
