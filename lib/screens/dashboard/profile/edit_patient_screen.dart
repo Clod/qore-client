@@ -1,4 +1,4 @@
-import 'package:cardio_gut/screens/dashboard/products/patient_widget.dart';
+import 'package:cardio_gut/screens/dashboard/patients/patient_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

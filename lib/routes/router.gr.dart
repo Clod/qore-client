@@ -15,9 +15,9 @@ import 'package:flutter/material.dart' as _i8;
 
 import '../model/paciente.dart' as _i10;
 import '../screens/about/about_screen.dart' as _i5;
-import '../screens/dashboard/products/add_products/add_patient_screen.dart'
+import '../screens/dashboard/patients/add_patients/add_patient_screen.dart'
     as _i4;
-import '../screens/dashboard/products/patients_screen.dart' as _i3;
+import '../screens/dashboard/patients/patients_screen.dart' as _i3;
 import '../screens/dashboard/profile/edit_patient_screen.dart' as _i6;
 import '../screens/home/home_screen.dart' as _i2;
 import '../screens/login/login_screen.dart' as _i1;

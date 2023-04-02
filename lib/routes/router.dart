@@ -3,8 +3,8 @@ import 'package:cardio_gut/routes/route_guard.dart';
 import 'package:cardio_gut/screens/about/about_screen.dart';
 import 'package:cardio_gut/screens/home/home_screen.dart';
 
-import '../screens/dashboard/products/add_products/add_patient_screen.dart';
-import '../screens/dashboard/products/patients_screen.dart';
+import '../screens/dashboard/patients/add_patients/add_patient_screen.dart';
+import '../screens/dashboard/patients/patients_screen.dart';
 import '../screens/dashboard/profile/edit_patient_screen.dart';
 import '../screens/login/login_screen.dart';
 
