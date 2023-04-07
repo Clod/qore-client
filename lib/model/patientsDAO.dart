@@ -8,23 +8,25 @@ import '../assets/global_data.dart';
 import 'dart:io';
 
 
-Uri getURI(String value) {
+Uri getURI(String tipoDato, String value) {
   Uri url;
+  String parametros = "";
 
-  if (value.isNotEmpty) value = "/" + value;
+  if (tipoDato.isNotEmpty) parametros = "/" + tipoDato;
+  if (value.isNotEmpty) parametros += "/" + value;
 
   // https://stackoverflow.com/questions/55004302/how-do-you-pass-arguments-from-command-line-to-main-in-flutter-dart
   if (GlobalData.executionMode == ExecutionMode.DEV) {
     // https://stackoverflow.com/questions/45924474/how-do-you-detect-the-host-platform-from-dart-code
     if (kIsWeb) {
-      url = Uri.parse(GlobalData.URL_WEB_DEV.toString() + value);
+      url = Uri.parse(GlobalData.URL_WEB_DEV.toString() + parametros);
     } else {
       if (Platform.isAndroid) {
         //   static String? URL_AND_DEV="http://10.0.2.2:8080/patients/";
-//        url = Uri.parse(GlobalData.URL_AND_DEV.toString() + value);
-        url = Uri.parse("http://192.168.0.94:8080/patients"+ value);
+//        url = Uri.parse(GlobalData.URL_AND_DEV.toString() + parametros);
+        url = Uri.parse("http://192.168.0.94:8080/patients"+ parametros);
       } else {
-        url = Uri.parse('http://localhost:8080/patients' + value);
+        url = Uri.parse('http://localhost:8080/patients' + parametros);
       }
     }
   } else {
@@ -35,14 +37,16 @@ Uri getURI(String value) {
   return url;
 }
 
-Future<List<Paciente>> traerPacientes(String value) async {
+Future<List<Paciente>> traerPacientes(String value, String optBuscar) async {
   debugPrint("Entrando ***********************************\n");
+
+  debugPrint("optBuscar: $optBuscar");
 
   List<Paciente> retrievedPatients = <Paciente>[];
 
   // Si se ejecuta desde Android hay que usar 10.0.2.2:8080 y anda
   // https://stackoverflow.com/questions/55785581/socketexception-os-error-connection-refused-errno-111-in-flutter-using-djan
-  Uri url = getURI(value);
+  Uri url = getURI(optBuscar,value);
 
   debugPrint("Intentando traer pacientes de: " + url.toString());
 
@@ -55,6 +59,7 @@ Future<List<Paciente>> traerPacientes(String value) async {
   // Await the http get response, then decode the json-formatted response.
   // https://stackoverflow.com/questions/65630743/how-to-solve-flutter-web-api-cors-error-only-with-dart-code
   var response;
+
   try {
     // response = await http.get(url,);  // Anda
     response = await http.get(url, headers: {
@@ -96,7 +101,7 @@ Future<List<Paciente>> traerPacientes(String value) async {
 Future<String> addPatient(Paciente patient) async {
 
   debugPrint('Enviando POST: ');
-  Uri url = getURI("");
+  Uri url = getURI("","");
   http.Response response;
   String idPaciente = "";
   RegExp exp = RegExp(r'(\{\d+\})');
@@ -125,7 +130,7 @@ Future<String> addPatient(Paciente patient) async {
 Future<String>  updatePatient(Paciente patient) async {
   debugPrint('Enviando PUT: ');
 
-  Uri url = getURI("");
+  Uri url = getURI("","");
   String idPaciente = "";
   RegExp exp = RegExp(r'(\{\d+\})');
 

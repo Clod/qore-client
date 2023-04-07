@@ -7,7 +7,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return AutoTabsScaffold(
+    return const AutoTabsScaffold(
       routes: [
         // const ProductsRoute(),
         // EditPatientRoute(parametro: Paciente(id: 0, nombre: "", apellido: "", fechaNacimiento: "", documento: "", nacionalidad: "", fechaCreacionFicha: "")),

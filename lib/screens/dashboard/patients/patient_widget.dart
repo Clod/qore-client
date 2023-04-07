@@ -42,7 +42,7 @@ class PatientWidgetState extends State<PatientWidget> {
   DateTime? _fechaPrimerDiagnostico;
   String? _fechaCreacionFicha = '';
   String _sex = 'N/I';
-  String? _diagnosticoPrenatal = '';
+  // String? _diagnosticoPrenatal = '';
   bool _pacienteFallecido = false;
   String? _diag1;
   String? _diag2;
@@ -55,12 +55,11 @@ class PatientWidgetState extends State<PatientWidget> {
   bool _diag1HasError = false;
   bool _diag2HasError = false;
   bool _diag3HasError = false;
-  bool _diag4HasError = false;
   bool _countryHasError = false;
   bool _identHasError = false;
   bool _lastNameHasError = false;
   bool _firstNameHasError = false;
-  bool _weeksOfPregnancyHasError = false;
+  final bool _weeksOfPregnancyHasError = false;
 
   int _diag1Index = 0;
   int _diag2Index = 0;
@@ -97,7 +96,6 @@ class PatientWidgetState extends State<PatientWidget> {
           _semanasGestacion = widget.parametro!.semanasGestacion.toString();
         }
       }
-      ;
 
       _lastName = widget.parametro?.apellido;
       _firstName = widget.parametro?.nombre;
@@ -126,7 +124,7 @@ class PatientWidgetState extends State<PatientWidget> {
       } else {
         _sex = widget.parametro!.sexo!;
       }
-      _diagnosticoPrenatal = widget.parametro?.diagnosticoPrenatal;
+      // _diagnosticoPrenatal = widget.parametro?.diagnosticoPrenatal;
       _pacienteFallecido = (widget.parametro != null &&
               widget.parametro!.pacienteFallecido != null &&
               widget.parametro!.pacienteFallecido == "V")
@@ -233,20 +231,22 @@ class PatientWidgetState extends State<PatientWidget> {
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
-                    onChanged: (val) {
-                      setState(() {
-                        _lastNameHasError = !(_formKey
-                                .currentState?.fields['LastName']
-                                ?.validate() ??
-                            false);
-                      });
-                    },
+                    // Commented because I do not need validation on the fly
+                    // I need it before sumitting form
+                    // onChanged: (val) {
+                      // setState(() {
+                        // _lastNameHasError = !(_formKey
+                        //         .currentState?.fields['LastName']
+                        //         ?.validate() ??
+                        //     false);
+                      // });
+                    // },
                     // valueTransformer: (text) => num.tryParse(text),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
-                      // FormBuilderValidators.numeric(),
-                      FormBuilderValidators.max(70),
-                      FormBuilderValidators.min(2),
+                      FormBuilderValidators.match("[a-zA-Z ]+"),
+                      FormBuilderValidators.maxLength(30),
+                      FormBuilderValidators.minLength(2),
                     ]),
                     // initialValue: '12',
                     keyboardType: TextInputType.text,
@@ -279,8 +279,9 @@ class PatientWidgetState extends State<PatientWidget> {
                     // valueTransformer: (text) => num.tryParse(text),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
-                      // FormBuilderValidators.numeric(),
-                      FormBuilderValidators.max(70),
+                      FormBuilderValidators.match("[a-zA-Z ]+"),
+                      FormBuilderValidators.maxLength(30),
+                      FormBuilderValidators.minLength(2),
                     ]),
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
@@ -350,8 +351,10 @@ class PatientWidgetState extends State<PatientWidget> {
                                         : 'Fecha de\nnacimiento',
                                     suffixIcon: IconButton(
                                         icon: const Icon(Icons.close),
+                                        // Reset field
                                         onPressed: () {
-                                          _formKey.currentState!.fields['date']
+                                          _formKey.currentState!
+                                              .fields['FechaNacimiento']
                                               ?.didChange(null);
                                         }),
                                   ),
@@ -440,7 +443,7 @@ class PatientWidgetState extends State<PatientWidget> {
                                 ? const Icon(Icons.error)
                                 : const Icon(Icons.check),
                           ),
-                          allowClear: true,
+                          allowClear: false,
                           hint: const Text('País'),
                           // validator: FormBuilderValidators.compose(
                           //     [FormBuilderValidators.required()]),
@@ -452,6 +455,8 @@ class PatientWidgetState extends State<PatientWidget> {
                                 ),
                               )
                               .toList(),
+                          validator: FormBuilderValidators.compose(
+                              [FormBuilderValidators.required()]),
                           onChanged: (val) {
                             debugPrint("Cambió el país");
                             setState(() {
@@ -489,7 +494,8 @@ class PatientWidgetState extends State<PatientWidget> {
                           },
                           // valueTransformer: (text) => num.tryParse(text),
                           validator: FormBuilderValidators.compose([
-                            // FormBuilderValidators.required(), FormBuilderValidators.numeric(), FormBuilderValidators.max(15),
+                            FormBuilderValidators.required(),
+                            // FormBuilderValidators.numeric(), FormBuilderValidators.max(15),
                           ]),
                           // initialValue: '12',
                           // keyboardType: TextInputType.number,
@@ -505,7 +511,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     // autovalidate: true,
                     name: 'Diag1',
                     decoration: InputDecoration(
-                      labelText: 'Diag1',
+                      labelText: 'Diagnóstico de nivel 1',
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 10.0),
@@ -514,7 +520,8 @@ class PatientWidgetState extends State<PatientWidget> {
                           ? const Icon(Icons.error)
                           : const Icon(Icons.check),
                     ),
-                    allowClear: true,
+                    allowClear:
+                        false, // Muestro (o no) una x a la derecha para resetear el campo
                     hint: const Text('Seleccione el diagnóstico nivel 1'),
                     validator: FormBuilderValidators.compose(
                         [FormBuilderValidators.required()]),
@@ -569,7 +576,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       // autovalidate: true,
                       name: 'Diag2',
                       decoration: InputDecoration(
-                        labelText: 'Diag2',
+                        labelText: 'Diagnóstico de nivel 2',
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 10.0),
@@ -578,10 +585,10 @@ class PatientWidgetState extends State<PatientWidget> {
                             ? const Icon(Icons.error)
                             : const Icon(Icons.check),
                       ),
-                      allowClear: true,
+                      allowClear: false,
                       hint: const Text('Seleccione el diagnóstico nivel 2'),
-                      validator: FormBuilderValidators.compose(
-                          [FormBuilderValidators.required()]),
+                      // validator: FormBuilderValidators.compose(
+                      //     [FormBuilderValidators.required()]),
                       items: diag2[_diag1Index]
                           .map(
                             (diag2It) => DropdownMenuItem(
@@ -626,7 +633,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       // autovalidate: true,
                       name: 'Diag3',
                       decoration: InputDecoration(
-                        labelText: 'Diag3',
+                        labelText: 'Diagnóstico de nivel 3',
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 10.0),
@@ -636,10 +643,10 @@ class PatientWidgetState extends State<PatientWidget> {
                             : const Icon(Icons.check),
                       ),
                       // initialValue: 'Male',
-                      allowClear: true,
+                      allowClear: false,
                       hint: const Text('Seleccione el diagnóstico nivel 3'),
-                      validator: FormBuilderValidators.compose(
-                          [FormBuilderValidators.required()]),
+                      // validator: FormBuilderValidators.compose(
+                      //     [FormBuilderValidators.required()]),
                       items: diag3[_diag1Index][_diag2Index]
                           .map(
                             (diag3It) => DropdownMenuItem(
@@ -679,20 +686,20 @@ class PatientWidgetState extends State<PatientWidget> {
                       key: _dropDownKey4,
                       // autovalidate: true,
                       name: 'Diag4',
-                      decoration: InputDecoration(
-                        labelText: 'Diag4',
+                      decoration: const InputDecoration(
+                        labelText: 'Diagnóstico de nivel 4',
                         isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
+                        contentPadding: EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 10.0),
-                        border: const OutlineInputBorder(),
-                        suffix: _diag4HasError
-                            ? const Icon(Icons.error)
-                            : const Icon(Icons.check),
+                        border: OutlineInputBorder(),
+                        // suffix: _diag4HasError
+                        //     ? const Icon(Icons.error)
+                        //     : const Icon(Icons.check),
                       ),
-                      allowClear: true,
+                      allowClear: false,
                       hint: const Text('Seleccione el diagnóstico nivel 4'),
-                      validator: FormBuilderValidators.compose(
-                          [FormBuilderValidators.required()]),
+                      // validator: FormBuilderValidators.compose(
+                      //     [FormBuilderValidators.required()]),
                       items: diag4[_diag1Index][_diag2Index][_diag3Index]
                           // items: diag4[0][0][0]
                           .map(
@@ -705,10 +712,6 @@ class PatientWidgetState extends State<PatientWidget> {
                       onChanged: (val) {
                         debugPrint("Cambió el diagnóstico nivel 4");
                         setState(() {
-                          _diag4HasError = !(_formKey
-                                  .currentState?.fields['Diag4']
-                                  ?.validate() ??
-                              false);
                         });
                       },
                       valueTransformer: (val) => val?.toString(),
@@ -752,7 +755,8 @@ class PatientWidgetState extends State<PatientWidget> {
                             suffixIcon: IconButton(
                                 icon: const Icon(Icons.close),
                                 onPressed: () {
-                                  _formKey.currentState!.fields['date']
+                                  _formKey.currentState!
+                                      .fields['FechaPrimerDiagnostico']
                                       ?.didChange(null);
                                 }),
                           ),
@@ -835,168 +839,167 @@ class PatientWidgetState extends State<PatientWidget> {
               height: 20,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Expanded(
-                  child: MaterialButton(
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    color: Theme.of(context).colorScheme.error,
-                    onPressed: () {
-                      if (_creandoFicha) {
-                        AutoRouter.of(context).pop();
-                      } else {
-                        // Vuelvo a la pantalla anterior manteniendo la lista de pacientes.
-                        AutoRouter.of(context).navigateBack();
-                        // AutoRouter.of(context).pop();
-                      }
-                    },
+                MaterialButton(
+                  child: const Text(
+                    'Cancelar',
+                    style: TextStyle(color: Colors.white),
                   ),
+                  color: Theme.of(context).colorScheme.error,
+                  onPressed: () {
+                    if (_creandoFicha) {
+                      AutoRouter.of(context).pop();
+                    } else {
+                      // Vuelvo a la pantalla anterior manteniendo la lista de pacientes.
+                      AutoRouter.of(context).navigateBack();
+                      // AutoRouter.of(context).pop();
+                    }
+                  },
                 ),
-                Expanded(
-                  child: MaterialButton(
-                    child: const Text(
-                      'Enviar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    color: Theme.of(context).colorScheme.secondary,
-                    onPressed: () async {
-                      if (_formKey.currentState?.saveAndValidate() ?? false) {
-                        debugPrint(
-                            "Valor de los campos: ${_formKey.currentState?.value.toString()}");
-                      } else {
-                        debugPrint(_formKey.currentState?.value.toString());
-                        debugPrint('validation failed');
-                        return;
-                      }
-
-                      debugPrint(
-                          "Intento dar de alta al paciente: ${_formKey.currentState?.value.toString()}");
-
-                      FormBuilderState base = _formKey.currentState!;
-
-                      var _sexChar = "";
-
-                      switch (base.fields["Sexo"]?.value.toString()) {
-                        case "M":
-                          _sexChar = "M";
-                          break;
-                        case "F":
-                          _sexChar = "F";
-                          break;
-                        default:
-                          _sexChar = "D";
-                          break;
-                      }
-
-                      String? _fechaNacimientoEnviar;
-                      int? _semanasGestacionEnviar;
-                      String? _nroFichaDiagPreEnviar;
-
-                      if (_esDiagPrenatal) {
-                        _fechaNacimientoEnviar = null;
-                        debugPrint("Semanas gestación: " +
-                            base.fields["SemanasGestacion"]?.value);
-                        _semanasGestacionEnviar =
-                            int.parse(base.fields["SemanasGestacion"]?.value);
-                        _nroFichaDiagPreEnviar = null;
-                      } else {
-                        _fechaNacimientoEnviar =
-                            (base.fields["FechaNacimiento"]?.value != null)
-                                ? base.fields["FechaNacimiento"]?.value
-                                    .toString()
-                                    .substring(0, 10)
-                                : null;
-                        _nroFichaDiagPreEnviar =
-                            base.fields["NroFichaDiagPrenatal"]?.value;
-                        _semanasGestacionEnviar = null;
-                      }
-
-                      // Paso la fecha de creación de la ficha en formato yyyy-MM-dd como lo espera la BD. Viene dd-MM-yyyy
-                      String _fechaCreacionFicha =
-                          base.fields["FechaCreacionFicha"]!.value!.toString();
-                      _fechaCreacionFicha =
-                          _fechaCreacionFicha.substring(6, 10) +
-                              "-" +
-                              _fechaCreacionFicha.substring(3, 5) +
-                              "-" +
-                              _fechaCreacionFicha.substring(0, 2);
-
-                      var paciente = Paciente(
-                        id: _idRegistroPaciente,
-                        apellido:
-                            base.fields["LastName"]!.value.toString().trim(),
-                        nombre:
-                            base.fields["FirstName"]!.value.toString().trim(),
-                        documento: base.fields["Identification"]?.value,
-                        nacionalidad: base.fields["Country"]?.value,
-                        fechaNacimiento: _fechaNacimientoEnviar,
-                        nroFichaDiagPrenatal: _nroFichaDiagPreEnviar,
-                        fechaCreacionFicha: _fechaCreacionFicha,
-                        sexo: _sexChar,
-                        diagnosticoPrenatal:
-                            base.fields["DiagnosticoPrenatal"]?.value
-                                ? "V"
-                                : "F",
-                        pacienteFallecido:
-                            base.fields["PacienteFallecido"]?.value ? "V" : "F",
-                        semanasGestacion: _semanasGestacionEnviar,
-                        diag1: base.fields["Diag1"]?.value,
-                        diag2: base.fields["Diag2"]?.value,
-                        diag3: base.fields["Diag3"]?.value,
-                        diag4: base.fields["Diag4"]?.value,
-                        // fechaPrimerDiagnostico: base?.fields["FechaPrimerDiagnostico"]?.value.toString().substring(0, 10),
-                        fechaPrimerDiagnostico:
-                            (base.fields["FechaPrimerDiagnostico"]?.value !=
-                                    null)
-                                ? base.fields["FechaPrimerDiagnostico"]?.value
-                                    .toString()
-                                    .substring(0, 10)
-                                : null,
-                        nroHistClinicaPapel:
-                            base.fields["NroHistClinicaPapel"]?.value,
-                        comentarios: base.fields["Comentarios"]?.value,
-                      );
-
-                      String _respuesta = "";
-                      String _accion = "";
-
-                      if (_creandoFicha) {
-                        _respuesta = await addPatient(paciente);
-                        _accion = 'creó';
-                      } else {
-                        _respuesta = await updatePatient(paciente);
-                        _accion = 'modificó';
-                      }
-
-                      final snackBar = SnackBar(
-                        duration: const Duration(seconds: 10),
-                        content: Text(
-                            'Se $_accion la ficha Nro.:  $_respuesta' /*+
-                            "---" +
-                            _formKey.currentState!.value.toString()*/
-                            ),
-                        action: SnackBarAction(
-                          label: 'OK',
-                          onPressed: () {
-                            // Some code to undo the change.
-                            // debugPrint("Listo");
-                          },
-                        ),
-                      );
-
-                      // Find the ScaffoldMessenger in the widget tree
-                      // and use it to show a SnackBar.
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      if (_creandoFicha) {
-                        AutoRouter.of(context).pop();
-                      } else {
-                        // AutoRouter.of(context).push(const DashboardRoute());
-                        AutoRouter.of(context).push(const PatientsRoute());
-                      }
-                    },
+                const SizedBox(width: 30),
+                MaterialButton(
+                  child: const Text(
+                    'Enviar',
+                    style: TextStyle(color: Colors.white),
                   ),
+                  color: Theme.of(context).colorScheme.secondary,
+                  onPressed: () async {
+
+                    if (_formKey.currentState?.saveAndValidate() ?? false) {
+                      debugPrint(
+                          "Valor de los campos: ${_formKey.currentState?.value.toString()}");
+                    } else {
+                      debugPrint(_formKey.currentState?.value.toString());
+                      setState(() {
+                        if(!_formKey.currentState!.fields["LastName"]!.validate()) _lastNameHasError = true;
+                        if(!_formKey.currentState!.fields["FirstName"]!.validate()) _firstNameHasError = true;
+                        if(!_formKey.currentState!.fields["Identification"]!.validate()) _identHasError = true;
+                      });
+                      debugPrint('validation failed');
+                      return;
+                    }
+
+                    debugPrint(
+                        "Intento dar de alta al paciente: ${_formKey.currentState?.value.toString()}");
+
+                    FormBuilderState base = _formKey.currentState!;
+
+                    var _sexChar = "";
+
+                    switch (base.fields["Sexo"]?.value.toString()) {
+                      case "M":
+                        _sexChar = "M";
+                        break;
+                      case "F":
+                        _sexChar = "F";
+                        break;
+                      default:
+                        _sexChar = "D";
+                        break;
+                    }
+
+                    String? _fechaNacimientoEnviar;
+                    int? _semanasGestacionEnviar;
+                    String? _nroFichaDiagPreEnviar;
+
+                    if (_esDiagPrenatal) {
+                      _fechaNacimientoEnviar = null;
+                      debugPrint("Semanas gestación: " +
+                          base.fields["SemanasGestacion"]?.value);
+                      _semanasGestacionEnviar =
+                          int.parse(base.fields["SemanasGestacion"]?.value);
+                      _nroFichaDiagPreEnviar = null;
+                    } else {
+                      _fechaNacimientoEnviar =
+                          (base.fields["FechaNacimiento"]?.value != null)
+                              ? base.fields["FechaNacimiento"]?.value
+                                  .toString()
+                                  .substring(0, 10)
+                              : null;
+                      _nroFichaDiagPreEnviar =
+                          base.fields["NroFichaDiagPrenatal"]?.value;
+                      _semanasGestacionEnviar = null;
+                    }
+
+                    // Paso la fecha de creación de la ficha en formato yyyy-MM-dd como lo espera la BD. Viene dd-MM-yyyy
+                    String _fechaCreacionFicha =
+                        base.fields["FechaCreacionFicha"]!.value!.toString();
+                    _fechaCreacionFicha = _fechaCreacionFicha.substring(6, 10) +
+                        "-" +
+                        _fechaCreacionFicha.substring(3, 5) +
+                        "-" +
+                        _fechaCreacionFicha.substring(0, 2);
+
+                    var paciente = Paciente(
+                      id: _idRegistroPaciente,
+                      apellido:
+                          base.fields["LastName"]!.value.toString().trim(),
+                      nombre: base.fields["FirstName"]!.value.toString().trim(),
+                      documento: base.fields["Identification"]?.value,
+                      nacionalidad: base.fields["Country"]?.value,
+                      fechaNacimiento: _fechaNacimientoEnviar,
+                      nroFichaDiagPrenatal: _nroFichaDiagPreEnviar,
+                      fechaCreacionFicha: _fechaCreacionFicha,
+                      sexo: _sexChar,
+                      diagnosticoPrenatal:
+                          base.fields["DiagnosticoPrenatal"]?.value ? "V" : "F",
+                      pacienteFallecido:
+                          base.fields["PacienteFallecido"]?.value ? "V" : "F",
+                      semanasGestacion: _semanasGestacionEnviar,
+                      diag1: base.fields["Diag1"]?.value,
+                      diag2: base.fields["Diag2"]?.value,
+                      diag3: base.fields["Diag3"]?.value,
+                      diag4: base.fields["Diag4"]?.value,
+                      // fechaPrimerDiagnostico: base?.fields["FechaPrimerDiagnostico"]?.value.toString().substring(0, 10),
+                      fechaPrimerDiagnostico:
+                          (base.fields["FechaPrimerDiagnostico"]?.value != null)
+                              ? base.fields["FechaPrimerDiagnostico"]?.value
+                                  .toString()
+                                  .substring(0, 10)
+                              : null,
+                      nroHistClinicaPapel:
+                          base.fields["NroHistClinicaPapel"]?.value,
+                      comentarios: base.fields["Comentarios"]?.value,
+                    );
+
+                    String _respuesta = "";
+                    String _accion = "";
+
+                    if (_creandoFicha) {
+                      _respuesta = await addPatient(paciente);
+                      _accion = 'creó';
+                    } else {
+                      _respuesta = await updatePatient(paciente);
+                      _accion = 'modificó';
+                    }
+
+                    final snackBar = SnackBar(
+                      duration: const Duration(seconds: 10),
+                      content: Text(
+                          'Se $_accion la ficha Nro.:  $_respuesta' /*+
+                          "---" +
+                          _formKey.currentState!.value.toString()*/
+                          ),
+                      action: SnackBarAction(
+                        label: 'OK',
+                        onPressed: () {
+                          // Some code to undo the change.
+                          // debugPrint("Listo");
+                        },
+                      ),
+                    );
+
+                    // Find the ScaffoldMessenger in the widget tree
+                    // and use it to show a SnackBar.
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    if (_creandoFicha) {
+                      AutoRouter.of(context).pop();
+                    } else {
+                      // AutoRouter.of(context).push(const DashboardRoute());
+                      AutoRouter.of(context).push(const PatientsRoute());
+                    }
+                  },
                 ),
               ],
             ),

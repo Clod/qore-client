@@ -54,8 +54,12 @@ class MyAppState extends State<MyApp> {
   final authService = AuthService();
   // Clod: esta clase se genera a partir de router.dart
   // final _appRouter = AppRouter();
+
   late final _appRouter = AppRouter(
-    routeGuard: RouteGuard(authService),
+    // DESCOMENTAR LA LÍNEA DE ABAJO PARA EL BUILD PARA PRODUCCIÓN
+    // la idea es poder usar el hot reload sin que me mande cada vez
+    // a la pantalla de login
+    //routeGuard: RouteGuard(authService),
   );
 
   @override

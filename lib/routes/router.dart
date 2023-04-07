@@ -7,6 +7,8 @@ import '../screens/dashboard/patients/add_patients/add_patient_screen.dart';
 import '../screens/dashboard/patients/patients_screen.dart';
 import '../screens/dashboard/profile/edit_patient_screen.dart';
 import '../screens/login/login_screen.dart';
+import 'package:flutter/foundation.dart';
+
 
 // https://pub.dev/packages/auto_route#wrapping-routes
 @MaterialAutoRouter(
@@ -25,13 +27,13 @@ import '../screens/login/login_screen.dart';
       page: PatientsScreen,
       name: 'PatientsRoute',
       path: 'patients',
-      guards: [RouteGuard],
+      guards: kReleaseMode ? [RouteGuard] : null,
     ),
     AutoRoute(
       page: AddPatientScreen,
       name: 'AddPatientRoute',
       path: 'add_patient',
-      guards: [RouteGuard],
+      guards: kReleaseMode ? [RouteGuard] : null,
     ),
     AutoRoute(
       page: AboutScreen,
@@ -41,7 +43,7 @@ import '../screens/login/login_screen.dart';
     AutoRoute(
       page: EditPatientScreen,
       name: 'EditPatientRoute',
-      guards: [RouteGuard],
+      guards: kReleaseMode ? [RouteGuard] : null,
       path: 'edit_patient',
     )
     // All routes within Dashboard are guarded

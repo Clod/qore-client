@@ -36,8 +36,8 @@ class _PatientsScreenState extends State<PatientsScreen> {
     // debugPrint("Recibí el token: ${GlobalData.firebaseToken}");
   }
 
-  String optBuscar = 'Apellido(s)';
-  var dropDownBuscar = ['Apellido(s)', 'Documento'];
+  String optBuscar = 'Apellido';
+  var dropDownBuscar = ['Apellido', 'Documento'];
 
   TextEditingController datoBusqueda = TextEditingController();
 
@@ -154,7 +154,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                       : setState(
                           () {
                             dataFuture =
-                                traerPacientes(datoBusqueda.value.text);
+                                traerPacientes(datoBusqueda.value.text, optBuscar);
                           },
                         );
                 },
@@ -174,7 +174,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                   ? null
                   : setState(
                       () {
-                        dataFuture = traerPacientes(datoBusqueda.value.text);
+                        dataFuture = traerPacientes(datoBusqueda.value.text,optBuscar);
                       },
                     );
             },

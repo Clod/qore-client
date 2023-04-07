@@ -11,6 +11,7 @@
 // ignore_for_file: type=lint
 
 import 'package:auto_route/auto_route.dart' as _i7;
+import 'package:flutter/foundation.dart' as _i9;
 import 'package:flutter/material.dart' as _i8;
 
 import '../model/paciente.dart' as _i10;
@@ -21,15 +22,10 @@ import '../screens/dashboard/patients/patients_screen.dart' as _i3;
 import '../screens/dashboard/profile/edit_patient_screen.dart' as _i6;
 import '../screens/home/home_screen.dart' as _i2;
 import '../screens/login/login_screen.dart' as _i1;
-import 'route_guard.dart' as _i9;
 
 class AppRouter extends _i7.RootStackRouter {
-  AppRouter(
-      {_i8.GlobalKey<_i8.NavigatorState>? navigatorKey,
-      required this.routeGuard})
+  AppRouter([_i8.GlobalKey<_i8.NavigatorState>? navigatorKey])
       : super(navigatorKey);
-
-  final _i9.RouteGuard routeGuard;
 
   @override
   final Map<String, _i7.PageFactory> pagesMap = {
@@ -71,20 +67,17 @@ class AppRouter extends _i7.RootStackRouter {
   List<_i7.RouteConfig> get routes => [
         _i7.RouteConfig(LoginRoute.name, path: 'login'),
         _i7.RouteConfig(HomeRoute.name, path: '/'),
-        _i7.RouteConfig(PatientsRoute.name,
-            path: 'patients', guards: [routeGuard]),
-        _i7.RouteConfig(AddPatientRoute.name,
-            path: 'add_patient', guards: [routeGuard]),
+        _i7.RouteConfig(PatientsRoute.name, path: 'patients'),
+        _i7.RouteConfig(AddPatientRoute.name, path: 'add_patient'),
         _i7.RouteConfig(AboutRouter.name, path: '/about'),
-        _i7.RouteConfig(EditPatientRoute.name,
-            path: 'edit_patient', guards: [routeGuard])
+        _i7.RouteConfig(EditPatientRoute.name, path: 'edit_patient')
       ];
 }
 
 /// generated route for
 /// [_i1.LoginScreen]
 class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
-  LoginRoute({_i8.Key? key, required dynamic Function(bool) onLoginCallback})
+  LoginRoute({_i9.Key? key, required dynamic Function(bool) onLoginCallback})
       : super(LoginRoute.name,
             path: 'login',
             args: LoginRouteArgs(key: key, onLoginCallback: onLoginCallback));
@@ -95,7 +88,7 @@ class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
 class LoginRouteArgs {
   const LoginRouteArgs({this.key, required this.onLoginCallback});
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final dynamic Function(bool) onLoginCallback;
 
@@ -132,7 +125,7 @@ class AddPatientRoute extends _i7.PageRouteInfo<void> {
 /// generated route for
 /// [_i5.AboutScreen]
 class AboutRouter extends _i7.PageRouteInfo<AboutRouterArgs> {
-  AboutRouter({_i8.Key? key, required String parametro})
+  AboutRouter({_i9.Key? key, required String parametro})
       : super(AboutRouter.name,
             path: '/about',
             args: AboutRouterArgs(key: key, parametro: parametro));
@@ -143,7 +136,7 @@ class AboutRouter extends _i7.PageRouteInfo<AboutRouterArgs> {
 class AboutRouterArgs {
   const AboutRouterArgs({this.key, required this.parametro});
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final String parametro;
 
@@ -156,7 +149,7 @@ class AboutRouterArgs {
 /// generated route for
 /// [_i6.EditPatientScreen]
 class EditPatientRoute extends _i7.PageRouteInfo<EditPatientRouteArgs> {
-  EditPatientRoute({_i8.Key? key, required _i10.Paciente parametro})
+  EditPatientRoute({_i9.Key? key, required _i10.Paciente parametro})
       : super(EditPatientRoute.name,
             path: 'edit_patient',
             args: EditPatientRouteArgs(key: key, parametro: parametro));
@@ -167,7 +160,7 @@ class EditPatientRoute extends _i7.PageRouteInfo<EditPatientRouteArgs> {
 class EditPatientRouteArgs {
   const EditPatientRouteArgs({this.key, required this.parametro});
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final _i10.Paciente parametro;
 
