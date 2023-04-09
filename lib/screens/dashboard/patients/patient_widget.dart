@@ -7,6 +7,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
 import '../../../model/arbol_diagnosticos.dart';
+import '../../../model/diagnosticos_nivel_1.dart';
 import '../../../model/paciente.dart';
 import '../../../model/paises.dart';
 import '../../../model/patientsDAO.dart';
@@ -61,10 +62,6 @@ class PatientWidgetState extends State<PatientWidget> {
   bool _firstNameHasError = false;
   final bool _weeksOfPregnancyHasError = false;
 
-  int _diag1Index = 0;
-  int _diag2Index = 0;
-  int _diag3Index = 0;
-
   // No habilito la selección de un subnivel hasta que el anterior esté seleccionado.
   bool _inhabilitarDiag2 = true;
   bool _inhabilitarDiag3 = true;
@@ -78,12 +75,12 @@ class PatientWidgetState extends State<PatientWidget> {
     super.initState();
     debugPrint("patient_widget recibió: ${widget.parametro?.toString()}");
 
-    // Me fijo se entré desde crear paciente o desde modificar
+    // Me fijo se entré desde crear paciente (para,etro = null) o desde modificar
     if (widget.parametro == null) {
       // Creando
       _creandoFicha = true;
       _idRegistroPaciente = 0;
-      debugPrint("Países: $countries");
+      // debugPrint("Países: $countries");
     } else {
       // Modificando
       _creandoFicha = false;
@@ -154,13 +151,6 @@ class PatientWidgetState extends State<PatientWidget> {
       debugPrint("Fecha primer diagnóstico: $_fechaPrimerDiagnostico");
 
       _comentarios = widget.parametro?.comentarios;
-      // final comentarios = data['comentarios'] as String;
-
-      // Busco las listas de los distintos niveles de diagnóstico
-      _diag1Index = diag1.indexOf(widget.parametro!.diag1!);
-      _diag2Index = diag2[_diag1Index].indexOf(widget.parametro!.diag2!);
-      _diag3Index =
-          diag3[_diag1Index][_diag2Index].indexOf(widget.parametro!.diag3!);
     }
   } // Fin initState
 
@@ -182,6 +172,19 @@ class PatientWidgetState extends State<PatientWidget> {
     bool isScreenWide =
         MediaQuery.of(context).size.width >= kMinWidthOfLargeScreen;
     // debugPrint("Screen width: ${MediaQuery.of(context).size.width}");
+
+    debugPrint(
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    debugPrint("Building patient_widget");
+    // debugPrint(diags.toString());
+    // debugPrint(diags.keys.toString());
+    // debugPrint(diags['Diagnóstico 1']!.keys.toString());
+    // debugPrint(diags['Diagnóstico 1']!['Diagnóstico 11']!.keys.toString());
+    // debugPrint(diags['Diagnóstico 1']!['Diagnóstico 11']!['Diagnóstico 111']!
+    //     .toString());
+
+    debugPrint(
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
       child: SingleChildScrollView(
@@ -234,28 +237,25 @@ class PatientWidgetState extends State<PatientWidget> {
                     // Commented because I do not need validation on the fly
                     // I need it before sumitting form
                     // onChanged: (val) {
-                      // setState(() {
-                        // _lastNameHasError = !(_formKey
-                        //         .currentState?.fields['LastName']
-                        //         ?.validate() ??
-                        //     false);
-                      // });
+                    // setState(() {
+                    // _lastNameHasError = !(_formKey
+                    //         .currentState?.fields['LastName']
+                    //         ?.validate() ??
+                    //     false);
+                    // });
                     // },
-                    // valueTransformer: (text) => num.tryParse(text),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                       FormBuilderValidators.match("[a-zA-Z ]+"),
                       FormBuilderValidators.maxLength(30),
                       FormBuilderValidators.minLength(2),
                     ]),
-                    // initialValue: '12',
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 10),
                   // First Name
                   FormBuilderTextField(
-                    // autovalidateMode: AutovalidateMode.always,
                     name: 'FirstName',
                     decoration: InputDecoration(
                       labelText: _esDiagPrenatal
@@ -269,14 +269,11 @@ class PatientWidgetState extends State<PatientWidget> {
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
-                    onChanged: (val) {
-                      setState(() {
-                        // _ageHasError = !(_formKey.currentState?.fields['age']
-                        //     ?.validate() ??
-                        //     false);
-                      });
-                    },
-                    // valueTransformer: (text) => num.tryParse(text),
+                    // Si no lo comento, cada letra que meto redibuja el formulario enterito
+                    // onChanged: (val) {
+                    //   setState(() {});
+                    // },
+
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                       FormBuilderValidators.match("[a-zA-Z ]+"),
@@ -378,14 +375,10 @@ class PatientWidgetState extends State<PatientWidget> {
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 12.0, horizontal: 10.0),
                                     border: OutlineInputBorder(),
-                                    // suffixIcon: _lastNameHasError
-                                    //     ? const Icon(Icons.error, color: Colors.red)
-                                    //     : const Icon(Icons.check, color: Colors.green),
                                   ),
                                   validator: FormBuilderValidators.compose([
                                     FormBuilderValidators.numeric(),
                                   ]),
-                                  // initialValue: '12',
                                   keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
                                 ),
@@ -438,15 +431,13 @@ class PatientWidgetState extends State<PatientWidget> {
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 10.0),
                             border: const OutlineInputBorder(),
-                            labelText: 'País',
+                            labelText: 'País emisor del documento',
                             suffix: _countryHasError
                                 ? const Icon(Icons.error)
                                 : const Icon(Icons.check),
                           ),
                           allowClear: false,
-                          hint: const Text('País'),
-                          // validator: FormBuilderValidators.compose(
-                          //     [FormBuilderValidators.required()]),
+                          hint: const Text('País emisor del documento'),
                           items: countries
                               .map(
                                 (ctry) => DropdownMenuItem(
@@ -525,7 +516,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     hint: const Text('Seleccione el diagnóstico nivel 1'),
                     validator: FormBuilderValidators.compose(
                         [FormBuilderValidators.required()]),
-                    items: diag1
+                    items: diags.keys
                         .map(
                           (diag) => DropdownMenuItem(
                             value: diag,
@@ -535,27 +526,38 @@ class PatientWidgetState extends State<PatientWidget> {
                         .toList(),
                     onChanged: (val) {
                       debugPrint("Cambió el diag1 a $val");
-                      // El diag1 elegido me indica la fila de la matriz de diag2
-                      _diag1Index = diag1.indexOf(val!);
-                      // xxx dropdownDiag2 = diag2[diag1Index][0];
+
                       // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
+
                       _inhabilitarDiag2 = false;
+
                       // Desahbilito 3 por si estoy cambiando de idea con Diag1
                       _inhabilitarDiag3 = true;
                       _inhabilitarDiag4 = true;
 
                       setState(() {
+                        // me guardo el valor del diagnóstico elegido para después usarlo
+                        // para mostrar los subdiagnósticos correspondientes
+                        _diag1 = val;
+
+                        debugPrint("Diags de nivel 2: " +
+                            diags[_diag1]!.keys.toString());
+                        debugPrint((diags[_diag1]!.keys == null).toString());
+
                         // Reseteo el valor de subdiagnóstico para que no vuele por el aire si llego
                         // a cambiar el diagnóstico una vez que ya elegí el subdiagnóstico
                         // https://stackoverflow.com/questions/60057028/how-to-change-formbuilderdropdown-selected-value-using-setstate
                         _dropDownKey2.currentState!.reset();
                         _dropDownKey2.currentState!.setValue(null);
+                        _diag2 = null;
 
                         _dropDownKey3.currentState!.reset();
                         _dropDownKey3.currentState!.setValue(null);
+                        _diag3 = null;
 
                         _dropDownKey4.currentState!.reset();
                         _dropDownKey4.currentState!.setValue(null);
+                        _diag4 = null;
 
                         _diag1HasError = !(_formKey
                                 .currentState?.fields['Diag1']
@@ -587,34 +589,45 @@ class PatientWidgetState extends State<PatientWidget> {
                       ),
                       allowClear: false,
                       hint: const Text('Seleccione el diagnóstico nivel 2'),
-                      // validator: FormBuilderValidators.compose(
-                      //     [FormBuilderValidators.required()]),
-                      items: diag2[_diag1Index]
-                          .map(
-                            (diag2It) => DropdownMenuItem(
-                              value: diag2It,
-                              child: Text(diag2It),
-                            ),
-                          )
-                          .toList(),
+                      // Intenta armar las listas aunque el widget no esté habilitado.
+                      // Si la lista está vacía no habilita la elección.
+                      // Cuando entro la primera vez _diag1 = null pero
+                      // "No hay nivel 2" nunca se muestra porque el combo está
+                      // inhabilitado. Recién se habilita cuando se elige el nivel 1
+                      // y ahí _dia1 ya no es null (puede ser vacía si no hay subnivel)
+                      items: (_diag1 != null)
+                          ? diags[_diag1]!
+                              .keys
+                              .map(
+                                (diag2It) => DropdownMenuItem(
+                                  value: diag2It,
+                                  child: Text(diag2It),
+                                ),
+                              )
+                              .toList()
+                          : [""]
+                              .map((diag2It) => DropdownMenuItem(
+                                  value: diag2It,
+                                  child: const Text("No hay nivel 2")))
+                              .toList(),
                       onChanged: (val) {
                         debugPrint("Cambió el diagnóstico nivel 2 a $val");
-                        // El diag2 elegido me indica el segundo índice de la matriz de diag3
-                        _diag2Index = diag2[_diag1Index].indexOf(val!);
-                        // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
+
                         _inhabilitarDiag3 = false;
 
                         setState(() {
+                          _diag2 = val;
+
                           _dropDownKey3.currentState!.reset();
                           _dropDownKey3.currentState!.setValue(null);
 
                           _dropDownKey4.currentState!.reset();
                           _dropDownKey4.currentState!.setValue(null);
-
-                          _diag2HasError = !(_formKey
-                                  .currentState?.fields['Diag2']
-                                  ?.validate() ??
-                              false);
+                          // No puede tener error. Es opcional y sale de un combo
+                          // _diag2HasError = !(_formKey
+                          //         .currentState?.fields['Diag2']
+                          //         ?.validate() ??
+                          //     false);
                         });
                       },
                       valueTransformer: (val) => val?.toString(),
@@ -647,21 +660,33 @@ class PatientWidgetState extends State<PatientWidget> {
                       hint: const Text('Seleccione el diagnóstico nivel 3'),
                       // validator: FormBuilderValidators.compose(
                       //     [FormBuilderValidators.required()]),
-                      items: diag3[_diag1Index][_diag2Index]
-                          .map(
-                            (diag3It) => DropdownMenuItem(
-                              value: diag3It,
-                              child: Text(diag3It),
-                            ),
-                          )
-                          .toList(),
+                      items: (_diag1 != null && _diag2 != null)
+                          ? diags[_diag1]![_diag2]!
+                              .keys
+                              .map(
+                                (diag3It) => DropdownMenuItem(
+                                  value: diag3It,
+                                  child: Text(diag3It),
+                                ),
+                              )
+                              .toList()
+                          : [""]
+                              .map(
+                                (diag3It) => DropdownMenuItem(
+                                  value: diag3It,
+                                  child: Text(diag3It),
+                                ),
+                              )
+                              .toList(),
                       onChanged: (val) {
                         debugPrint("Cambió el diagnóstico nivel 3");
-                        // El diag3 elegido me indica el segundo íncdice de la matriz de diag3
-                        _diag3Index =
-                            diag3[_diag1Index][_diag2Index].indexOf(val!);
+
+                        // Habilito el nivel siguiente
                         _inhabilitarDiag4 = false;
+
                         setState(() {
+                          _diag3 = val;
+
                           _dropDownKey4.currentState!.reset();
                           _dropDownKey4.currentState!.setValue(null);
 
@@ -700,23 +725,32 @@ class PatientWidgetState extends State<PatientWidget> {
                       hint: const Text('Seleccione el diagnóstico nivel 4'),
                       // validator: FormBuilderValidators.compose(
                       //     [FormBuilderValidators.required()]),
-                      items: diag4[_diag1Index][_diag2Index][_diag3Index]
-                          // items: diag4[0][0][0]
-                          .map(
-                            (diag4It) => DropdownMenuItem(
-                              value: diag4It,
-                              child: Text(diag4It),
-                            ),
-                          )
-                          .toList(),
+                      items:
+                          (_diag1 != null && _diag2 != null && _diag3 != null)
+                              ? diags[_diag1]![_diag2]![_diag3]!
+                                  .map(
+                                    (diag4It) => DropdownMenuItem(
+                                      value: diag4It,
+                                      child: Text(diag4It),
+                                    ),
+                                  )
+                                  .toList()
+                              : [""]
+                                  .map(
+                                    (diag4It) => DropdownMenuItem(
+                                      value: diag4It,
+                                      child: const Text("No hay nivel 4"),
+                                    ),
+                                  )
+                                  .toList(),
                       onChanged: (val) {
                         debugPrint("Cambió el diagnóstico nivel 4");
-                        setState(() {
-                        });
+                        setState(() {});
                       },
                       valueTransformer: (val) => val?.toString(),
                     ),
                   ),
+
                   const SizedBox(
                     height: 10,
                   ),
@@ -865,16 +899,18 @@ class PatientWidgetState extends State<PatientWidget> {
                   ),
                   color: Theme.of(context).colorScheme.secondary,
                   onPressed: () async {
-
                     if (_formKey.currentState?.saveAndValidate() ?? false) {
                       debugPrint(
                           "Valor de los campos: ${_formKey.currentState?.value.toString()}");
                     } else {
                       debugPrint(_formKey.currentState?.value.toString());
                       setState(() {
-                        if(!_formKey.currentState!.fields["LastName"]!.validate()) _lastNameHasError = true;
-                        if(!_formKey.currentState!.fields["FirstName"]!.validate()) _firstNameHasError = true;
-                        if(!_formKey.currentState!.fields["Identification"]!.validate()) _identHasError = true;
+                        if (!_formKey.currentState!.fields["LastName"]!
+                            .validate()) _lastNameHasError = true;
+                        if (!_formKey.currentState!.fields["FirstName"]!
+                            .validate()) _firstNameHasError = true;
+                        if (!_formKey.currentState!.fields["Identification"]!
+                            .validate()) _identHasError = true;
                       });
                       debugPrint('validation failed');
                       return;
@@ -976,15 +1012,16 @@ class PatientWidgetState extends State<PatientWidget> {
 
                     final snackBar = SnackBar(
                       duration: const Duration(seconds: 10),
-                      content: Text(
-                          'Se $_accion la ficha Nro.:  $_respuesta' /*+
-                          "---" +
-                          _formKey.currentState!.value.toString()*/
-                          ),
+                      content: (_respuesta != "") ? Text(
+                        'Se $_accion la ficha Nro.:  $_respuesta',
+                        textAlign: TextAlign.center,
+                      ) :  const Text(
+                        'No se creó la ficha. El servidor no responde',
+                        textAlign: TextAlign.center,
+                      ),
                       action: SnackBarAction(
                         label: 'OK',
                         onPressed: () {
-                          // Some code to undo the change.
                           // debugPrint("Listo");
                         },
                       ),

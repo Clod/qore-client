@@ -6,30 +6,12 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    debugPrint("Contruyendo dashboard_screen");
     return const AutoTabsScaffold(
       routes: [
         // const ProductsRoute(),
         // EditPatientRoute(parametro: Paciente(id: 0, nombre: "", apellido: "", fechaNacimiento: "", documento: "", nacionalidad: "", fechaCreacionFicha: "")),
       ],
-
-      // bottomNavigationBuilder: (context, tabsRouter) => BottomNavigationBar(
-      //     onTap: tabsRouter.setActiveIndex,
-      //     currentIndex: tabsRouter.activeIndex,
-      //     items: const [
-      //       BottomNavigationBarItem(
-      //         label: 'Pacientes',
-      //         icon: Icon(
-      //           Icons.people,
-      //         ),
-      //       ),
-      //       BottomNavigationBarItem(
-      //         label: 'Paciente',
-      //         icon: Icon(
-      //           Icons.person,
-      //         ),
-      //       ),
-      //     ]),
     );
   }
 }

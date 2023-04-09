@@ -17,20 +17,22 @@ class ProfileScreen extends StatelessWidget {
     if (parametro.apellido.isEmpty) {
       return Scaffold(
           appBar: AppBar(
-              title: const Text(constants.appDisplayName),
-              automaticallyImplyLeading:
-                  false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
-              actions: <Widget>[
-                IconButton(
-                    icon: const Icon(Icons.logout_outlined),
-                    tooltip: 'Salir del sistema',
-                    onPressed: () {
-                      // Me delogueo de Firebase
-                      FirebaseAuth.instance.signOut();
-                      // Le "aviso" a route_guard
-                      MyApp.of(context).authService.authenticated = false;
-                    })
-              ]),
+            title: const Text(constants.appDisplayName),
+            automaticallyImplyLeading:
+                false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.logout_outlined),
+                tooltip: 'Salir del sistema',
+                onPressed: () {
+                  // Me delogueo de Firebase
+                  FirebaseAuth.instance.signOut();
+                  // Le "aviso" a route_guard
+                  MyApp.of(context).authService.authenticated = false;
+                },
+              )
+            ],
+          ),
           body: const Center(
             child: Text(
               'No hay paciente seleccionado',
@@ -39,73 +41,66 @@ class ProfileScreen extends StatelessWidget {
           ));
     } else {
       return Scaffold(
-          appBar: AppBar(
-              title: const Text(constants.appDisplayName),
-              automaticallyImplyLeading:
-                  false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
-              actions: <Widget>[
-                IconButton(
-                    icon: const Icon(Icons.logout_outlined),
-                    tooltip: 'Salir del sistema',
-                    onPressed: () {
-                      // Me delogueo de Firebase
-                      FirebaseAuth.instance.signOut();
-                      // Le "aviso" a route_guard
-                      MyApp.of(context).authService.authenticated = false;
-                    })
-              ]),
-          body: Center(
-            child: Column(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                const SizedBox(
-                  height: 16,
+        appBar: AppBar(
+          title: const Text(constants.appDisplayName),
+          automaticallyImplyLeading:
+              false, // https://stackoverflow.com/questions/44978216/flutter-remove-back-button-on-appbar
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.logout_outlined),
+              tooltip: 'Salir del sistema',
+              onPressed: () {
+                // Me delogueo de Firebase
+                FirebaseAuth.instance.signOut();
+                // Le "aviso" a route_guard
+                MyApp.of(context).authService.authenticated = false;
+              },
+            )
+          ],
+        ),
+        body: Center(
+          child: Column(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const SizedBox(
+                height: 16,
+              ),
+              const Text(
+                "Información del paciente",
+                style: TextStyle(fontSize: 24),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                'Paciente:  ${parametro.nombre} ${parametro.apellido}',
+                style: const TextStyle(
+                  fontSize: 16,
                 ),
-                const Text(
-                  "Información del paciente",
-                  style: TextStyle(fontSize: 24),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Text(
+                'Nacionalidad:  ${parametro.nacionalidad}',
+                style: const TextStyle(
+                  fontSize: 16,
                 ),
-                const SizedBox(
-                  height: 16,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Text(
+                'Documento:  ${parametro.documento}',
+                style: const TextStyle(
+                  fontSize: 16,
                 ),
-                Text(
-                  'Paciente:  ${parametro.nombre} ${parametro.apellido}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  'Nacionalidad:  ${parametro.nacionalidad}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  'Documento:  ${parametro.documento}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                // TextButton(
-                //   onPressed: () {
-                //     // Me delogueo de Firebase
-                //     FirebaseAuth.instance.signOut();
-                //
-                //     // Le "aviso" a route_guard
-                //     MyApp.of(context).authService.authenticated = false;
-                //   },
-                //   child: const Text('Logout'),
-                // )
-              ],
-            ),
-          ));
+              ),
+            ],
+          ),
+        ),
+      );
     }
   }
 }

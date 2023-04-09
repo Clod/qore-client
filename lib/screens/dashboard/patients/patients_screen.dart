@@ -210,7 +210,14 @@ class _PatientsScreenState extends State<PatientsScreen> {
           default:
             if (snapshot.hasError) {
               final error = snapshot.error;
-              return Text('$error');
+              debugPrint(error.toString());
+              return const Center(
+                child: Text(
+                  'Error al recuperar datos. \n Por favor reintente. \n Si el problema persiste por favor avise al operador. ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              );
             } else if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
                 return const Center(
@@ -266,13 +273,6 @@ class _PatientsScreenState extends State<PatientsScreen> {
                   ),
                 ),
               );
-              // return const CircularProgressIndicator();
-              /*                      return HeartbeatProgressIndicator(child: const Center(child: Icon(
-                        CupertinoIcons.heart_fill,
-                        color: Colors.pink,
-                        size: 60.0,
-                        semanticLabel: 'Text to announce in accessibility modes',
-                      )));*/
             }
         }
       },
