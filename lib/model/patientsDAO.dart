@@ -118,9 +118,17 @@ Future<String> addPatient(Paciente patient) async {
         },
         body: convert.jsonEncode(patient));
     debugPrint("Respuesta del servidor:  ${response.statusCode} - ${response.body}");
-    RegExpMatch? id = exp.firstMatch(response.body);
-    idPaciente = id![0].toString();
-    debugPrint("Id del paciente creado: " + idPaciente);
+
+    // Si el paciente ya existe devuelvo id = -1
+    // Horrible pero estoy podrido
+    if (response.statusCode == 406 ){
+      idPaciente = "-1";
+    }
+    {
+      RegExpMatch? id = exp.firstMatch(response.body);
+      idPaciente = id![0].toString();
+      debugPrint("Id del paciente creado: " + idPaciente);
+    }
   } catch (e) {
     debugPrint("Error en el alta: " + e.toString());
   }

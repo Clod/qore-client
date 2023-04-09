@@ -1011,13 +1011,20 @@ class PatientWidgetState extends State<PatientWidget> {
 
                     final snackBar = SnackBar(
                       duration: const Duration(seconds: 10),
-                      content: (_respuesta != "") ? Text(
-                        'Se $_accion la ficha Nro.:  $_respuesta',
-                        textAlign: TextAlign.center,
-                      ) :  const Text(
-                        'No se creó la ficha. El servidor no responde',
-                        textAlign: TextAlign.center,
-                      ),
+                      content: (_respuesta != "" && _respuesta != "-1")
+                          ? Text(
+                              'Se $_accion la ficha Nro.:  $_respuesta',
+                              textAlign: TextAlign.center,
+                            )
+                          : (_respuesta != ""
+                              ? const Text(
+                                  'Ya existe un paciente con ese documento',
+                                  textAlign: TextAlign.center,
+                                )
+                              : const Text(
+                                  'No se creó la ficha. El servidor no responde',
+                                  textAlign: TextAlign.center,
+                                )),
                       action: SnackBarAction(
                         label: 'OK',
                         onPressed: () {
