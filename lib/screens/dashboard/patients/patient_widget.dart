@@ -6,8 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
-import '../../../model/arbol_diagnosticos.dart';
-import '../../../model/diagnosticos_nivel_1.dart';
+import '../../../model/arbol_de_diagnosticos.dart';
 import '../../../model/paciente.dart';
 import '../../../model/paises.dart';
 import '../../../model/patientsDAO.dart';
