@@ -30,7 +30,7 @@ Uri getURI(String tipoDato, String value) {
       }
     }
   } else {
-    url = Uri.parse(GlobalData.URL_PROD.toString() + value);
+    url = Uri.parse(GlobalData.URL_PROD.toString() + parametros);
     // url = Uri.parse("http://192.168.0.94:8080/patients"+ value);
   }
 

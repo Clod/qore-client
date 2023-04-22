@@ -2,9 +2,18 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/routes/router.gr.dart';
 import 'package:cardio_gut/util/auth_service.dart';
 
+import '../assets/global_data.dart';
+
 class RouteGuard extends AutoRedirectGuard {
   final AuthService authService;
+
   RouteGuard(this.authService) {
+
+    if (GlobalData.executionMode == ExecutionMode.DEV) {
+      // Descomentar para que no me pida credenciales cada vez que hago hot reload
+      // authService.authenticated = true;
+    }
+
     // Clod: This will trigger whenever there is a change in authentication state.
     // The developer does not have to explicitly check for authentication anywhere.
     authService.addListener(() {

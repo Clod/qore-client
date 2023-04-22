@@ -18,6 +18,11 @@ Future<void> main() async {
   // Si el IDE no le pasa ningún parámetro asumo que es PROD
   if (const String.fromEnvironment("EXECUTION_MODE") == "DEV") {
     GlobalData.executionMode = ExecutionMode.DEV;
+    debugPrint("Al ejecutar en modo DEV no usa el Route Guard");
+    // Si se necesita probar la autenticación por algún motivo
+    // Comentar la línea:
+    //        authService.authenticated = true;
+    // en la clase route_guard
   } else {
     GlobalData.executionMode = ExecutionMode.PROD;
   }
@@ -56,10 +61,7 @@ class MyAppState extends State<MyApp> {
   // final _appRouter = AppRouter();
 
   late final _appRouter = AppRouter(
-    // DESCOMENTAR LA LÍNEA DE ABAJO PARA EL BUILD PARA PRODUCCIÓN
-    // la idea es poder usar el hot reload sin que me mande cada vez
-    // a la pantalla de login
-    //routeGuard: RouteGuard(authService),
+    routeGuard: RouteGuard(authService),
   );
 
   @override

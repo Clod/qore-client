@@ -210,9 +210,21 @@ class _PatientsScreenState extends State<PatientsScreen> {
           default:
             if (snapshot.hasError) {
               final error = snapshot.error;
-              debugPrint(error.toString());
-              return const Center(
-                child: Text(
+              debugPrint("El servidor devolvió un error: ${error.toString()}");
+              String input = error.toString();
+              String digits = "";
+              RegExp exp = RegExp(r"\d{3}");
+              RegExpMatch? match = exp.firstMatch(input);
+              if (match != null) {
+                  digits = match.group(0)!;
+                debugPrint(digits); // prints "123"
+              }
+              return Center(
+                child: digits == "403"  ? const Text(
+                  'Error al recuperar datos. \n Usuario no autorizado. ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ) : const Text(
                   'Error al recuperar datos. \n Por favor reintente. \n Si el problema persiste por favor avise al operador. ',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

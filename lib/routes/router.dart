@@ -27,13 +27,15 @@ import 'package:flutter/foundation.dart';
       page: PatientsScreen,
       name: 'PatientsRoute',
       path: 'patients',
-      guards: kReleaseMode ? [RouteGuard] : null,
+      // guards: kReleaseMode ? [RouteGuard] : null,
+      guards: [RouteGuard],
     ),
     AutoRoute(
       page: AddPatientScreen,
       name: 'AddPatientRoute',
       path: 'add_patient',
-      guards: kReleaseMode ? [RouteGuard] : null,
+      //guards: kReleaseMode ? [RouteGuard] : null,
+      guards: [RouteGuard],
     ),
     AutoRoute(
       page: AboutScreen,
@@ -43,7 +45,8 @@ import 'package:flutter/foundation.dart';
     AutoRoute(
       page: EditPatientScreen,
       name: 'EditPatientRoute',
-      guards: kReleaseMode ? [RouteGuard] : null,
+      // guards: kReleaseMode ? [RouteGuard] : null,
+      guards: [RouteGuard],
       path: 'edit_patient',
     )
     // All routes within Dashboard are guarded

@@ -55,7 +55,7 @@ firebase_options.dat tiraba una parva de errores que se fueron tocando pubspec.y
 firebase_core: ^1.10.6 <- Cambiada la versión
 #firebase_auth: ^0.15.1+1 <- Comentado
 
-Ahora intento meter el códifo en main.dart
+Ahora intento meter el código en main.dart
 
 Logré inicializar Firebase.
 

@@ -299,7 +299,7 @@ class PatientWidgetState extends State<PatientWidget> {
                                   vertical: 8.0, horizontal: 10.0),
                               border: OutlineInputBorder()),
                           onChanged: _onUnbornChanged,
-                          title: const Text("Diag. prenatal"),
+                          title: const Text("Diagnóstico prenatal"),
                         ),
                       ),
                       const SizedBox(
@@ -368,7 +368,7 @@ class PatientWidgetState extends State<PatientWidget> {
                                   name: 'NroFichaDiagPrenatal',
                                   decoration: const InputDecoration(
                                     labelText: kIsWeb
-                                        ? 'Nro. ficha diag. prenatal'
+                                        ? 'Nro. de ficha del diagnóstico prenatal'
                                         : 'Nro. ficha\ndiag. prenatal',
                                     isDense: true,
                                     contentPadding: EdgeInsets.symmetric(
@@ -1028,7 +1028,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       action: SnackBarAction(
                         label: 'OK',
                         onPressed: () {
-                          // debugPrint("Listo");
+                          debugPrint("Listo");
                         },
                       ),
                     );
