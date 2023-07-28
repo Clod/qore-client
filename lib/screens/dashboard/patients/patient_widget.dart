@@ -53,7 +53,7 @@ class PatientWidgetState extends State<PatientWidget> {
   String? _comentarios = '';
 
   bool _diag1HasError = false;
-  bool _diag2HasError = false;
+  final bool _diag2HasError = false;
   bool _diag3HasError = false;
   bool _countryHasError = false;
   bool _identHasError = false;
@@ -404,9 +404,9 @@ class PatientWidgetState extends State<PatientWidget> {
                           ),
                           alignment: WrapAlignment.spaceAround,
                           options: const [
-                            FormBuilderFieldOption(value: "M"),
-                            FormBuilderFieldOption(value: "F"),
-                            FormBuilderFieldOption(value: "N/I"),
+                            FormBuilderChipOption(value: "M"),
+                            FormBuilderChipOption(value: "F"),
+                            FormBuilderChipOption(value: "N/I"),
                           ],
                           selectedColor: Colors.blueAccent,
                           onChanged: (value) {
@@ -435,8 +435,8 @@ class PatientWidgetState extends State<PatientWidget> {
                                 ? const Icon(Icons.error)
                                 : const Icon(Icons.check),
                           ),
-                          allowClear: false,
-                          hint: const Text('País emisor del documento'),
+                          // allowClear: false,   xxxx
+                          // hint: const Text('País emisor del documento'), xxxx
                           items: countries
                               .map(
                                 (ctry) => DropdownMenuItem(
@@ -510,9 +510,8 @@ class PatientWidgetState extends State<PatientWidget> {
                           ? const Icon(Icons.error)
                           : const Icon(Icons.check),
                     ),
-                    allowClear:
-                        false, // Muestro (o no) una x a la derecha para resetear el campo
-                    hint: const Text('Seleccione el diagnóstico nivel 1'),
+                    // allowClear: false, // Muestro (o no) una x a la derecha para resetear el campo xxx
+                    // hint: const Text('Seleccione el diagnóstico nivel 1'), xxx
                     validator: FormBuilderValidators.compose(
                         [FormBuilderValidators.required()]),
                     items: diags.keys
@@ -541,7 +540,7 @@ class PatientWidgetState extends State<PatientWidget> {
 
                         debugPrint("Diags de nivel 2: " +
                             diags[_diag1]!.keys.toString());
-                        debugPrint((diags[_diag1]!.keys == null).toString());
+                        debugPrint((diags[_diag1]!.keys).toString());
 
                         // Reseteo el valor de subdiagnóstico para que no vuele por el aire si llego
                         // a cambiar el diagnóstico una vez que ya elegí el subdiagnóstico
@@ -586,8 +585,8 @@ class PatientWidgetState extends State<PatientWidget> {
                             ? const Icon(Icons.error)
                             : const Icon(Icons.check),
                       ),
-                      allowClear: false,
-                      hint: const Text('Seleccione el diagnóstico nivel 2'),
+                      // allowClear: false,  xxxx
+                      // hint: const Text('Seleccione el diagnóstico nivel 2'), xxxx
                       // Intenta armar las listas aunque el widget no esté habilitado.
                       // Si la lista está vacía no habilita la elección.
                       // Cuando entro la primera vez _diag1 = null pero
@@ -655,8 +654,8 @@ class PatientWidgetState extends State<PatientWidget> {
                             : const Icon(Icons.check),
                       ),
                       // initialValue: 'Male',
-                      allowClear: false,
-                      hint: const Text('Seleccione el diagnóstico nivel 3'),
+                      // allowClear: false, xxxx
+                      // hint: const Text('Seleccione el diagnóstico nivel 3'), xxxx
                       // validator: FormBuilderValidators.compose(
                       //     [FormBuilderValidators.required()]),
                       items: (_diag1 != null && _diag2 != null)
@@ -720,8 +719,8 @@ class PatientWidgetState extends State<PatientWidget> {
                         //     ? const Icon(Icons.error)
                         //     : const Icon(Icons.check),
                       ),
-                      allowClear: false,
-                      hint: const Text('Seleccione el diagnóstico nivel 4'),
+                      // allowClear: false,   xxxx
+                      // hint: const Text('Seleccione el diagnóstico nivel 4'),   xxxxx
                       // validator: FormBuilderValidators.compose(
                       //     [FormBuilderValidators.required()]),
                       items:
