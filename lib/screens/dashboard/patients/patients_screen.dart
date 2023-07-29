@@ -7,7 +7,8 @@ import 'package:progress_indicators/progress_indicators.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
 
 import '../../../main.dart';
-import '../../../model/patientsDAO.dart';
+// import '../../../model/patientsDAO.dart';
+import '../../../model/patients_dao_ws.dart';
 import '../../../routes/router.gr.dart';
 
 // Future Data
@@ -23,7 +24,6 @@ class PatientsScreen extends StatefulWidget {
 }
 
 class _PatientsScreenState extends State<PatientsScreen> {
-
   var searchIconColor = Colors.redAccent;
 
   late Future<List<Paciente>>? dataFuture;
@@ -31,8 +31,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
   @override
   void initState() {
     super.initState();
-    dataFuture =
-        null; // Si lo pongo en null, usa initialData: allPatients del future builder
+    dataFuture = null; // Si lo pongo en null, usa initialData: allPatients del future builder
     // debugPrint("Recibí el token: ${GlobalData.firebaseToken}");
   }
 
@@ -99,8 +98,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
             child: InputDecorator(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -139,9 +137,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                 controller: datoBusqueda,
                 onChanged: (value) => {
                   setState(() {
-                    searchIconColor = (value.length < minLastNameLength)
-                        ? Colors.redAccent
-                        : Colors.greenAccent;
+                    searchIconColor = (value.length < minLastNameLength) ? Colors.redAccent : Colors.greenAccent;
                   })
                 },
                 decoration: const InputDecoration(
@@ -153,8 +149,10 @@ class _PatientsScreenState extends State<PatientsScreen> {
                       ? null
                       : setState(
                           () {
-                            dataFuture =
-                                traerPacientes(datoBusqueda.value.text, optBuscar);
+                            dataFuture = traerPacientesWS(
+                              datoBusqueda.value.text,
+                              optBuscar,
+                            );
                           },
                         );
                 },
@@ -168,13 +166,12 @@ class _PatientsScreenState extends State<PatientsScreen> {
             // },
             onPressed: () {
               // https://stackoverflow.com/questions/44991968/how-can-i-dismiss-the-on-screen-keyboard
-              FocusScope.of(context)
-                  .requestFocus(FocusNode()); // Escondo el teclado virtual
+              FocusScope.of(context).requestFocus(FocusNode()); // Escondo el teclado virtual
               searchIconColor == Colors.redAccent
                   ? null
                   : setState(
                       () {
-                        dataFuture = traerPacientes(datoBusqueda.value.text,optBuscar);
+                        dataFuture = traerPacientesWS(datoBusqueda.value.text, optBuscar);
                       },
                     );
             },
@@ -216,19 +213,21 @@ class _PatientsScreenState extends State<PatientsScreen> {
               RegExp exp = RegExp(r"\d{3}");
               RegExpMatch? match = exp.firstMatch(input);
               if (match != null) {
-                  digits = match.group(0)!;
+                digits = match.group(0)!;
                 debugPrint(digits); // prints "123"
               }
               return Center(
-                child: digits == "403"  ? const Text(
-                  'Error al recuperar datos. \n Usuario no autorizado. ',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ) : const Text(
-                  'Error al recuperar datos. \n Por favor reintente. \n Si el problema persiste por favor avise al operador. ',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                child: digits == "403"
+                    ? const Text(
+                        'Error al recuperar datos. \n Usuario no autorizado. ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      )
+                    : const Text(
+                        'Error al recuperar datos. \n Por favor reintente. \n Si el problema persiste por favor avise al operador. ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
               );
             } else if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {

@@ -9,7 +9,18 @@ class GlobalData {
   GlobalData();
 }
 
+enum Commands {
+  addPatient,
+  getPatientsByIdDoc,
+  getPatientsByLastName,
+  getPatientById,
+  updatePatient,
+  deletePatient
+}
+
 enum ExecutionMode {
   DEV,
   PROD
 }
+
+

@@ -44,24 +44,24 @@ class Paciente {
   factory Paciente.fromJson(Map<String, dynamic> data) {
 // note the explicit cast to String
 // this is required if robust lint rules are enabled
-    final id = data['id'] as int;
+    final id = int.parse(data['id']);
     final nombre = data['nombre'] as String;
     final apellido = data['apellido'] as String;
-    final fechaNacimiento = data['fechaNacimiento'] as String?;
+    final fechaNacimiento = data['fechanacimiento'] as String?;
     final documento = data['documento'] as String?;
     final nacionalidad = data['nacionalidad'] as String?;
-    final fechaCreacionFicha = data['fechaCreacionFicha'] as String;
+    final fechaCreacionFicha = data['fecha_creacion_ficha'] as String;
     final sexo = data['sexo'] as String?;
-    final diagnosticoPrenatal = data['diagnosticoPrenatal'] as String?;
-    final pacienteFallecido = data['pacienteFallecido'] as String?;
-    final semanasGestacion = data['semanasGestacion'] as int?;
+    final diagnosticoPrenatal = data['diagnostico_prenatal'] as String?;
+    final pacienteFallecido = data['paciente_fallecido'] as String?;
+    final semanasGestacion = data['semanas_gestacion'] != null ? int.parse(data['semanas_gestacion']) : null;
     final diag1 = data['diag1'] as String?;
     final diag2 = data['diag2'] as String?;
     final diag3 = data['diag3'] as String?;
     final diag4 = data['diag4'] as String?;
-    final fechaPrimerDiagnostico = data['fechaPrimerDiagnostico'] as String?;
-    final nroHistClinicaPapel = data['nroHistClinicaPapel'] as String?;
-    final nroFichaDiagPrenatal = data['nroFichaDiagPrenatal'] as String?;
+    final fechaPrimerDiagnostico = data['fecha_primer_diagnostico'] as String?;
+    final nroHistClinicaPapel = data['nro_hist_clinica_papel'] as String?;
+    final nroFichaDiagPrenatal = data['nro_ficha_diag_prenatal'] as String?;
     final comentarios = data['comentarios'] as String?;
 
     return Paciente(
@@ -112,6 +112,6 @@ class Paciente {
   @override
   String toString() {
     // return (id.toString() + " " + nombre + " " + apellido);
-    return this.toJson().toString();
+    return toJson().toString();
   }
 }

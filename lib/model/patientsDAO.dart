@@ -34,8 +34,6 @@ Uri getURI(String tipoDato, String value) {
     // url = Uri.parse("http://192.168.0.94:8080/patients"+ value);
   }
 
-  debugPrint("Trying to connect to server at: $url");
-
   return url;
 }
 
