@@ -1,3 +1,5 @@
+import 'package:logger/logger.dart';
+
 class GlobalData {
   static String? firebaseToken;
   static ExecutionMode executionMode = ExecutionMode.PROD;
@@ -15,7 +17,7 @@ enum Commands {
   getPatientsByLastName,
   getPatientById,
   updatePatient,
-  deletePatient
+  deletePatient,
 }
 
 enum ExecutionMode {
@@ -23,4 +25,14 @@ enum ExecutionMode {
   PROD
 }
 
+var logger = Logger(
+  printer: PrettyPrinter(
+    methodCount: 1,
+    lineLength: 80,
+  ),
+);
+
+var loggerNoStack = Logger(
+  printer: PrettyPrinter(methodCount: 0),
+);
 

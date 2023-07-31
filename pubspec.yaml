@@ -49,6 +49,7 @@ dependencies:
 #  form_builder_validators: ^8.1.0
   form_builder_validators: ^9.0.0
   web_socket_channel: ^2.4.0
+  logger: ^2.0.1
 
 dev_dependencies:
   flutter_test:

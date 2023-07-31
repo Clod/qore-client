@@ -183,6 +183,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
     );
   }
 
+  // Show the list of all Patients retrieved
   FutureBuilder<List<Paciente>> showPatientsList() {
     return FutureBuilder<List<Paciente>>(
       // https://youtu.be/Pp3zoNDGZUI?t=384 Ver el video para ver como usar initial data.
