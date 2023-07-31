@@ -38,7 +38,7 @@ class EditPatientScreen extends StatelessWidget {
           body: const Center(
             child: Text(
               'No hay paciente seleccionado',
-              style: TextStyle(fontSize: 24),
+              style: TextStyle(fontSize: 24.0),
             ),
           ));
     } else {

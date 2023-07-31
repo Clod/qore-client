@@ -10,7 +10,6 @@ import '../../../assets/global_data.dart';
 import '../../../model/arbol_de_diagnosticos.dart';
 import '../../../model/paciente.dart';
 import '../../../model/paises.dart';
-import '../../../model/patientsDAO.dart';
 import '../../../model/patients_dao_ws.dart';
 
 class PatientWidget extends StatefulWidget {
@@ -219,16 +218,6 @@ class PatientWidgetState extends State<PatientWidget> {
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
-                    // Commented because I do not need validation on the fly
-                    // I need it before sumitting form
-                    // onChanged: (val) {
-                    // setState(() {
-                    // _lastNameHasError = !(_formKey
-                    //         .currentState?.fields['LastName']
-                    //         ?.validate() ??
-                    //     false);
-                    // });
-                    // },
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                       FormBuilderValidators.match("[a-zA-Z ]+"),
@@ -251,10 +240,6 @@ class PatientWidgetState extends State<PatientWidget> {
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
-                    // Si no lo comento, cada letra que meto redibuja el formulario enterito
-                    // onChanged: (val) {
-                    //   setState(() {});
-                    // },
 
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
@@ -296,9 +281,6 @@ class PatientWidgetState extends State<PatientWidget> {
                             name: 'SemanasGestacion',
                             keyboardType: TextInputType.number,
                             validator: FormBuilderValidators.compose([
-                              // FormBuilderValidators.required(),
-                              // FormBuilderValidators.numeric(),
-                              // FormBuilderValidators.max(40),
                             ]),
                             decoration: InputDecoration(
                               labelText: 'Semanas de gestación',
@@ -916,19 +898,22 @@ class PatientWidgetState extends State<PatientWidget> {
 
                     if (_creandoFicha) {
                       // _respuesta = await addPatient(paciente);
-                      _respuesta = await addPatientWS(paciente);
+                      _respuesta = await addPatientWS(paciente, informConectionProblems);
                       logger.d("Respuesta del servidor: $_respuesta");
                       _accion = 'creó';
                     } else {
-                      _respuesta = await updatePatientWS(paciente);
+                      _respuesta = await updatePatientWS(paciente, informConectionProblems);
                       _accion = 'modificó';
                     }
 
-                    final snackBar = buildSnackBar2(_respuesta, _accion);
+                    //final snackBar = buildSnackBar2(_respuesta, _accion);
 
                     // Find the ScaffoldMessenger in the widget tree
                     // and use it to show a SnackBar.
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                    showSnackBar(_respuesta,_accion);
+
                     if (_creandoFicha) {
                       AutoRouter.of(context).pop();
                     } else {
@@ -943,6 +928,14 @@ class PatientWidgetState extends State<PatientWidget> {
         ),
       ),
     );
+  }
+
+  informConectionProblems() {
+    const snackBar = SnackBar(
+      content: Text('Error de conexión con el serivdor.'),
+      duration: Duration(seconds: 10),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   SnackBar buildSnackBar2(String _respuesta, String _accion) {
@@ -991,5 +984,41 @@ class PatientWidgetState extends State<PatientWidget> {
         },
       ),
     );
+  }
+
+  void showSnackBar(String _respuesta, String _accion) {
+    // Remove curly braces from the string
+    String keyValueString = _respuesta.replaceAll('{', '').replaceAll('}', '').replaceAll('\"', '');
+
+// Split the string into an array of key-value pairs
+    List<String> keyValuePairs = keyValueString.split(',');
+// Create a new Map<String, dynamic> object
+    Map<String, dynamic> resultMap = {};
+
+// Populate the Map with key-value pairs
+    for (String keyValue in keyValuePairs) {
+      // Split each key-value pair by the colon
+      List<String> pair = keyValue.split(':');
+
+      // Trim whitespace from the key and value strings
+      String key = pair[0].trim();
+      String? value = (pair[1].trim() == 'null' ? null : pair[1].trim());
+
+      // Add the key-value pair to the Map
+      resultMap[key] = value;
+    }
+
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 15),
+      content: Text(resultMap['Message']),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {
+          logger.d("Listo");
+        },
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

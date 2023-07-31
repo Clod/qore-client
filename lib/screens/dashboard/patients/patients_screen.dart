@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
-
+import '../../../assets/global_data.dart';
 import '../../../main.dart';
 // import '../../../model/patientsDAO.dart';
 import '../../../model/patients_dao_ws.dart';
@@ -70,9 +70,9 @@ class _PatientsScreenState extends State<PatientsScreen> {
         children: [
           // Text("Buscar por: ",
           //   style: TextStyle(fontSize: 24),),
-          const SizedBox(height: 20),
+          const SizedBox(height: 20.0),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 10.0),
             child: searchPanel(),
           ),
           // const Divider(color: Colors.black),
@@ -89,7 +89,10 @@ class _PatientsScreenState extends State<PatientsScreen> {
       decoration: const InputDecoration(
         labelText: "Buscar por:",
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 10.0,
+          vertical: 5.0,
+        ),
       ),
       child: Row(
         children: [
@@ -98,7 +101,10 @@ class _PatientsScreenState extends State<PatientsScreen> {
             child: InputDecorator(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 5.0,
+                ),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -149,10 +155,17 @@ class _PatientsScreenState extends State<PatientsScreen> {
                       ? null
                       : setState(
                           () {
-                            dataFuture = traerPacientesWS(
-                              datoBusqueda.value.text,
-                              optBuscar,
-                            );
+                            try {
+                              dataFuture = traerPacientesWS(
+                                datoBusqueda.value.text,
+                                optBuscar,
+                                informConectionProblems,
+                                informErrorsReportedByServer,
+                              );
+                            } catch (e) {
+                              logger.f("*********** Reventó ***********");
+                              logger.f(e);
+                            }
                           },
                         );
                 },
@@ -171,7 +184,12 @@ class _PatientsScreenState extends State<PatientsScreen> {
                   ? null
                   : setState(
                       () {
-                        dataFuture = traerPacientesWS(datoBusqueda.value.text, optBuscar);
+                        dataFuture = traerPacientesWS(
+                          datoBusqueda.value.text,
+                          optBuscar,
+                          informConectionProblems,
+                          informErrorsReportedByServer,
+                        );
                       },
                     );
             },
@@ -181,6 +199,50 @@ class _PatientsScreenState extends State<PatientsScreen> {
         ],
       ),
     );
+  }
+
+  informConectionProblems() {
+    const snackBar = SnackBar(
+      content: Text('Error de conexión con el serivdor.'),
+      duration: Duration(seconds: 10),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  informErrorsReportedByServer(String _respuesta) {
+    // Remove curly braces from the string
+    String keyValueString = _respuesta.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '');
+
+// Split the string into an array of key-value pairs
+    List<String> keyValuePairs = keyValueString.split(',');
+// Create a new Map<String, dynamic> object
+    Map<String, dynamic> resultMap = {};
+
+// Populate the Map with key-value pairs
+    for (String keyValue in keyValuePairs) {
+      // Split each key-value pair by the colon
+      List<String> pair = keyValue.split(':');
+
+      // Trim whitespace from the key and value strings
+      String key = pair[0].trim();
+      String? value = (pair[1].trim() == 'null' ? null : pair[1].trim());
+
+      // Add the key-value pair to the Map
+      resultMap[key] = value;
+    }
+
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 15),
+      content: Text(resultMap['Message']),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {
+          logger.d("Listo");
+        },
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   // Show the list of all Patients retrieved
