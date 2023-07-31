@@ -9,13 +9,15 @@ import '../../../assets/global_data.dart';
 import '../../../main.dart';
 // import '../../../model/patientsDAO.dart';
 import '../../../model/patients_dao_ws.dart';
-import '../../../routes/router.gr.dart';
+import '../../../routes/app_router.dart';
+
 
 // Future Data
 // https://youtu.be/Pp3zoNDGZUI
 
 const int minLastNameLength = 2;
 
+@RoutePage()
 class PatientsScreen extends StatefulWidget {
   const PatientsScreen({Key? key}) : super(key: key);
 
@@ -55,6 +57,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
               // Le "aviso" a route_guard
               MyApp.of(context).authService.authenticated = false;
               debugPrint("Después de invalidar authenticated");
+              AutoRouter.of(context).push(const HomeRoute());
             },
           )
         ],

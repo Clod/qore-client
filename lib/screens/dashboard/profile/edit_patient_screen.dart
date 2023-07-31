@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/screens/dashboard/patients/patient_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:cardio_gut/assets/constants.dart' as constants;
 
 // This screen allows the modification of an exitent patien's data
 // Is uses PatientWidget to edit fields
+
+@RoutePage()
 class EditPatientScreen extends StatelessWidget {
   const EditPatientScreen({Key? key, required this.parametro}) : super(key: key);
 

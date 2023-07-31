@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
 import '../../main.dart';
-import '../../routes/router.gr.dart';
 import '../../assets/global_data.dart';
+import '../../routes/app_router.dart';
 
 // La pantalla de login la saqué de:
 // https://www.tutorialkart.com/flutter/flutter-login-screen/
 
+@RoutePage()
 class LoginScreen extends StatelessWidget {
   // By convention, widget constructors only use named arguments.
   // Also by convention, the first argument is key, and the last argument
@@ -17,11 +18,11 @@ class LoginScreen extends StatelessWidget {
   // If your class represents an object that will never change after its
   // creation, you can benefit from the use of a constant constructor. You
   // have to make sure that all your class fields are final.
-  const LoginScreen({Key? key, required this.onLoginCallback})
+  const LoginScreen({Key? key, required this.onResult})
       : super(key: key);
 
   // onLoginCallback es una función que tiene un parámetro de tipo bool
-  final Function(bool loggedIn) onLoginCallback;
+  final Function(bool loggedIn) onResult;
 
   static const String _title = constants.appDisplayName;
 
@@ -29,7 +30,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text(_title)),
-      body: MyStatefulWidget(onLoginCallback: onLoginCallback),
+      body: MyStatefulWidget(onLoginCallback: onResult),
     );
   }
 }
@@ -208,7 +209,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     debugPrint("Intento ir a about");
 
                     AutoRouter.of(context)
-                        .push(AboutRouter(parametro: "Un parámetro"));
+                        .push(AboutRoute(parametro: "Un parámetro"));
                   },
                 )
               ],

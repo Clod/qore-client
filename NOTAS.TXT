@@ -1,0 +1,7 @@
+flutter packages pub run build_runner watch
+
+flutter build web
+
+npm install -g http-server
+cd web
+http-server
