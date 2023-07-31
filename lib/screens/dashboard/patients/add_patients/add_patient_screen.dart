@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/screens/dashboard/patients/patient_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
 import '../../../../main.dart';
 
+@RoutePage()
 class AddPatientScreen extends StatefulWidget {
   const AddPatientScreen({Key? key}) : super(key: key);
 

@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cardio_gut/routes/router.gr.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -11,6 +10,7 @@ import '../../../model/arbol_de_diagnosticos.dart';
 import '../../../model/paciente.dart';
 import '../../../model/paises.dart';
 import '../../../model/patients_dao_ws.dart';
+import '../../../routes/app_router.dart';
 
 class PatientWidget extends StatefulWidget {
   const PatientWidget({Key? key, this.parametro}) : super(key: key);

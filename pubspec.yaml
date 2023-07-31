@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.16.1 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -31,22 +31,18 @@ dependencies:
     sdk: flutter
 
   # Clod: Route Handling
-  auto_route: ^4.0.1
+  auto_route: ^7.7.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-#  firebase_core: ^1.10.6
-#  firebase_auth: ^3.3.10
   firebase_core: ^2.10.0
   firebase_auth: ^4.7.2
 
   http: ^0.13.4
   progress_indicators: 1.0.0
   flutter_dotenv: ^5.0.2
-#  flutter_form_builder: ^7.1.1
   flutter_form_builder: ^9.1.0
-#  form_builder_validators: ^8.1.0
   form_builder_validators: ^9.0.0
   web_socket_channel: ^2.4.0
   logger: ^2.0.1
@@ -62,11 +58,13 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
 
-  # Clod: everything related to code generation in Flutter
-  build_runner: ^2.1.7
-
   # Clod: a helper package to auto_route for generating the routes
-  auto_route_generator: ^4.0.0
+  auto_route_generator: ^7.2.0
+
+  # Clod: everything related to code generation in Flutter
+  build_runner: any
+  build_test: any
+  build_web_compilers: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

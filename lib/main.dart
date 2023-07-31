@@ -1,6 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/assets/global_data.dart';
-import 'package:cardio_gut/routes/route_guard.dart';
-import 'package:cardio_gut/routes/router.gr.dart';
+import 'package:cardio_gut/routes/app_router.dart';
 import 'package:cardio_gut/util/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -28,14 +28,14 @@ Future<void> main() async {
     GlobalData.executionMode = ExecutionMode.PROD;
   }
 
-  debugPrint ("Ejecutando en modo: ${GlobalData.executionMode}");
+  debugPrint("Ejecutando en modo: ${GlobalData.executionMode}");
 
   // Ahora cargo las URLs del archivo de configuración
   await dotenv.load(fileName: "abracadabra");
 
-  GlobalData.URL_WEB_DEV=dotenv.get("URL_WEB_DEV");
-  GlobalData.URL_AND_DEV=dotenv.get("URL_AND_DEV");
-  GlobalData.URL_PROD=dotenv.get("URL_PROD");
+  GlobalData.URL_WEB_DEV = dotenv.get("URL_WEB_DEV");
+  GlobalData.URL_AND_DEV = dotenv.get("URL_AND_DEV");
+  GlobalData.URL_PROD = dotenv.get("URL_PROD");
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -49,8 +49,7 @@ class MyApp extends StatefulWidget {
   // with the widgets. If we want to access any member of a state up this
   // tree, we can use this function to first find MyAppState within this
   // context, and then access the authService member variable.
-  static MyAppState of(BuildContext context) =>
-      context.findAncestorStateOfType<MyAppState>()!;
+  static MyAppState of(BuildContext context) => context.findAncestorStateOfType<MyAppState>()!;
 
   @override
   State<MyApp> createState() => MyAppState();
@@ -62,7 +61,8 @@ class MyAppState extends State<MyApp> {
   // final _appRouter = AppRouter();
 
   late final _appRouter = AppRouter(
-    routeGuard: RouteGuard(authService),
+    //routeGuard: RouteGuard(authService),
+    authService,
   );
 
   @override
@@ -73,13 +73,24 @@ class MyAppState extends State<MyApp> {
       // The resulting font size is (originalSize * fontSizeFactor + fontSizeDelta).
       theme: ThemeData(
         textTheme: Theme.of(context).textTheme.apply(
-          fontSizeFactor: 0.9,
-          fontSizeDelta: 0.0,
-        ),
+              fontSizeFactor: 0.9,
+              fontSizeDelta: 0.0,
+            ),
       ),
       debugShowCheckedModeBanner: true,
-      routeInformationParser: _appRouter.defaultRouteParser(),
-      routerDelegate: _appRouter.delegate(),
+      routerConfig: _appRouter.config(deepLinkBuilder: (deepLink) {
+        if (deepLink.path.startsWith('/patient-route')) {
+          // continute with the platfrom link
+          return deepLink;
+        } else {
+          //return DeepLink.defaultPath;
+          // or DeepLink.path('/')
+          // or DeepLink([HomeRoute()])
+          return const DeepLink([HomeRoute()]);
+        }
+      }),
+      // routeInformationParser: _appRouter.defaultRouteParser(),
+      // routerDelegate: _appRouter.delegate(),
       localizationsDelegates: const [
         FormBuilderLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
