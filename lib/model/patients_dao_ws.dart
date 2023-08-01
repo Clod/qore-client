@@ -119,7 +119,7 @@ Future<List<Paciente>> traerPacientesWS(String value, String optBuscar, Function
   String? decodedMessage;
 
   try {
-    transceiver = Transceiver('wss://cauto.com.ar:8000', callback);
+    transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
     if (optBuscar == 'Apellido') {
       transceiver.sendMessage(command: Commands.getPatientsByLastName, data: value);
     } else {
@@ -162,7 +162,7 @@ Future<List<Paciente>> traerPacientesWS(String value, String optBuscar, Function
 Future<String> addPatientWS(Paciente patient, Function callback) async {
   logger.d('Envío pedido de alta al servidor ');
 
-  Transceiver transceiver = Transceiver('wss://cauto.com.ar:8000', callback);
+  Transceiver transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
 
   transceiver.sendMessage(command: Commands.addPatient, data: patient.toJson().toString());
 
@@ -190,7 +190,7 @@ Future<String> addPatientWS(Paciente patient, Function callback) async {
 Future<String> updatePatientWS(Paciente patient, Function callback) async {
   logger.d('Envío pedido de modificación al servidor ');
 
-  Transceiver transceiver = Transceiver('wss://cauto.com.ar:8000', callback);
+  Transceiver transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
 
   transceiver.sendMessage(command: Commands.updatePatient, data: patient.toJson().toString());
 
