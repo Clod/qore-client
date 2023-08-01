@@ -6,11 +6,10 @@ import 'app_router.dart';
 class AuthGuard extends AutoRouteGuard {
 
   final AuthService authService;
-
   AuthGuard(this.authService);
 
   @override
-  void onNavigation(NavigationResolver resolver, StackRouter router) {
+  void onNavigation(NavigationResolver resolver, StackRouter router) async {
     logger.d("Intentando navegar con authService.authenticated ${authService.authenticated}");
     // the navigation is paused until resolver.next() is called with either
     // true to resume/continue navigation or false to abort navigation

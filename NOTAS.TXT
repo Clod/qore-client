@@ -4,7 +4,7 @@ watch parameter tell the tool to keep running and monitoring
 for changes in router class.
 
 For one time use:
-flutter packages pub run build_runner build
+dart run packages pub run build_runner build
 
 flutter build web
 

@@ -35,7 +35,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                 // Me delogueo de Firebase
                 FirebaseAuth.instance.signOut();
                 // Le "aviso" a route_guard
-                MyApp.of(context).authService.authenticated = false;
+                MyApp.of(context).authProvider.authenticated = false;
               })
         ],
       ),

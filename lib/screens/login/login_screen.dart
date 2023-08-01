@@ -178,7 +178,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
                     if (user != null) {
                       // Change value of auth in authservice (en route_guard.dart)
-                      MyApp.of(context).authService.authenticated = true;
+                      MyApp.of(context).authProvider.authenticated = true;
                       onLoginCallback.call(true);
                     } else {
                       var snackBar = const SnackBar(

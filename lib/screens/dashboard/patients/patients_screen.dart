@@ -55,9 +55,9 @@ class _PatientsScreenState extends State<PatientsScreen> {
               // Me delogueo de Firebase
               FirebaseAuth.instance.signOut();
               // Le "aviso" a route_guard
-              MyApp.of(context).authService.authenticated = false;
+              MyApp.of(context).authProvider.authenticated = false;
               debugPrint("Después de invalidar authenticated");
-              AutoRouter.of(context).push(const HomeRoute());
+              //AutoRouter.of(context).push(const HomeRoute());
             },
           )
         ],

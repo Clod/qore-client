@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/assets/global_data.dart';
 import 'package:cardio_gut/routes/app_router.dart';
+import 'package:cardio_gut/routes/auth_guard.dart';
 import 'package:cardio_gut/util/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -56,14 +57,12 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  final authService = AuthService();
+
+  final authProvider = AuthService();
   // Clod: esta clase se genera a partir de router.dart
   // final _appRouter = AppRouter();
 
-  late final _appRouter = AppRouter(
-    //routeGuard: RouteGuard(authService),
-    authService,
-  );
+  late final _appRouter = AppRouter(authProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -77,18 +76,22 @@ class MyAppState extends State<MyApp> {
               fontSizeDelta: 0.0,
             ),
       ),
-      debugShowCheckedModeBanner: true,
-      routerConfig: _appRouter.config(deepLinkBuilder: (deepLink) {
-        if (deepLink.path.startsWith('/patient-route')) {
-          // continute with the platfrom link
-          return deepLink;
-        } else {
-          //return DeepLink.defaultPath;
-          // or DeepLink.path('/')
-          // or DeepLink([HomeRoute()])
-          return const DeepLink([HomeRoute()]);
-        }
-      }),
+      debugShowCheckedModeBanner: false,
+      routerConfig: _appRouter.config(
+        reevaluateListenable: authProvider,
+        //navigatorObservers: () => [AuthGuard()],
+        // deepLinkBuilder: (deepLink) {
+        //   if (deepLink.path.startsWith('/patient-route')) {
+        //     // continute with the platfrom link
+        //     return deepLink;
+        //   } else {
+        //     //return DeepLink.defaultPath;
+        //     // or DeepLink.path('/')
+        //     // or DeepLink([HomeRoute()])
+        //     return const DeepLink([HomeRoute()]);
+        //   }
+        // },
+      ),
       // routeInformationParser: _appRouter.defaultRouteParser(),
       // routerDelegate: _appRouter.delegate(),
       localizationsDelegates: const [
