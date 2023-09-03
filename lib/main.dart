@@ -1,18 +1,16 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/assets/global_data.dart';
 import 'package:cardio_gut/routes/app_router.dart';
-import 'package:cardio_gut/routes/auth_guard.dart';
 import 'package:cardio_gut/util/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:form_builder_validators/localization/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:logger/logger.dart';
 
 import 'firebase_options.dart';
 
 Future<void> main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // Me fijo si estoy corriendo desde el IDE
@@ -21,6 +19,7 @@ Future<void> main() async {
   if (const String.fromEnvironment("EXECUTION_MODE") == "DEV") {
     GlobalData.executionMode = ExecutionMode.DEV;
     debugPrint("Al ejecutar en modo DEV no usa el Route Guard");
+    // Creo que lo de abajo no corre más
     // Si se necesita probar la autenticación por algún motivo
     // Comentar la línea:
     //        authService.authenticated = true;

@@ -3,11 +3,11 @@ import 'package:cardio_gut/routes/auth_guard.dart';
 import 'package:cardio_gut/screens/about/about_screen.dart';
 import 'package:cardio_gut/screens/home/home_screen.dart';
 import 'package:cardio_gut/util/auth_service.dart';
-import '../model/paciente.dart';
-import '../screens/dashboard/patients/add_patients/add_patient_screen.dart';
-import '../screens/dashboard/patients/patients_screen.dart';
-import '../screens/dashboard/profile/edit_patient_screen.dart';
-import '../screens/login/login_screen.dart';
+import 'package:cardio_gut/model/paciente.dart';
+import 'package:cardio_gut/screens/dashboard/patients/add_patients/add_patient_screen.dart';
+import 'package:cardio_gut/screens/dashboard/patients/patients_screen.dart';
+import 'package:cardio_gut/screens/dashboard/profile/edit_patient_screen.dart';
+import 'package:cardio_gut/screens/login/login_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
