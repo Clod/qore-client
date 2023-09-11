@@ -5,12 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
-import '../../../assets/global_data.dart';
-import '../../../main.dart';
+import '../assets/global_data.dart';
+import '../main.dart';
 // import '../../../model/patientsDAO.dart';
-import '../../../model/patients_dao_ws.dart';
-import '../../../routes/app_router.dart';
-
+import '../model/patients_dao_ws.dart';
+import '../routes/app_router.dart';
 
 // Future Data
 // https://youtu.be/Pp3zoNDGZUI
@@ -312,30 +311,40 @@ class _PatientsScreenState extends State<PatientsScreen> {
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
                   final item = snapshot.data?[index];
-                  return ListTile(
-                    title: Text(item!.id.toString() +
-                        ") " +
-                        item.nombre +
-                        ' ' +
-                        item.apellido +
-                        " (" +
-                        (item.nacionalidad ?? "Nac. no informada") +
-                        ")"),
-                    subtitle: Text('Documento: ${item.documento}'),
-                    leading: const Icon(Icons.person),
-                    onTap: () {
-                      debugPrint('Hiciste click sobre: ${item.apellido}');
-                      // AutoRouter.of(context).push(AboutRouter(parametro: item.apellido)); // Anda!
-                      // AutoTabsRouter.of(context).setActiveIndex(1); // Navega pero no le paso parámetros
-                      // AutoRouter.of(context).pushNamed("/dashboard/profile"); // Navega!
-                      // AutoRouter.of(context).push(ProfileRoute(parametro: "Fruta")); Explota
-                      // AutoRouter.of(context).navigate(ProfileRoute(parametro: '${item.apellido}')); Anda!!!
-                      AutoRouter.of(context).navigate(
-                        EditPatientRoute(
-                            // parametro: allPatients[index]
-                            parametro: item),
-                      );
-                    },
+                  return Tooltip(
+                    message: "Diagnóstico: ${item!.diag1} \nSexo: ${item.sexo} \nFecha de nacimiento: ${item.fechaNacimiento ?? "No informada"} \n${item.comentarios}",
+                    child: ListTile(
+                      title: Text(item!.id.toString() +
+                          ") " +
+                          item.nombre +
+                          ' ' +
+                          item.apellido +
+                          " (" +
+                          (item.pais ?? "Nac. no informada") +
+                          ")"),
+                      subtitle: Text('Documento: ${item.documento}'),
+                      leading: const Icon(Icons.person),
+                      onTap: () async {
+                        debugPrint('Hiciste click sobre: ${item.apellido}');
+                        // AutoRouter.of(context).push(AboutRouter(parametro: item.apellido)); // Anda!
+                        // AutoTabsRouter.of(context).setActiveIndex(1); // Navega pero no le paso parámetros
+                        // AutoRouter.of(context).pushNamed("/dashboard/profile"); // Navega!
+                        // AutoRouter.of(context).push(ProfileRoute(parametro: "Fruta")); Explota
+                        // AutoRouter.of(context).navigate(ProfileRoute(parametro: '${item.apellido}')); Anda!!!
+                        // Lockeo el registro
+
+                        // String _respuesta = await lockPatientWS(item, informConectionProblems);
+                        // if (_respuesta != "Already Locked") {
+                          AutoRouter.of(context).navigate(
+                            EditPatientRoute(
+                                // parametro: allPatients[index]
+                                parametro: item),
+                          );
+                        // } else {
+                        //   debugPrint("Registro loqueado por otro");
+                        // }
+                      },
+                    ),
                   );
                 },
               );

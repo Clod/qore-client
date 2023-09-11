@@ -1,3 +1,5 @@
+import '../assets/global_data.dart';
+
 class Paciente {
   Paciente({
     required this.id,
@@ -5,7 +7,7 @@ class Paciente {
     required this.apellido,
     this.fechaNacimiento,
     this.documento,
-    this.nacionalidad,
+    this.pais,
     required this.fechaCreacionFicha,
     this.sexo,
     this.diagnosticoPrenatal,
@@ -25,7 +27,7 @@ class Paciente {
   String nombre;
   String apellido;
   String? documento;
-  String? nacionalidad;
+  String? pais;
   String? fechaNacimiento;
   String fechaCreacionFicha;
   String? sexo;
@@ -44,12 +46,13 @@ class Paciente {
   factory Paciente.fromJson(Map<String, dynamic> data) {
 // note the explicit cast to String
 // this is required if robust lint rules are enabled
-    final id = int.parse(data['id']);
+    //final id = int.parse(data['id']);
+    final id = data['id'];
     final nombre = data['nombre'] as String;
     final apellido = data['apellido'] as String;
-    final fechaNacimiento = data['fechanacimiento'] as String?;
+    final fechaNacimiento = data['fecha_nacimiento'] as String?;
     final documento = data['documento'] as String?;
-    final nacionalidad = data['nacionalidad'] as String?;
+    final pais = data['pais'] as String?;
     final fechaCreacionFicha = data['fecha_creacion_ficha'] as String;
     final sexo = data['sexo'] as String?;
     final diagnosticoPrenatal = data['diagnostico_prenatal'] as String?;
@@ -64,13 +67,15 @@ class Paciente {
     final nroFichaDiagPrenatal = data['nro_ficha_diag_prenatal'] as String?;
     final comentarios = data['comentarios'] as String?;
 
+    logger.d("Received Json: ${data.toString()}");
+
     return Paciente(
       id: id,
       nombre: nombre,
       apellido: apellido,
       fechaNacimiento: fechaNacimiento,
       documento: documento,
-      nacionalidad: nacionalidad,
+      pais: pais,
       fechaCreacionFicha: fechaCreacionFicha,
       sexo: sexo,
       diagnosticoPrenatal: diagnosticoPrenatal,
@@ -93,7 +98,7 @@ class Paciente {
         'apellido': apellido,
         'fechaNacimiento': fechaNacimiento,
         'documento': documento,
-        'nacionalidad': nacionalidad,
+        'pais': pais,
         'fechaCreacionFicha': fechaCreacionFicha,
         'sexo': sexo,
         'diagnosticoPrenatal': diagnosticoPrenatal,

@@ -45,3 +45,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Temporario de LibreOffice
+.~lock.NOTAS.odt#
+/~$NOTAS.odt

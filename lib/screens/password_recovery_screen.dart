@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
 
 @RoutePage()
-class AboutScreen extends StatelessWidget {
-  AboutScreen ({Key? key, required this.parametro}) : super(key: key);
+class PasswordRecoveryScreen extends StatelessWidget {
+  PasswordRecoveryScreen ({Key? key, required this.parametro}) : super(key: key);
 
   final String parametro;
 

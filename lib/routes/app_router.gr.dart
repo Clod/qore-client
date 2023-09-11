@@ -15,11 +15,11 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    AboutRoute.name: (routeData) {
-      final args = routeData.argsAs<AboutRouteArgs>();
+    EditPatientRoute.name: (routeData) {
+      final args = routeData.argsAs<EditPatientRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: AboutScreen(
+        child: EditPatientScreen(
           key: args.key,
           parametro: args.parametro,
         ),
@@ -29,22 +29,6 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const AddPatientScreen(),
-      );
-    },
-    PatientsRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const PatientsScreen(),
-      );
-    },
-    EditPatientRoute.name: (routeData) {
-      final args = routeData.argsAs<EditPatientRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: EditPatientScreen(
-          key: args.key,
-          parametro: args.parametro,
-        ),
       );
     },
     HomeRoute.name: (routeData) {
@@ -63,72 +47,23 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    PasswordRecoveryRoute.name: (routeData) {
+      final args = routeData.argsAs<PasswordRecoveryRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: PasswordRecoveryScreen(
+          key: args.key,
+          parametro: args.parametro,
+        ),
+      );
+    },
+    PatientsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const PatientsScreen(),
+      );
+    },
   };
-}
-
-/// generated route for
-/// [AboutScreen]
-class AboutRoute extends PageRouteInfo<AboutRouteArgs> {
-  AboutRoute({
-    Key? key,
-    required String parametro,
-    List<PageRouteInfo>? children,
-  }) : super(
-          AboutRoute.name,
-          args: AboutRouteArgs(
-            key: key,
-            parametro: parametro,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'AboutRoute';
-
-  static const PageInfo<AboutRouteArgs> page = PageInfo<AboutRouteArgs>(name);
-}
-
-class AboutRouteArgs {
-  const AboutRouteArgs({
-    this.key,
-    required this.parametro,
-  });
-
-  final Key? key;
-
-  final String parametro;
-
-  @override
-  String toString() {
-    return 'AboutRouteArgs{key: $key, parametro: $parametro}';
-  }
-}
-
-/// generated route for
-/// [AddPatientScreen]
-class AddPatientRoute extends PageRouteInfo<void> {
-  const AddPatientRoute({List<PageRouteInfo>? children})
-      : super(
-          AddPatientRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'AddPatientRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [PatientsScreen]
-class PatientsRoute extends PageRouteInfo<void> {
-  const PatientsRoute({List<PageRouteInfo>? children})
-      : super(
-          PatientsRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'PatientsRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -167,6 +102,20 @@ class EditPatientRouteArgs {
   String toString() {
     return 'EditPatientRouteArgs{key: $key, parametro: $parametro}';
   }
+}
+
+/// generated route for
+/// [AddPatientScreen]
+class AddPatientRoute extends PageRouteInfo<void> {
+  const AddPatientRoute({List<PageRouteInfo>? children})
+      : super(
+          AddPatientRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AddPatientRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -218,4 +167,56 @@ class LoginRouteArgs {
   String toString() {
     return 'LoginRouteArgs{key: $key, onResult: $onResult}';
   }
+}
+
+/// generated route for
+/// [PasswordRecoveryScreen]
+class PasswordRecoveryRoute extends PageRouteInfo<PasswordRecoveryRouteArgs> {
+  PasswordRecoveryRoute({
+    Key? key,
+    required String parametro,
+    List<PageRouteInfo>? children,
+  }) : super(
+          PasswordRecoveryRoute.name,
+          args: PasswordRecoveryRouteArgs(
+            key: key,
+            parametro: parametro,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'PasswordRecoveryRoute';
+
+  static const PageInfo<PasswordRecoveryRouteArgs> page =
+      PageInfo<PasswordRecoveryRouteArgs>(name);
+}
+
+class PasswordRecoveryRouteArgs {
+  const PasswordRecoveryRouteArgs({
+    this.key,
+    required this.parametro,
+  });
+
+  final Key? key;
+
+  final String parametro;
+
+  @override
+  String toString() {
+    return 'PasswordRecoveryRouteArgs{key: $key, parametro: $parametro}';
+  }
+}
+
+/// generated route for
+/// [PatientsScreen]
+class PatientsRoute extends PageRouteInfo<void> {
+  const PatientsRoute({List<PageRouteInfo>? children})
+      : super(
+          PatientsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'PatientsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }

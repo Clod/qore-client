@@ -1,0 +1,12 @@
+flutter build web
+cd build\web
+python -m http.server
+
+Usuarios:
+
+j.claudio.grasso@gmail.com / 222222
+claudio.grasso@yahoo.com / abracadabra
+
+
+
+

@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
-import '../../main.dart';
-import '../../assets/global_data.dart';
-import '../../routes/app_router.dart';
+import '../main.dart';
+import '../assets/global_data.dart';
+import '../routes/app_router.dart';
 
 // La pantalla de login la saqué de:
 // https://www.tutorialkart.com/flutter/flutter-login-screen/
@@ -209,7 +209,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     debugPrint("Intento ir a about");
 
                     AutoRouter.of(context)
-                        .push(AboutRoute(parametro: "Un parámetro"));
+                        .push(PasswordRecoveryRoute(parametro: "Un parámetro"));
                   },
                 )
               ],

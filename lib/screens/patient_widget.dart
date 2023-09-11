@@ -5,12 +5,12 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
-import '../../../assets/global_data.dart';
-import '../../../model/arbol_de_diagnosticos.dart';
-import '../../../model/paciente.dart';
-import '../../../model/paises.dart';
-import '../../../model/patients_dao_ws.dart';
-import '../../../routes/app_router.dart';
+import '../assets/global_data.dart';
+import '../model/arbol_de_diagnosticos.dart';
+import '../model/paciente.dart';
+import '../model/paises.dart';
+import '../model/patients_dao_ws.dart';
+import '../routes/app_router.dart';
 
 class PatientWidget extends StatefulWidget {
   const PatientWidget({Key? key, this.parametro}) : super(key: key);
@@ -104,14 +104,19 @@ class PatientWidgetState extends State<PatientWidget> {
           // En la base está en null
           _fechaNacimiento = null;
         } else {
-          _fechaNacimiento = DateTime.parse(widget.parametro!.fechaNacimiento!);
+          var fechaNacimiento = widget.parametro!.fechaNacimiento!;
+          var year = fechaNacimiento.split("-")[0];
+          var month = fechaNacimiento.split("-")[1].padLeft(2, '0');
+          var day = fechaNacimiento.split("-")[2].padLeft(2, '0');
+
+          _fechaNacimiento = DateTime.parse("$year-$month-$day");
         }
       }
       logger.d("Fecha nacimiento: $_fechaNacimiento");
 
       _nroFichaDiagPrenatal = widget.parametro?.nroFichaDiagPrenatal;
 
-      _paisOrigen = widget.parametro?.nacionalidad;
+      _paisOrigen = widget.parametro?.pais;
       _idDocumento = widget.parametro?.documento;
       _fechaCreacionFicha = widget.parametro?.fechaCreacionFicha;
       // Sexo
@@ -142,7 +147,11 @@ class PatientWidgetState extends State<PatientWidget> {
           // En la base está en null
           _fechaPrimerDiagnostico = null;
         } else {
-          _fechaPrimerDiagnostico = DateTime.parse(widget.parametro!.fechaPrimerDiagnostico!);
+          var fechaPrimerDiagnostico = widget.parametro!.fechaPrimerDiagnostico!;
+          var year = fechaPrimerDiagnostico.split("-")[0];
+          var month = fechaPrimerDiagnostico.split("-")[1].padLeft(2, '0');
+          var day = fechaPrimerDiagnostico.split("-")[2].padLeft(2, '0');
+          _fechaPrimerDiagnostico = DateTime.parse("$year-$month-$day");
         }
       }
       logger.d("Fecha primer diagnóstico: $_fechaPrimerDiagnostico");
@@ -158,8 +167,9 @@ class PatientWidgetState extends State<PatientWidget> {
 
   void _onUnbornChanged(dynamic val) {
     logger.d(val.toString());
-    _esDiagPrenatal = val;
-    setState(() {});
+    setState(() {
+      _esDiagPrenatal = val;
+    });
   }
 
   var formatter = DateFormat('dd/MM/yyy');
@@ -240,7 +250,6 @@ class PatientWidgetState extends State<PatientWidget> {
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
-
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                       FormBuilderValidators.match("[a-zA-Z ]+"),
@@ -280,8 +289,7 @@ class PatientWidgetState extends State<PatientWidget> {
                           replacement: FormBuilderTextField(
                             name: 'SemanasGestacion',
                             keyboardType: TextInputType.number,
-                            validator: FormBuilderValidators.compose([
-                            ]),
+                            validator: FormBuilderValidators.compose([]),
                             decoration: InputDecoration(
                               labelText: 'Semanas de gestación',
                               isDense: true,
@@ -362,7 +370,7 @@ class PatientWidgetState extends State<PatientWidget> {
                           ],
                           selectedColor: Colors.blueAccent,
                           onChanged: (value) {
-                            logger.d(value);
+                            logger.t(value);
                           },
                         ),
                       ),
@@ -396,7 +404,7 @@ class PatientWidgetState extends State<PatientWidget> {
                               .toList(),
                           validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
                           onChanged: (val) {
-                            logger.d("Cambió el país");
+                            logger.t("Cambió el país");
                             setState(() {
                               _countryHasError = !(_formKey.currentState?.fields['Country']?.validate() ?? false);
                             });
@@ -463,7 +471,7 @@ class PatientWidgetState extends State<PatientWidget> {
                         )
                         .toList(),
                     onChanged: (val) {
-                      logger.d("Cambió el diag1 a $val");
+                      logger.t("Cambió el diag1 a $val");
 
                       // Como ya elegí diagnóstico, habilito la elección de subdiagnóstico
                       _inhabilitarDiag2 = false;
@@ -477,8 +485,8 @@ class PatientWidgetState extends State<PatientWidget> {
                         // para mostrar los subdiagnósticos correspondientes
                         _diag1 = val;
 
-                        logger.d("Diags de nivel 2: " + diags[_diag1]!.keys.toString());
-                        logger.d((diags[_diag1]!.keys).toString());
+                        logger.t("Diags de nivel 2: " + diags[_diag1]!.keys.toString());
+                        logger.t((diags[_diag1]!.keys).toString());
 
                         // Reseteo el valor de subdiagnóstico para que no vuele por el aire si llego
                         // a cambiar el diagnóstico una vez que ya elegí el subdiagnóstico
@@ -537,7 +545,7 @@ class PatientWidgetState extends State<PatientWidget> {
                               .toList()
                           : [""].map((diag2It) => DropdownMenuItem(value: diag2It, child: const Text("No hay nivel 2"))).toList(),
                       onChanged: (val) {
-                        logger.d("Cambió el diagnóstico nivel 2 a $val");
+                        logger.t("Cambió el diagnóstico nivel 2 a $val");
 
                         _inhabilitarDiag3 = false;
 
@@ -602,7 +610,7 @@ class PatientWidgetState extends State<PatientWidget> {
                               )
                               .toList(),
                       onChanged: (val) {
-                        logger.d("Cambió el diagnóstico nivel 3");
+                        logger.t("Cambió el diagnóstico nivel 3");
 
                         // Habilito el nivel siguiente
                         _inhabilitarDiag4 = false;
@@ -662,7 +670,7 @@ class PatientWidgetState extends State<PatientWidget> {
                               )
                               .toList(),
                       onChanged: (val) {
-                        logger.d("Cambió el diagnóstico nivel 4");
+                        logger.t("Cambió el diagnóstico nivel 4");
                         setState(() {});
                       },
                       valueTransformer: (val) => val?.toString(),
@@ -795,12 +803,13 @@ class PatientWidgetState extends State<PatientWidget> {
                   ),
                   color: Theme.of(context).colorScheme.error,
                   onPressed: () {
+                    rollbackWS();
                     if (_creandoFicha) {
                       AutoRouter.of(context).pop();
                     } else {
                       // Vuelvo a la pantalla anterior manteniendo la lista de pacientes.
-                      AutoRouter.of(context).navigateBack();
-                      // AutoRouter.of(context).pop();
+                      // navigateBack Deprecated :-(
+                      AutoRouter.of(context).pop();
                     }
                   },
                 ),
@@ -873,7 +882,7 @@ class PatientWidgetState extends State<PatientWidget> {
                       apellido: base.fields["LastName"]!.value.toString().trim(),
                       nombre: base.fields["FirstName"]!.value.toString().trim(),
                       documento: base.fields["Identification"]?.value,
-                      nacionalidad: base.fields["Country"]?.value,
+                      pais: base.fields["Country"]?.value,
                       fechaNacimiento: _fechaNacimientoEnviar,
                       nroFichaDiagPrenatal: _nroFichaDiagPreEnviar,
                       fechaCreacionFicha: _fechaCreacionFicha,
@@ -898,11 +907,13 @@ class PatientWidgetState extends State<PatientWidget> {
 
                     if (_creandoFicha) {
                       // _respuesta = await addPatient(paciente);
+                      logger.d("Enviando solicitud de alta");
                       _respuesta = await addPatientWS(paciente, informConectionProblems);
                       logger.d("Respuesta del servidor: $_respuesta");
                       _accion = 'creó';
                     } else {
                       _respuesta = await updatePatientWS(paciente, informConectionProblems);
+//                      _respuesta = await updatePatientLockingWS(paciente, informConectionProblems);
                       _accion = 'modificó';
                     }
 
@@ -912,7 +923,7 @@ class PatientWidgetState extends State<PatientWidget> {
                     // and use it to show a SnackBar.
                     // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-                    showSnackBar(_respuesta,_accion);
+                    showSnackBar(_respuesta, _accion);
 
                     if (_creandoFicha) {
                       AutoRouter.of(context).pop();
