@@ -17,7 +17,7 @@ Future<void> main() async {
   // https://stackoverflow.com/questions/63249638/how-to-use-env-in-flutter-web
   // Si el IDE no le pasa ningún parámetro asumo que es PROD
   if (const String.fromEnvironment("EXECUTION_MODE") == "DEV") {
-    GlobalData.executionMode = ExecutionMode.DEV;
+    GlobalData.executionMode = ExecutionMode.dev;
     debugPrint("Al ejecutar en modo DEV no usa el Route Guard");
     // Creo que lo de abajo no corre más
     // Si se necesita probar la autenticación por algún motivo
@@ -25,7 +25,7 @@ Future<void> main() async {
     //        authService.authenticated = true;
     // en la clase route_guard
   } else {
-    GlobalData.executionMode = ExecutionMode.PROD;
+    GlobalData.executionMode = ExecutionMode.prod;
   }
 
   debugPrint("Ejecutando en modo: ${GlobalData.executionMode}");
@@ -33,9 +33,9 @@ Future<void> main() async {
   // Ahora cargo las URLs del archivo de configuración
   await dotenv.load(fileName: "abracadabra");
 
-  GlobalData.URL_WEB_DEV = dotenv.get("URL_WEB_DEV");
-  GlobalData.URL_AND_DEV = dotenv.get("URL_AND_DEV");
-  GlobalData.URL_PROD = dotenv.get("URL_PROD");
+  GlobalData.urlWebDev = dotenv.get("URL_WEB_DEV");
+  GlobalData.urlAndDev = dotenv.get("URL_AND_DEV");
+  GlobalData.urlProd = dotenv.get("URL_PROD");
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 

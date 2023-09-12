@@ -16,10 +16,10 @@ Uri getURI(String tipoDato, String value) {
   if (value.isNotEmpty) parametros += "/" + value;
 
   // https://stackoverflow.com/questions/55004302/how-do-you-pass-arguments-from-command-line-to-main-in-flutter-dart
-  if (GlobalData.executionMode == ExecutionMode.DEV) {
+  if (GlobalData.executionMode == ExecutionMode.dev) {
     // https://stackoverflow.com/questions/45924474/how-do-you-detect-the-host-platform-from-dart-code
     if (kIsWeb) {
-      url = Uri.parse(GlobalData.URL_WEB_DEV.toString() + parametros);
+      url = Uri.parse(GlobalData.urlWebDev.toString() + parametros);
     } else {
       if (Platform.isAndroid) {
         //   static String? URL_AND_DEV="http://10.0.2.2:8080/patients/";
@@ -30,7 +30,7 @@ Uri getURI(String tipoDato, String value) {
       }
     }
   } else {
-    url = Uri.parse(GlobalData.URL_PROD.toString() + parametros);
+    url = Uri.parse(GlobalData.urlProd.toString() + parametros);
     // url = Uri.parse("http://192.168.0.94:8080/patients"+ value);
   }
 

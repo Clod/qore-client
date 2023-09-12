@@ -204,16 +204,19 @@ class _PatientsScreenState extends State<PatientsScreen> {
   }
 
   informConectionProblems() {
-    const snackBar = SnackBar(
-      content: Text('Error de conexión con el serivdor.'),
-      duration: Duration(seconds: 10),
-    );
+    var snackBar = SnackBar(
+        content: const Text('Error de conexión con el serivdor.'),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
+        ));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  informErrorsReportedByServer(String _respuesta) {
+  informErrorsReportedByServer(String respuesta) {
     // Remove curly braces from the string
-    String keyValueString = _respuesta.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '');
+    String keyValueString = respuesta.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '');
 
 // Split the string into an array of key-value pairs
     List<String> keyValuePairs = keyValueString.split(',');
@@ -234,7 +237,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
     }
 
     final snackBar = SnackBar(
-      duration: const Duration(seconds: 15),
+      duration: const Duration(seconds: 5),
       content: Text(resultMap['Message']),
       action: SnackBarAction(
         label: 'OK',
@@ -312,7 +315,8 @@ class _PatientsScreenState extends State<PatientsScreen> {
                 itemBuilder: (context, index) {
                   final item = snapshot.data?[index];
                   return Tooltip(
-                    message: "Diagnóstico: ${item!.diag1} \nSexo: ${item.sexo} \nFecha de nacimiento: ${item.fechaNacimiento ?? "No informada"} \n${item.comentarios}",
+                    message:
+                        "Diagnóstico: ${item!.diag1} \nSexo: ${item.sexo} \nFecha de nacimiento: ${item.fechaNacimiento ?? "No informada"} \n${item.comentarios}",
                     child: ListTile(
                       title: Text(item!.id.toString() +
                           ") " +
@@ -335,11 +339,11 @@ class _PatientsScreenState extends State<PatientsScreen> {
 
                         // String _respuesta = await lockPatientWS(item, informConectionProblems);
                         // if (_respuesta != "Already Locked") {
-                          AutoRouter.of(context).navigate(
-                            EditPatientRoute(
-                                // parametro: allPatients[index]
-                                parametro: item),
-                          );
+                        AutoRouter.of(context).navigate(
+                          EditPatientRoute(
+                              // parametro: allPatients[index]
+                              parametro: item),
+                        );
                         // } else {
                         //   debugPrint("Registro loqueado por otro");
                         // }

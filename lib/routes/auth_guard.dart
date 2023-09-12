@@ -13,7 +13,7 @@ class AuthGuard extends AutoRouteGuard {
     // the navigation is paused until resolver.next() is called with either
     // true to resume/continue navigation or false to abort navigation
 
-    if (GlobalData.executionMode == ExecutionMode.DEV) {
+    if (GlobalData.executionMode == ExecutionMode.dev) {
       authService.authenticated = true;
     }
 
