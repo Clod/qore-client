@@ -18,7 +18,7 @@ enum Commands {
   updatePatient,
   deletePatient,
   lockPatient,
-  rollback,
+  rollback, pong,
 }
 
 enum ExecutionMode { dev, prod }

@@ -164,6 +164,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       // OJO que esto sólo anda para WEB
                       // https://firebase.google.com/docs/auth/admin/verify-id-tokens
                       var token = await user?.getIdToken(false);
+                      logger.i("Token: $token");
                       // debugPrint("Token: $token");
                       // Pongo el token en una variable global
                       GlobalData.firebaseToken = token;

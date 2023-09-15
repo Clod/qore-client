@@ -1,11 +1,13 @@
 import 'package:cardio_gut/assets/global_data.dart';
 import 'package:cardio_gut/routes/app_router.dart';
+import 'package:cardio_gut/util/Connections.dart';
 import 'package:cardio_gut/util/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:form_builder_validators/localization/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
 
@@ -39,7 +41,12 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => Connections(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {

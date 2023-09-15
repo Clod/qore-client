@@ -2,50 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:convert' as convert;
 import 'package:flutter/cupertino.dart';
-
 import 'paciente.dart';
 import '../assets/global_data.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-// Great MySQL summary
-// https://www.interviewbit.com/blog/mysql-commands/
-
-// class TransceiverString {
-//   WebSocketChannel? _channel;
-//   final StreamController<String> _responseStreamController = StreamController<String>();
-//
-//   TransceiverString(String url) {
-//     _channel = WebSocketChannel.connect(Uri.parse(url));
-//     _channel!.stream.listen(_handleResponse);
-//   }
-//
-//   void sendMessage({required Commands command, required String data, List<String>? params}) {
-//     final encodedMessage = convert.utf8.encode(data);
-//     final length = encodedMessage.length;
-//     final header = [command.index, length];
-//     final frame = [...header, ...encodedMessage];
-//     _channel!.sink.add(frame);
-//   }
-//
-//   Stream<String> get responseStream => _responseStreamController.stream;
-//
-//   void _handleResponse(dynamic response) {
-//     String message = response.toString();
-//     _responseStreamController.add(message);
-//   }
-//
-//   void close() {
-//     _channel!.sink.close();
-//     _responseStreamController.close();
-//   }
-// }
-
 class Transceiver {
   WebSocketChannel? _channel;
-  final StreamController<List<int>> _responseStreamController = StreamController<List<int>>();
+//  https://stackoverflow.com/questions/73242835/flutter-stream-has-already-been-listened-to
+  final StreamController<List<int>> _responseStreamController = StreamController<List<int>>.broadcast();
   Stream<List<int>> get responseStream => _responseStreamController.stream;
 
   Transceiver(String url, Function callback) {
+    logger.e("Conectando al servidor...");
     _channel = WebSocketChannel.connect(Uri.parse(url));
     _channel!.stream.listen(
       _handleResponse,
@@ -64,7 +32,8 @@ class Transceiver {
 
   void sendMessage({required Commands command, required String data, List<String>? params}) {
     try {
-      final encodedMessage = convert.utf8.encode(data);
+      final fullMessage = prependToken(data);
+      final encodedMessage = convert.utf8.encode(fullMessage);
       final length = encodedMessage.length;
       final lengthL = length % 255;
       final lengthH = (length / 255).truncate();
@@ -81,13 +50,17 @@ class Transceiver {
     // String message = response.toString();
     try {
       if (data is String) {
-        logger.t('Received string message: $data');
-        _responseStreamController.add(utf8.encode(data));
+        logger.t('Recibí un mensaje string: $data');
+        if (data == "ping") {
+          sendMessage(command: Commands.pong, data: "pong");
+        } else {
+          _responseStreamController.add(utf8.encode(data));
+        }
       } else if (data is List<int>) {
-        logger.t('Received binary message: $data');
+        logger.t('Recibí un mensaje binari: $data');
         _responseStreamController.add(data);
       } else {
-        logger.w('Received unknown message');
+        logger.w('Recibí un mensaje desconocido');
       }
     } catch (e) {
       logger.f(e);
@@ -96,18 +69,17 @@ class Transceiver {
   }
 
   void close() {
+    logger.d("Cerrando la conexión con el server");
     _channel!.sink.close();
     _responseStreamController.close();
   }
 }
 
-void rollbackWS() {
-  var transceiver = Transceiver('wss://cauto.com.ar:8080', () {});
-
+void rollbackWS(Transceiver transceiver) {
   transceiver.sendMessage(command: Commands.rollback, data: "");
 }
 
-Future<Paciente> traerPacienteByIdWS(int id, Function callback, Function callback2) async {
+Future<Paciente> traerPacienteByIdWS(Transceiver transceiver, int id, Function callback, Function callback2) async {
   logger.d("Entrando a traerPacientesWS ***********************************\n");
 
   List<Paciente> retrievedPatients = <Paciente>[];
@@ -118,14 +90,12 @@ Future<Paciente> traerPacienteByIdWS(int id, Function callback, Function callbac
   // Meto un delay para probar el "progress circle"
   await Future.delayed(const Duration(seconds: 2)); // TODO: descomentar
 
-  logger.d("Antes del get ***********************************\n");
+  logger.t("Antes del get ***********************************\n");
 
-  late Transceiver transceiver;
+  // late Transceiver transceiver;
   String? decodedMessage;
 
   try {
-    transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
-
     transceiver.sendMessage(command: Commands.getPatientById, data: id.toString());
 
     // Wait for the response asynchronously
@@ -138,7 +108,7 @@ Future<Paciente> traerPacienteByIdWS(int id, Function callback, Function callbac
       logger.d("JSON: $decodedMessage");
 
       jsonReceived = convert.jsonDecode(decodedMessage);
-      debugPrint("JsonReceived: ${jsonReceived.toString()}");
+      logger.t("JsonReceived: ${jsonReceived.toString()}");
       break; // Stop listening after the first response is received
     }
   } catch (e) {
@@ -163,7 +133,8 @@ Future<Paciente> traerPacienteByIdWS(int id, Function callback, Function callbac
 }
 
 // Retrieve Patients from the database bases on a substring of the Id ddocument or Lastname
-Future<List<Paciente>> traerPacientesWS(String value, String optBuscar, Function callback, Function callback2) async {
+Future<List<Paciente>> traerPacientesWS(
+    Transceiver trans, String value, String optBuscar, Function callback, Function callback2) async {
   logger.d("Entrando a traerPacientesWS ***********************************\n");
 
   logger.d("optBuscar: $optBuscar");
@@ -174,7 +145,7 @@ Future<List<Paciente>> traerPacientesWS(String value, String optBuscar, Function
   late List<dynamic> jsonReceived;
 
   // Meto un delay para probar el "progress circle"
-  // await Future.delayed(const Duration(seconds: 2)); TODO: descomentar
+  await Future.delayed(const Duration(seconds: 1));
 
   logger.d("Antes del get ***********************************\n");
 
@@ -182,7 +153,7 @@ Future<List<Paciente>> traerPacientesWS(String value, String optBuscar, Function
   String? decodedMessage;
 
   try {
-    transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
+    transceiver = trans;
     if (optBuscar == 'Apellido') {
       transceiver.sendMessage(command: Commands.getPatientsByLastName, data: value);
     } else {
@@ -223,10 +194,10 @@ Future<List<Paciente>> traerPacientesWS(String value, String optBuscar, Function
   return retrievedPatients;
 }
 
-Future<String> addPatientWS(Paciente patient, Function callback) async {
+Future<String> addPatientWS(Transceiver transceiver, Paciente patient, Function callback) async {
   logger.d('Envío pedido de alta al servidor ');
 
-  Transceiver transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
+  // Transceiver transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
   transceiver.sendMessage(command: Commands.addPatient, data: patient.toJson().toString());
 
   late String jsonReceived;
@@ -236,24 +207,20 @@ Future<String> addPatientWS(Paciente patient, Function callback) async {
     logger.d('Received response: $response');
     // I receive a comma separated string of integers represented as strings
     //final receivedAsList = response.split(',').map((str) => int.parse(str)).toList();
-    logger.d("JSON: " +
-        convert.utf8.decode(response.sublist(
-          3,
-        )));
+    logger.d("JSON: " + convert.utf8.decode(response.sublist(3)));
 
-    jsonReceived = convert.utf8.decode(response.sublist(
-      3,
-    ));
+    jsonReceived = convert.utf8.decode(response.sublist(3));
+
     break; // Stop listening after the first response is received
   }
 
   return jsonReceived.toString();
 }
 
-Future<String> updatePatientWS(Paciente patient, Function callback) async {
+Future<String> updatePatientWS(Transceiver transceiver, Paciente patient, Function callback) async {
   logger.d('Envío pedido de modificación al servidor ');
 
-  Transceiver transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
+  // Transceiver transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
 
   transceiver.sendMessage(command: Commands.updatePatient, data: patient.toJson().toString());
 
@@ -264,30 +231,18 @@ Future<String> updatePatientWS(Paciente patient, Function callback) async {
     logger.d('Received response: $response');
     // I receive a comma separated string of integers represented as strings
     //final receivedAsList = response.split(',').map((str) => int.parse(str)).toList();
-    logger.d(
-      "JSON: " +
-          convert.utf8.decode(
-            response.sublist(
-              3,
-            ),
-          ),
-    );
 
-    jsonReceived = convert.utf8.decode(
-      response.sublist(
-        3,
-      ),
-    );
+    logger.d("JSON: " + convert.utf8.decode(response.sublist(3)));
+
+    jsonReceived = convert.utf8.decode(response.sublist(3));
     break; // Stop listening after the first response is received
   }
 
   return jsonReceived.toString();
 }
 
-Future<String> updatePatientLockingWS(Paciente patient, Function callback) async {
+Future<String> updatePatientLockingWS(Transceiver transceiver, Paciente patient, Function callback) async {
   logger.d('Envío pedido de modificación al servidor ');
-
-  Transceiver transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
 
   transceiver.sendMessage(command: Commands.updatePatient, data: patient.toJson().toString());
 
@@ -298,44 +253,24 @@ Future<String> updatePatientLockingWS(Paciente patient, Function callback) async
     logger.d('Received response: $response');
     // I receive a comma separated string of integers represented as strings
     //final receivedAsList = response.split(',').map((str) => int.parse(str)).toList();
-    logger.d("JSON: " +
-        convert.utf8.decode(response.sublist(
-          3,
-        )));
+    logger.d("JSON: " + convert.utf8.decode(response.sublist(3)));
 
-    jsonReceived = convert.utf8.decode(response.sublist(
-      3,
-    ));
+    jsonReceived = convert.utf8.decode(response.sublist(3));
     break; // Stop listening after the first response is received
   }
 
   return jsonReceived.toString();
 }
 
-// Future<String> lockPatientWS(Paciente patient, Function callback) async {
-//   logger.d('Envío pedido de modificación al servidor ');
-//
-//   Transceiver transceiver = Transceiver('wss://cauto.com.ar:8080', callback);
-//
-//   transceiver.sendMessage(command: Commands.lockPatient, data: patient.toJson().toString());
-//
-//   late String jsonReceived;
-//
-//   // Wait for the response asynchronously
-//   await for (List<int> response in transceiver.responseStream) {
-//     logger.d('Received response: $response');
-//     // I receive a comma separated string of integers represented as strings
-//     //final receivedAsList = response.split(',').map((str) => int.parse(str)).toList();
-//     logger.d("JSON: " +
-//         convert.utf8.decode(response.sublist(
-//           3,
-//         )));
-//
-//     jsonReceived = convert.utf8.decode(response.sublist(
-//       3,
-//     ));
-//     break; // Stop listening after the first response is received
-//   }
-//
-//   return jsonReceived.toString();
-// }
+String prependToken(String data) {
+
+  String fullMessage;
+
+  if (ExecutionMode == ExecutionMode.dev) {
+    fullMessage = "test_token|" + data;
+  } else {
+    fullMessage = GlobalData.firebaseToken! + "|" + data;
+  }
+
+  return fullMessage;
+}

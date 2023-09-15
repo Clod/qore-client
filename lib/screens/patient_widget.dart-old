@@ -803,7 +803,7 @@ class PatientWidgetState extends State<PatientWidget> {
                   ),
                   color: Theme.of(context).colorScheme.error,
                   onPressed: () {
-                    rollbackWS();
+                    // rollbackWS();
                     if (_creandoFicha) {
                       AutoRouter.of(context).pop();
                     } else {

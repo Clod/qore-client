@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:cardio_gut/assets/constants.dart' as constants;
+import 'package:provider/provider.dart';
 import '../assets/global_data.dart';
 import '../main.dart';
 // import '../../../model/patientsDAO.dart';
 import '../model/patients_dao_ws.dart';
 import '../routes/app_router.dart';
+import '../util/Connections.dart';
 
 // Future Data
 // https://youtu.be/Pp3zoNDGZUI
@@ -28,12 +30,19 @@ class _PatientsScreenState extends State<PatientsScreen> {
   var searchIconColor = Colors.redAccent;
 
   late Future<List<Paciente>>? dataFuture;
+  late Connections _connections;
 
   @override
   void initState() {
     super.initState();
     dataFuture = null; // Si lo pongo en null, usa initialData: allPatients del future builder
     // debugPrint("Recibí el token: ${GlobalData.firebaseToken}");
+
+    // This callback will get called AFTER the Widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _connections = Provider.of<Connections>(context, listen: false);
+      _connections.transceiver = Transceiver('wss://cauto.com.ar:8080', () {});
+    });
   }
 
   String optBuscar = 'Apellido';
@@ -159,6 +168,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                           () {
                             try {
                               dataFuture = traerPacientesWS(
+                                _connections.transceiver!,
                                 datoBusqueda.value.text,
                                 optBuscar,
                                 informConectionProblems,
@@ -187,6 +197,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                   : setState(
                       () {
                         dataFuture = traerPacientesWS(
+                          _connections.transceiver!,
                           datoBusqueda.value.text,
                           optBuscar,
                           informConectionProblems,

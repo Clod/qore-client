@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cardio_gut/util/Connections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../assets/global_data.dart';
 import '../model/arbol_de_diagnosticos.dart';
@@ -15,13 +17,14 @@ import '../util/aux_functions.dart';
 
 class PatientWidget extends StatelessWidget {
   final Paciente? parametro;
-
   const PatientWidget({super.key, required this.parametro});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Paciente>(
+    final Connections connections = Provider.of<Connections>(context, listen: false);
+    return parametro == null ? const PatientWidgetForm(parametro: null) : FutureBuilder<Paciente>(
       future: traerPacienteByIdWS(
+        connections.transceiver!,
         parametro!.id,
         informConectionProblems,
         informErrorsReportedByServer,
@@ -102,11 +105,16 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
 
   bool _creandoFicha = true;
   bool _esDiagPrenatal = false;
+  late Connections _connections;
 
   @override
   void initState() {
     super.initState();
     logger.d("patient_widget recibió: ${widget.parametro?.toString()}");
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _connections = Provider.of<Connections>(context, listen: false);
+    });
 
     // Me fijo se entré desde crear paciente (para,etro = null) o desde modificar
     if (widget.parametro == null) {
@@ -836,7 +844,7 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                   ),
                   color: Theme.of(context).colorScheme.error,
                   onPressed: () {
-                    rollbackWS();
+                    rollbackWS(_connections.transceiver!);
                     if (_creandoFicha) {
                       AutoRouter.of(context).pop();
                     } else {
@@ -941,11 +949,11 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     if (_creandoFicha) {
                       // _respuesta = await addPatient(paciente);
                       logger.d("Enviando solicitud de alta");
-                      _respuesta = await addPatientWS(paciente, informConectionProblems);
+                      _respuesta = await addPatientWS(_connections.transceiver!, paciente, informConectionProblems);
                       logger.d("Respuesta del servidor: $_respuesta");
                       _accion = 'creó';
                     } else {
-                      _respuesta = await updatePatientWS(paciente, informConectionProblems);
+                      _respuesta = await updatePatientWS(_connections.transceiver!, paciente, informConectionProblems);
 //                      _respuesta = await updatePatientLockingWS(paciente, informConectionProblems);
                       _accion = 'modificó';
                     }
@@ -959,8 +967,11 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     showSnackBar(_respuesta, _accion);
 
                     if (_creandoFicha) {
-                      AutoRouter.of(context).pop();
+                      logger.d("Leaving PatientWidget() with pop");
+                      //AutoRouter.of(context).pop();
+                      AutoRouter.of(context).push(const PatientsRoute());
                     } else {
+                      logger.d("Leaving PatientWidget() with push");
                       // AutoRouter.of(context).push(const DashboardRoute());
                       AutoRouter.of(context).push(const PatientsRoute());
                     }
