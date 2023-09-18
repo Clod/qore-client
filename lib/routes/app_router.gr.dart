@@ -15,6 +15,12 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    AddPatientRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AddPatientScreen(),
+      );
+    },
     EditPatientRoute.name: (routeData) {
       final args = routeData.argsAs<EditPatientRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -23,12 +29,6 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           parametro: args.parametro,
         ),
-      );
-    },
-    AddPatientRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const AddPatientScreen(),
       );
     },
     HomeRoute.name: (routeData) {
@@ -67,6 +67,20 @@ abstract class _$AppRouter extends RootStackRouter {
 }
 
 /// generated route for
+/// [AddPatientScreen]
+class AddPatientRoute extends PageRouteInfo<void> {
+  const AddPatientRoute({List<PageRouteInfo>? children})
+      : super(
+          AddPatientRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AddPatientRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [EditPatientScreen]
 class EditPatientRoute extends PageRouteInfo<EditPatientRouteArgs> {
   EditPatientRoute({
@@ -102,20 +116,6 @@ class EditPatientRouteArgs {
   String toString() {
     return 'EditPatientRouteArgs{key: $key, parametro: $parametro}';
   }
-}
-
-/// generated route for
-/// [AddPatientScreen]
-class AddPatientRoute extends PageRouteInfo<void> {
-  const AddPatientRoute({List<PageRouteInfo>? children})
-      : super(
-          AddPatientRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'AddPatientRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

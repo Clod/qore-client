@@ -6,12 +6,11 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../assets/global_data.dart';
 import '../model/arbol_de_diagnosticos.dart';
 import '../model/paciente.dart';
 import '../model/paises.dart';
-import '../model/patients_dao_ws.dart';
+import 'package:cardio_gut/model/patients_dao_ws.dart';
 import '../routes/app_router.dart';
 import '../util/aux_functions.dart';
 
@@ -259,6 +258,7 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                   // Last Name
                   FormBuilderTextField(
                     // autovalidateMode: AutovalidateMode.always,
+                    key: const Key("LastName"),
                     name: 'LastName',
                     decoration: InputDecoration(
                       labelText: _esDiagPrenatal ? 'Apellido(s) de la madre' : 'Apellido(s)',
@@ -838,6 +838,7 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 MaterialButton(
+                  key: const Key("CancelarButton"),
                   child: const Text(
                     'Cancelar',
                     style: TextStyle(color: Colors.white),
@@ -856,6 +857,7 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                 ),
                 const SizedBox(width: 30),
                 MaterialButton(
+                  key: const Key("EnviarButton"),
                   child: const Text(
                     'Enviar',
                     style: TextStyle(color: Colors.white),

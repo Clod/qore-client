@@ -47,6 +47,7 @@ dependencies:
   web_socket_channel: ^2.4.0
   logger: ^2.0.1
   provider: ^6.0.5
+  mockito: ^5.4.2
 
 dev_dependencies:
   flutter_test:
