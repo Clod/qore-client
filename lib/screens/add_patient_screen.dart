@@ -53,7 +53,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                 ),
               ),
             ),
-            const PatientWidget(parametro: null),
+            PatientWidget(parametro: null),
           ],
         ),
       ),

@@ -4,7 +4,7 @@
 // utility that Flutter provides. For example, you can send tap and scroll
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:cardio_gut/assets/global_data.dart';
 import 'package:cardio_gut/model/paciente.dart';
 import 'package:cardio_gut/model/patients_dao_ws.dart';
 import 'package:cardio_gut/screens/patient_widget_new.dart';
@@ -19,30 +19,21 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'widget_test.mocks.dart';
 
-
-
-abstract class AddPatientWSFunction {
-  String call(MockTransceiver transceiver, Paciente patient, Function callback);
-}
-
-class AddPatientWSFunctionMock extends Mock implements AddPatientWSFunction {}
-
-class FunctionWrapper {
-    String addPatientWS(MockTransceiver transceiver, Paciente patient, Function callback) {
-    // Call the actual function here
-    return addPatientWS(transceiver, patient, callback);
-  }
-}
-
-@GenerateMocks([Paciente, Transceiver])
+@GenerateMocks([Paciente, Transceiver, PatientsDAO])
 void main() {
+
+  late MockPatientsDAO patientsDAO;
   group('PatientWidget tests', () {
     final paciente = MockPaciente();
     final transceiver = MockTransceiver();
-    final addPatientWS = AddPatientWSFunctionMock();
+    // final patientsDAO = MockPatientsDAO();
+    final mockCallback = () => null;
 
-    // Set up the mock to return a specific value when called
-    // when(addPatientWS(transceiver, paciente, (){}) => 'Mocked Value');
+    setUp(() {
+      patientsDAO = MockPatientsDAO();
+      when(patientsDAO.addPatientWS(transceiver, paciente, mockCallback)).thenAnswer((realInvocation) => Future.value('Something'));
+
+    });
 
     testWidgets(
       'Should hit the Enviar button and call addPatientWS',
@@ -53,24 +44,24 @@ void main() {
             child: MaterialApp(
               home: Material(
                 child: Scaffold(
-                    body: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: ListView(
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                            child: const FittedBox(
-                              child: Text(
-                                'Incorporar paciente al sistema',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
+                  body: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: ListView(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                          child: const FittedBox(
+                            child: Text(
+                              'Incorporar paciente al sistema',
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
-                          const PatientWidget(parametro: null),
-                        ],
-                      ),
+                        ),
+                        PatientWidget(parametro: null),
+                      ],
                     ),
+                  ),
                 ),
               ),
               localizationsDelegates: const [
@@ -84,7 +75,7 @@ void main() {
         // Here we use physicalSizeTestValue to adjust the test screen size to
         // simulate running on a desktop computer which the app was designed for
 //        tester.binding.window.physicalSizeTestValue = Size(1080, 1920);
-        await tester.binding.setSurfaceSize(Size(1920, 1080));
+        await tester.binding.setSurfaceSize(const Size(1920, 1080));
         // tester.binding.window.devicePixelRatioTestValue = 1.0;
 
         final apellidoInputText = find.byKey(const Key("LastName"));
@@ -97,13 +88,13 @@ void main() {
         await tester.ensureVisible(find.byKey(const Key("EnviarButton")));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key("EnviarButton")));
+        logger.d("Encontré el botón");
 
-        print ("Encontré el botón");
-        final result = await addPatientWS(transceiver, paciente, (){});
-        expect(result, 'Mocked Value');
-
-        verify(addPatientWS(transceiver, paciente, (){})).called(1);
-
+       // Stub the behavior of myMethod using when
+        when(patientsDAO.addPatientWS(transceiver, paciente, mockCallback)).thenAnswer((realInvocation) => Future.value('Something'));
+        final result = await patientsDAO.addPatientWS(transceiver, paciente, mockCallback);
+        logger.d("La mocosa devolvió: $result");
+        verify(patientsDAO.addPatientWS(transceiver, paciente, mockCallback)).called(1);
       },
     );
   });

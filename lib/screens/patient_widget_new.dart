@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/util/Connections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
@@ -16,41 +17,69 @@ import '../util/aux_functions.dart';
 
 class PatientWidget extends StatelessWidget {
   final Paciente? parametro;
-  const PatientWidget({super.key, required this.parametro});
+  PatientWidget({super.key, required this.parametro});
+
+  final patientsDAO = PatientsDAO();
+
+  void didChangeDependencies() {
+    // Schedule the post-build callback
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      // Execute your post-build logic here
+      print('Post-build callback executed');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final Connections connections = Provider.of<Connections>(context, listen: false);
-    return parametro == null ? const PatientWidgetForm(parametro: null) : FutureBuilder<Paciente>(
-      future: traerPacienteByIdWS(
-        connections.transceiver!,
-        parametro!.id,
-        informConectionProblems,
-        informErrorsReportedByServer,
-      ), // Replace with your WebSocket channel function
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // The future is still executing
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasData) {
-          // The future completed successfully, populate your widget with the data
-          return PatientWidgetForm(parametro: snapshot.data);
-        } else if (snapshot.hasError) {
-          // An error occurred, handle it appropriately
-          return Text('Error: ${snapshot.error}');
-        } else {
-          // The future completed with no data
-          return const Text('No data available.');
-        }
-      },
-    );
+    return parametro == null
+        ? PatientWidgetForm(parametro: null)
+        : FutureBuilder<Paciente>(
+            future: patientsDAO.traerPacienteByIdWS(
+              connections.transceiver!,
+              parametro!.id,
+              informConectionProblems,
+              informErrorsReportedByServer,
+            ), // Replace with your WebSocket channel function
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // The future is still executing
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasData) {
+                // The future completed successfully, populate your widget with the data
+                return PatientWidgetForm(parametro: snapshot.data);
+              } else if (snapshot.hasError) {
+                // An error occurred, handle it appropriately
+                debugPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                if (snapshot.error.toString().contains("Registro lockeado")) {
+                  return Column(
+                    children: [
+                      Text('Registro lockeado'),
+                      ElevatedButton(
+                        onPressed: () {
+                          debugPrint("Me apretaron");
+                          AutoRouter.of(context).push(const PatientsRoute());
+                        },
+                        child: Text("Apretar"),
+                      ),
+                    ],
+                  );
+                }
+                return Text('Error: ${snapshot.error}');
+              } else {
+                // The future completed with no data
+                return const Text('No data available.');
+              }
+            },
+          );
   }
 }
 
 class PatientWidgetForm extends StatefulWidget {
-  const PatientWidgetForm({Key? key, this.parametro}) : super(key: key);
+  PatientWidgetForm({Key? key, this.parametro}) : super(key: key);
 
   final Paciente? parametro;
+  final patientsDAO = PatientsDAO();
 
   @override
   PatientWidgetFormState createState() {
@@ -213,6 +242,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
   }
 
   var formatter = DateFormat('dd/MM/yyy');
+
+  var patientsDAO = PatientsDAO();
 
   @override
   Widget build(BuildContext context) {
@@ -845,7 +876,7 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                   ),
                   color: Theme.of(context).colorScheme.error,
                   onPressed: () {
-                    rollbackWS(_connections.transceiver!);
+                    patientsDAO.rollbackWS(_connections.transceiver!);
                     if (_creandoFicha) {
                       AutoRouter.of(context).pop();
                     } else {
@@ -856,6 +887,7 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                   },
                 ),
                 const SizedBox(width: 30),
+                // Send to the server to create record.
                 MaterialButton(
                   key: const Key("EnviarButton"),
                   child: const Text(
@@ -881,6 +913,7 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
 
                     FormBuilderState base = _formKey.currentState!;
 
+                    // Check sex input
                     var _sexChar = "";
 
                     switch (base.fields["Sexo"]?.value.toString()) {
@@ -899,12 +932,15 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     int? _semanasGestacionEnviar;
                     String? _nroFichaDiagPreEnviar;
 
+                    // Not yet born
                     if (_esDiagPrenatal) {
                       _fechaNacimientoEnviar = null;
                       logger.d("Semanas gestación: " + base.fields["SemanasGestacion"]?.value);
                       _semanasGestacionEnviar = int.parse(base.fields["SemanasGestacion"]?.value);
                       _nroFichaDiagPreEnviar = null;
                     } else {
+                      // Born => regular patient
+                      // Date of birth
                       _fechaNacimientoEnviar = (base.fields["FechaNacimiento"]?.value != null)
                           ? base.fields["FechaNacimiento"]?.value.toString().substring(0, 10)
                           : null;
@@ -951,11 +987,11 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     if (_creandoFicha) {
                       // _respuesta = await addPatient(paciente);
                       logger.d("Enviando solicitud de alta");
-                      _respuesta = await addPatientWS(_connections.transceiver!, paciente, informConectionProblems);
+                      _respuesta = await patientsDAO.addPatientWS(_connections.transceiver!, paciente, informConectionProblems);
                       logger.d("Respuesta del servidor: $_respuesta");
                       _accion = 'creó';
                     } else {
-                      _respuesta = await updatePatientWS(_connections.transceiver!, paciente, informConectionProblems);
+                      _respuesta = await patientsDAO.updatePatientWS(_connections.transceiver!, paciente, informConectionProblems);
 //                      _respuesta = await updatePatientLockingWS(paciente, informConectionProblems);
                       _accion = 'modificó';
                     }

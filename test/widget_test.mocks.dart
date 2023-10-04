@@ -21,6 +21,16 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakePaciente_0 extends _i1.SmartFake implements _i2.Paciente {
+  _FakePaciente_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [Paciente].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -243,4 +253,124 @@ class MockTransceiver extends _i1.Mock implements _i3.Transceiver {
         ),
         returnValueForMissingStub: null,
       );
+}
+
+/// A class which mocks [PatientsDAO].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPatientsDAO extends _i1.Mock implements _i3.PatientsDAO {
+  MockPatientsDAO() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void rollbackWS(_i3.Transceiver? transceiver) => super.noSuchMethod(
+        Invocation.method(
+          #rollbackWS,
+          [transceiver],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  _i4.Future<_i2.Paciente> traerPacienteByIdWS(
+    _i3.Transceiver? transceiver,
+    int? id,
+    Function? callback,
+    Function? callback2,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #traerPacienteByIdWS,
+          [
+            transceiver,
+            id,
+            callback,
+            callback2,
+          ],
+        ),
+        returnValue: _i4.Future<_i2.Paciente>.value(_FakePaciente_0(
+          this,
+          Invocation.method(
+            #traerPacienteByIdWS,
+            [
+              transceiver,
+              id,
+              callback,
+              callback2,
+            ],
+          ),
+        )),
+      ) as _i4.Future<_i2.Paciente>);
+  @override
+  _i4.Future<List<_i2.Paciente>> traerPacientesWS(
+    _i3.Transceiver? trans,
+    String? value,
+    String? optBuscar,
+    Function? callback,
+    Function? callback2,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #traerPacientesWS,
+          [
+            trans,
+            value,
+            optBuscar,
+            callback,
+            callback2,
+          ],
+        ),
+        returnValue: _i4.Future<List<_i2.Paciente>>.value(<_i2.Paciente>[]),
+      ) as _i4.Future<List<_i2.Paciente>>);
+  @override
+  _i4.Future<String> addPatientWS(
+    _i3.Transceiver? transceiver,
+    _i2.Paciente? patient,
+    Function? callback,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #addPatientWS,
+          [
+            transceiver,
+            patient,
+            callback,
+          ],
+        ),
+        returnValue: _i4.Future<String>.value(''),
+      ) as _i4.Future<String>);
+  @override
+  _i4.Future<String> updatePatientWS(
+    _i3.Transceiver? transceiver,
+    _i2.Paciente? patient,
+    Function? callback,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updatePatientWS,
+          [
+            transceiver,
+            patient,
+            callback,
+          ],
+        ),
+        returnValue: _i4.Future<String>.value(''),
+      ) as _i4.Future<String>);
+  @override
+  _i4.Future<String> updatePatientLockingWS(
+    _i3.Transceiver? transceiver,
+    _i2.Paciente? patient,
+    Function? callback,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updatePatientLockingWS,
+          [
+            transceiver,
+            patient,
+            callback,
+          ],
+        ),
+        returnValue: _i4.Future<String>.value(''),
+      ) as _i4.Future<String>);
 }

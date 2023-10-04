@@ -41,7 +41,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
     // This callback will get called AFTER the Widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _connections = Provider.of<Connections>(context, listen: false);
-      _connections.transceiver = Transceiver('wss://cauto.com.ar:8080', () {});
+      _connections.transceiver = Transceiver('wss://vcsinc.com.ar:8080', () {});
     });
   }
 
@@ -49,6 +49,8 @@ class _PatientsScreenState extends State<PatientsScreen> {
   var dropDownBuscar = ['Apellido', 'Documento'];
 
   TextEditingController datoBusqueda = TextEditingController();
+
+  var patientsDAO = PatientsDAO();
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +169,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                       : setState(
                           () {
                             try {
-                              dataFuture = traerPacientesWS(
+                              dataFuture = patientsDAO.traerPacientesWS(
                                 _connections.transceiver!,
                                 datoBusqueda.value.text,
                                 optBuscar,
@@ -196,7 +198,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                   ? null
                   : setState(
                       () {
-                        dataFuture = traerPacientesWS(
+                        dataFuture = patientsDAO.traerPacientesWS(
                           _connections.transceiver!,
                           datoBusqueda.value.text,
                           optBuscar,
@@ -329,7 +331,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                     message:
                         "Diagnóstico: ${item!.diag1} \nSexo: ${item.sexo} \nFecha de nacimiento: ${item.fechaNacimiento ?? "No informada"} \n${item.comentarios}",
                     child: ListTile(
-                      title: Text(item!.id.toString() +
+                      title: Text(item.id.toString() +
                           ") " +
                           item.nombre +
                           ' ' +
