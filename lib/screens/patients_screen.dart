@@ -41,7 +41,28 @@ class _PatientsScreenState extends State<PatientsScreen> {
     // This callback will get called AFTER the Widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _connections = Provider.of<Connections>(context, listen: false);
-      _connections.transceiver = Transceiver('wss://vcsinc.com.ar:8080', () {});
+      _connections.transceiver = Transceiver('wss://vcsinc.com.ar:8080', () {
+        // If the server is down, infor and go back to Home
+        debugPrint("No hay conexión con el servidor");
+        final snackBar = SnackBar(
+          duration: const Duration(seconds: 3600),
+          content: const Text(
+              "No hay conexión con el servidor. Reintente en unos minutos\nSi el problema persiste reporte el problema al servicio técnico."),
+          action: SnackBarAction(
+            label: 'OK',
+            onPressed: () {
+              //ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        FirebaseAuth.instance.signOut();
+        // Le "aviso" a route_guard
+        //MyApp.of(context).authProvider.authenticated = false;
+        // Instead, I could send to home.
+        AutoRouter.of(context).pushAndPopUntil(HomeRoute(), predicate: (HomeRoute) => true);
+      }, (){});
     });
   }
 

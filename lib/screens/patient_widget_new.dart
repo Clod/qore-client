@@ -50,17 +50,25 @@ class PatientWidget extends StatelessWidget {
                 return PatientWidgetForm(parametro: snapshot.data);
               } else if (snapshot.hasError) {
                 // An error occurred, handle it appropriately
-                debugPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                debugPrint("El registro está lockeado por otro usuario.");
                 if (snapshot.error.toString().contains("Registro lockeado")) {
                   return Column(
                     children: [
-                      Text('Registro lockeado'),
+                      const Text(
+                        'El registro está lockeado por otro usuario.\nReintente en unos minutos.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                        ),
+                      ),
                       ElevatedButton(
                         onPressed: () {
                           debugPrint("Me apretaron");
                           AutoRouter.of(context).push(const PatientsRoute());
+                          //AutoRouter.of(context).pushAndPopUntil(const PatientsRoute(), predicate: (_) => false);
                         },
-                        child: Text("Apretar"),
+                        child: const Text("OK"),
                       ),
                     ],
                   );
