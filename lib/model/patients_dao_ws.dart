@@ -9,11 +9,12 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class Transceiver {
   WebSocketChannel? _channel;
 //  https://stackoverflow.com/questions/73242835/flutter-stream-has-already-been-listened-to
-  final StreamController<List<int>> _responseStreamController = StreamController<List<int>>.broadcast();
+  final StreamController<List<int>> _responseStreamController =
+      StreamController<List<int>>.broadcast();
   Stream<List<int>> get responseStream => _responseStreamController.stream;
 
   Transceiver(String url, Function callbackDone, Function callbackError) {
-    logger.e("Conectando al servidor...");
+    logger.e("Conectando al servidor: $url");
     _channel = WebSocketChannel.connect(Uri.parse(url));
     _channel!.stream.listen(
       _handleResponse,
@@ -32,7 +33,8 @@ class Transceiver {
     );
   }
 
-  void sendMessage({required Commands command, required String data, List<String>? params}) {
+  void sendMessage(
+      {required Commands command, required String data, List<String>? params}) {
     try {
       final fullMessage = prependToken(data);
       final encodedMessage = convert.utf8.encode(fullMessage);
@@ -53,11 +55,7 @@ class Transceiver {
     try {
       if (data is String) {
         logger.t('Recibí un mensaje string: $data');
-        if (data == "ping") {
-          sendMessage(command: Commands.pong, data: "pong");
-        } else {
-          _responseStreamController.add(utf8.encode(data));
-        }
+        _responseStreamController.add(utf8.encode(data));
       } else if (data is List<int>) {
         logger.t('Recibí un mensaje binari: $data');
         _responseStreamController.add(data);
@@ -90,12 +88,14 @@ String prependToken(String data) {
 }
 
 class PatientsDAO {
-   void rollbackWS(Transceiver transceiver) {
+  void rollbackWS(Transceiver transceiver) {
     transceiver.sendMessage(command: Commands.rollback, data: "");
   }
 
-   Future<Paciente> traerPacienteByIdWS(Transceiver transceiver, int id, Function callback, Function callback2) async {
-    logger.d("Entrando a traerPacientesWS ***********************************\n");
+  Future<Paciente> traerPacienteByIdWS(Transceiver transceiver, int id,
+      Function callback, Function callback2) async {
+    logger
+        .d("Entrando a traerPacientesWS ***********************************\n");
 
     List<Paciente> retrievedPatients = <Paciente>[];
 
@@ -111,7 +111,8 @@ class PatientsDAO {
     String? decodedMessage;
 
     try {
-      transceiver.sendMessage(command: Commands.getPatientById, data: id.toString());
+      transceiver.sendMessage(
+          command: Commands.getPatientById, data: id.toString());
 
       // Wait for the response asynchronously
       await for (List<int> response in transceiver.responseStream) {
@@ -148,9 +149,10 @@ class PatientsDAO {
   }
 
 // Retrieve Patients from the database bases on a substring of the Id ddocument or Lastname
-   Future<List<Paciente>> traerPacientesWS(
-      Transceiver trans, String value, String optBuscar, Function callback, Function callback2) async {
-    logger.d("Entrando a traerPacientesWS ***********************************\n");
+  Future<List<Paciente>> traerPacientesWS(Transceiver trans, String value,
+      String optBuscar, Function callback, Function callback2) async {
+    logger
+        .d("Entrando a traerPacientesWS ***********************************\n");
 
     logger.d("optBuscar: $optBuscar");
 
@@ -170,9 +172,11 @@ class PatientsDAO {
     try {
       transceiver = trans;
       if (optBuscar == 'Apellido') {
-        transceiver.sendMessage(command: Commands.getPatientsByLastName, data: value);
+        transceiver.sendMessage(
+            command: Commands.getPatientsByLastName, data: value);
       } else {
-        transceiver.sendMessage(command: Commands.getPatientsByIdDoc, data: value);
+        transceiver.sendMessage(
+            command: Commands.getPatientsByIdDoc, data: value);
       }
 
       // Wait for the response asynchronously
@@ -209,11 +213,13 @@ class PatientsDAO {
     return retrievedPatients;
   }
 
-   Future<String> addPatientWS(Transceiver transceiver, Paciente patient, Function callback) async {
+  Future<String> addPatientWS(
+      Transceiver transceiver, Paciente patient, Function callback) async {
     logger.d('Envío pedido de alta al servidor ');
 
     // Transceiver transceiver = Transceiver('wss://vcsinc.com.ar:8080', callback);
-    transceiver.sendMessage(command: Commands.addPatient, data: patient.toJson().toString());
+    transceiver.sendMessage(
+        command: Commands.addPatient, data: patient.toJson().toString());
 
     late String jsonReceived;
 
@@ -232,12 +238,14 @@ class PatientsDAO {
     return jsonReceived.toString();
   }
 
-   Future<String> updatePatientWS(Transceiver transceiver, Paciente patient, Function callback) async {
+  Future<String> updatePatientWS(
+      Transceiver transceiver, Paciente patient, Function callback) async {
     logger.d('Envío pedido de modificación al servidor ');
 
     // Transceiver transceiver = Transceiver('wss://vcsinc.com.ar:8080', callback);
 
-    transceiver.sendMessage(command: Commands.updatePatient, data: patient.toJson().toString());
+    transceiver.sendMessage(
+        command: Commands.updatePatient, data: patient.toJson().toString());
 
     late String jsonReceived;
 
@@ -256,10 +264,12 @@ class PatientsDAO {
     return jsonReceived.toString();
   }
 
-   Future<String> updatePatientLockingWS(Transceiver transceiver, Paciente patient, Function callback) async {
+  Future<String> updatePatientLockingWS(
+      Transceiver transceiver, Paciente patient, Function callback) async {
     logger.d('Envío pedido de modificación al servidor ');
 
-    transceiver.sendMessage(command: Commands.updatePatient, data: patient.toJson().toString());
+    transceiver.sendMessage(
+        command: Commands.updatePatient, data: patient.toJson().toString());
 
     late String jsonReceived;
 
