@@ -1,3 +1,10 @@
+Para ejecutar el servidor de desarrollo en local:
+flutter run -d chrome --web-hostname 192.168.0.102 --web-port 8080
+
+Para ejecutar el servidor de desarrollo en local con el IDE:
+flutter run -d chrome --web-hostname 192.168.0.102 --web-port 8080 --web-browser-flag "--auto-open-devtools-for-tabs"   
+
+
 flutter build web
 cd build\web
 python -m http.server

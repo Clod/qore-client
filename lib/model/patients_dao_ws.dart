@@ -13,10 +13,15 @@ class Transceiver {
       StreamController<List<int>>.broadcast();
   Stream<List<int>> get responseStream => _responseStreamController.stream;
 
+  // Creo un constructor que recibe la URL del servidor y dos funciones de callback
+  // una para cuando se recibe una respuesta del servidor y otra para cuando ocurre un error
   Transceiver(String url, Function callbackDone, Function callbackError) {
     logger.e("Conectando al servidor: $url");
+    // Establezco la conexión con el servidor
     _channel = WebSocketChannel.connect(Uri.parse(url));
+    // Dejo pendiente la escucha de la respuesta del servidor
     _channel!.stream.listen(
+      // Llamado cuando se recibe una respuesta del servidor
       _handleResponse,
       onError: (e) {
         logger.d("Executing on onError");
@@ -24,6 +29,7 @@ class Transceiver {
         // throw Exception("Error en la conexión con el servidor: $e");
         callbackError();
       },
+      // Llamado cuando se cierra la conexión con el servidor
       onDone: () {
         logger.d("Executing on onDone");
         logger.d("Se cerró la conexión con el servidor");

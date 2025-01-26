@@ -17,10 +17,12 @@ class Paciente {
     this.diag2,
     this.diag3,
     this.diag4,
+    this.sindAsocGen,
     this.fechaPrimerDiagnostico,
     this.nroHistClinicaPapel,
     this.nroFichaDiagPrenatal,
     this.comentarios,
+    this.historial,
   });
 
   final int id;
@@ -38,10 +40,12 @@ class Paciente {
   String? diag2;
   String? diag3;
   String? diag4;
+  String? sindAsocGen;
   String? fechaPrimerDiagnostico;
   String? nroHistClinicaPapel;
   String? nroFichaDiagPrenatal;
   String? comentarios;
+  String? historial;
 
   factory Paciente.fromJson(Map<String, dynamic> data) {
 // note the explicit cast to String
@@ -62,10 +66,12 @@ class Paciente {
     final diag2 = data['diag2'] as String?;
     final diag3 = data['diag3'] as String?;
     final diag4 = data['diag4'] as String?;
+    final sindAsocGen = data['sind_y_asoc_gen'] as String?;
     final fechaPrimerDiagnostico = data['fecha_primer_diagnostico'] as String?;
     final nroHistClinicaPapel = data['nro_hist_clinica_papel'] as String?;
     final nroFichaDiagPrenatal = data['nro_ficha_diag_prenatal'] as String?;
     final comentarios = data['comentarios'] as String?;
+    final historial = data['historial'] as String?;
 
     logger.d("Received Json: ${data.toString()}");
 
@@ -85,10 +91,12 @@ class Paciente {
       diag2: diag2,
       diag3: diag3,
       diag4: diag4,
+      sindAsocGen: sindAsocGen,
       fechaPrimerDiagnostico: fechaPrimerDiagnostico,
       nroHistClinicaPapel: nroHistClinicaPapel,
       nroFichaDiagPrenatal: nroFichaDiagPrenatal,
       comentarios: comentarios,
+      historial: historial,
     );
   }
 
@@ -108,10 +116,12 @@ class Paciente {
         'diag2': diag2,
         'diag3': diag3,
         'diag4': diag4,
+        'sindAsocGen': sindAsocGen,
         'fechaPrimerDiagnostico': fechaPrimerDiagnostico,
         'nroHistClinicaPapel': nroHistClinicaPapel,
         'nroFichaDiagPrenatal': nroFichaDiagPrenatal,
         'comentarios': comentarios,
+        'historial': historial,
       };
 
   @override

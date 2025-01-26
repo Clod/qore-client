@@ -13,6 +13,12 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
 
+  // Para la configuración para pruebas en local vcsinc.com.ar
+  // está definida en /etc/hosts como 192.168.0.102
+  debugPrint("********************************************************");
+  debugPrint("***** ESPERA QUE EL SERVIDOR ESTÉ EN 192.168.0.102 *****");
+  debugPrint("********************************************************");
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // Me fijo si estoy corriendo desde el IDE
@@ -41,6 +47,7 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  // Run the app and pass in the AppRouter. The app will now depend on the AppRouter
   runApp(
     ChangeNotifierProvider(
       create: (context) => Connections(),
@@ -58,6 +65,9 @@ class MyApp extends StatefulWidget {
   // context, and then access the authService member variable.
   static MyAppState of(BuildContext context) => context.findAncestorStateOfType<MyAppState>()!;
 
+  // This widget is the root of your application.
+  // final AppRouter _appRouter;
+  // MyApp(this._appRouter);
   @override
   State<MyApp> createState() => MyAppState();
 }

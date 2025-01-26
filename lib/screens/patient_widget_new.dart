@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cardio_gut/util/Connections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +11,7 @@ import '../model/arbol_de_diagnosticos.dart';
 import '../model/paciente.dart';
 import '../model/paises.dart';
 import 'package:cardio_gut/model/patients_dao_ws.dart';
+import '../model/sindromes_y_asoc_geneticas.dart';
 import '../routes/app_router.dart';
 import '../util/aux_functions.dart';
 
@@ -23,15 +23,16 @@ class PatientWidget extends StatelessWidget {
 
   void didChangeDependencies() {
     // Schedule the post-build callback
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       // Execute your post-build logic here
-      print('Post-build callback executed');
+      debugPrint('Post-build callback executed');
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final Connections connections = Provider.of<Connections>(context, listen: false);
+    final Connections connections =
+        Provider.of<Connections>(context, listen: false);
     return parametro == null
         ? PatientWidgetForm(parametro: null)
         : FutureBuilder<Paciente>(
@@ -121,9 +122,11 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
   String? _diag2;
   String? _diag3;
   String? _diag4;
+  String? _sindAsocGen;
   String? _semanasGestacion;
   String? _nroHistClinicaPapel = '';
   String? _comentarios = '';
+  String? _historial = '';
 
   bool _diag1HasError = false;
   final bool _diag2HasError = false;
@@ -163,7 +166,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
       _creandoFicha = false;
       _idRegistroPaciente = widget.parametro!.id;
 
-      if (widget.parametro!.diagnosticoPrenatal != null && widget.parametro!.diagnosticoPrenatal == "V") {
+      if (widget.parametro!.diagnosticoPrenatal != null &&
+          widget.parametro!.diagnosticoPrenatal == "V") {
         _esDiagPrenatal = true;
         if (widget.parametro!.semanasGestacion != null) {
           _semanasGestacion = widget.parametro!.semanasGestacion.toString();
@@ -203,14 +207,16 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
         _sex = widget.parametro!.sexo!;
       }
       // _diagnosticoPrenatal = widget.parametro?.diagnosticoPrenatal;
-      _pacienteFallecido =
-          (widget.parametro != null && widget.parametro!.pacienteFallecido != null && widget.parametro!.pacienteFallecido == "V")
-              ? true
-              : false;
+      _pacienteFallecido = (widget.parametro != null &&
+              widget.parametro!.pacienteFallecido != null &&
+              widget.parametro!.pacienteFallecido == "V")
+          ? true
+          : false;
       _diag1 = widget.parametro?.diag1;
       _diag2 = widget.parametro?.diag2;
       _diag3 = widget.parametro?.diag3;
       _diag4 = widget.parametro?.diag4;
+      _sindAsocGen = widget.parametro?.sindAsocGen;
       // final semanasGestacion = data[semanasGestacion] as int;
       // final fechaPrimerDiagnostico = data[fechaPrimerDiagnostico] as String;
       _nroHistClinicaPapel = widget.parametro?.nroHistClinicaPapel;
@@ -224,7 +230,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
           // En la base está en null
           _fechaPrimerDiagnostico = null;
         } else {
-          var fechaPrimerDiagnostico = widget.parametro!.fechaPrimerDiagnostico!;
+          var fechaPrimerDiagnostico =
+              widget.parametro!.fechaPrimerDiagnostico!;
           var year = fechaPrimerDiagnostico.split("-")[0];
           var month = fechaPrimerDiagnostico.split("-")[1].padLeft(2, '0');
           var day = fechaPrimerDiagnostico.split("-")[2].padLeft(2, '0');
@@ -234,6 +241,7 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
       logger.d("Fecha primer diagnóstico: $_fechaPrimerDiagnostico");
 
       _comentarios = widget.parametro?.comentarios;
+      _historial = widget.parametro?.historial;
     }
   } // Fin initState
 
@@ -255,12 +263,15 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
 
   @override
   Widget build(BuildContext context) {
-    bool isScreenWide = MediaQuery.of(context).size.width >= kMinWidthOfLargeScreen;
+    bool isScreenWide =
+        MediaQuery.of(context).size.width >= kMinWidthOfLargeScreen;
     // logger.d("Screen width: ${MediaQuery.of(context).size.width}");
 
-    logger.d("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    logger.d(
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     logger.d("Building patient_widget");
-    logger.d("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    logger.d(
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
       child: SingleChildScrollView(
@@ -285,10 +296,12 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                 'Diag2': _diag2,
                 'Diag3': _diag3,
                 'Diag4': _diag4,
+                'SindAsocGen': _sindAsocGen,
                 'SemanasGestacion': _semanasGestacion,
                 'NroHistClinicaPapel': _nroHistClinicaPapel,
                 'FechaPrimerDiagnostico': _fechaPrimerDiagnostico,
                 'Comentarios': _comentarios,
+                'Historial': _historial,
               },
               skipDisabled: true,
               child: Column(
@@ -300,20 +313,23 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     key: const Key("LastName"),
                     name: 'LastName',
                     decoration: InputDecoration(
-                      labelText: _esDiagPrenatal ? 'Apellido(s) de la madre' : 'Apellido(s)',
+                      labelText: _esDiagPrenatal
+                          ? 'Apellido(s) de la madre'
+                          : 'Apellido(s)',
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
                       suffixIcon: _lastNameHasError
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                      FormBuilderValidators.match("[a-zA-Z ]+"),
-                      FormBuilderValidators.maxLength(30),
-                      FormBuilderValidators.minLength(2),
-                    ]),
+validator: FormBuilderValidators.compose([
+  FormBuilderValidators.required(),
+  FormBuilderValidators.match(RegExp(r'[a-zA-Z ]+')),
+  FormBuilderValidators.maxLength(30),
+  FormBuilderValidators.minLength(2),
+]),
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                   ),
@@ -322,20 +338,23 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                   FormBuilderTextField(
                     name: 'FirstName',
                     decoration: InputDecoration(
-                      labelText: _esDiagPrenatal ? 'Nombre(s) de la madre' : 'Nombre(s)',
+                      labelText: _esDiagPrenatal
+                          ? 'Nombre(s) de la madre'
+                          : 'Nombre(s)',
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
                       suffixIcon: _firstNameHasError
                           ? const Icon(Icons.error, color: Colors.red)
                           : const Icon(Icons.check, color: Colors.green),
                     ),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                      FormBuilderValidators.match("[a-zA-Z ]+"),
-                      FormBuilderValidators.maxLength(30),
-                      FormBuilderValidators.minLength(2),
-                    ]),
+validator: FormBuilderValidators.compose([
+  FormBuilderValidators.required(),
+  FormBuilderValidators.match(RegExp(r'[a-zA-Z ]+')),
+  FormBuilderValidators.maxLength(30),
+  FormBuilderValidators.minLength(2),
+]),
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                   ),
@@ -352,7 +371,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                           // initialValue: false,
                           decoration: const InputDecoration(
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 10.0),
                               border: OutlineInputBorder()),
                           onChanged: _onUnbornChanged,
                           title: const Text("Diagnóstico prenatal"),
@@ -373,11 +393,13 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                             decoration: InputDecoration(
                               labelText: 'Semanas de gestación',
                               isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 10.0),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 14.0, horizontal: 10.0),
                               border: const OutlineInputBorder(),
                               suffixIcon: _weeksOfPregnancyHasError
                                   ? const Icon(Icons.error, color: Colors.red)
-                                  : const Icon(Icons.check, color: Colors.green),
+                                  : const Icon(Icons.check,
+                                      color: Colors.green),
                             ),
                           ),
                           child: Row(
@@ -390,17 +412,23 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                                   decoration: InputDecoration(
                                     border: const OutlineInputBorder(),
                                     isDense: true,
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
-                                    labelText: isScreenWide ? 'Fecha de nacimiento' : 'Fecha de\nnacimiento',
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10.0),
+                                    labelText: isScreenWide
+                                        ? 'Fecha de nacimiento'
+                                        : 'Fecha de\nnacimiento',
                                     suffixIcon: IconButton(
                                         icon: const Icon(Icons.close),
                                         // Reset field
                                         onPressed: () {
-                                          _formKey.currentState!.fields['FechaNacimiento']?.didChange(null);
+                                          _formKey.currentState!
+                                              .fields['FechaNacimiento']
+                                              ?.didChange(null);
                                         }),
                                   ),
                                   // initialTime: const TimeOfDay(hour: 8, minute: 0),
-                                  locale: const Locale.fromSubtags(languageCode: 'es'),
+                                  locale: const Locale.fromSubtags(
+                                      languageCode: 'es'),
                                 ),
                               ),
                               const SizedBox(
@@ -411,14 +439,17 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                                   // autovalidateMode: AutovalidateMode.always,
                                   name: 'NroFichaDiagPrenatal',
                                   decoration: const InputDecoration(
-                                    labelText: kIsWeb ? 'Nro. de ficha del diagnóstico prenatal' : 'Nro. ficha\ndiag. prenatal',
+                                    labelText: kIsWeb
+                                        ? 'Nro. de ficha del diagnóstico prenatal'
+                                        : 'Nro. ficha\ndiag. prenatal',
                                     isDense: true,
-                                    contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 12.0, horizontal: 10.0),
                                     border: OutlineInputBorder(),
                                   ),
-                                  validator: FormBuilderValidators.compose([
-                                    FormBuilderValidators.numeric(),
-                                  ]),
+validator: FormBuilderValidators.compose([
+  FormBuilderValidators.match(RegExp(r'^\d+$')),
+]),
                                   keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
                                 ),
@@ -439,7 +470,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                           decoration: const InputDecoration(
                             isDense: true,
                             label: Text("Sexo"),
-                            contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 10.0),
                             border: OutlineInputBorder(),
                           ),
                           alignment: WrapAlignment.spaceAround,
@@ -467,10 +499,13 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                           name: 'Country',
                           decoration: InputDecoration(
                             isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 10.0),
                             border: const OutlineInputBorder(),
                             labelText: 'País emisor del documento',
-                            suffix: _countryHasError ? const Icon(Icons.error) : const Icon(Icons.check),
+                            suffix: _countryHasError
+                                ? const Icon(Icons.error)
+                                : const Icon(Icons.check),
                           ),
                           // allowClear: false,   xxxx
                           // hint: const Text('País emisor del documento'), xxxx
@@ -482,11 +517,15 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                                 ),
                               )
                               .toList(),
-                          validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                          validator: FormBuilderValidators.compose(
+                              [FormBuilderValidators.required()]),
                           onChanged: (val) {
                             logger.t("Cambió el país");
                             setState(() {
-                              _countryHasError = !(_formKey.currentState?.fields['Country']?.validate() ?? false);
+                              _countryHasError = !(_formKey
+                                      .currentState?.fields['Country']
+                                      ?.validate() ??
+                                  false);
                             });
                           },
                           valueTransformer: (val) => val?.toString(),
@@ -503,7 +542,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                           decoration: InputDecoration(
                             labelText: 'Documento',
                             isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12.0, horizontal: 10.0),
                             border: const OutlineInputBorder(),
                             suffixIcon: _identHasError
                                 ? const Icon(Icons.error, color: Colors.red)
@@ -535,13 +575,17 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     decoration: InputDecoration(
                       labelText: 'Diagnóstico de nivel 1',
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 10.0),
                       border: const OutlineInputBorder(),
-                      suffix: _diag1HasError ? const Icon(Icons.error) : const Icon(Icons.check),
+                      suffix: _diag1HasError
+                          ? const Icon(Icons.error)
+                          : const Icon(Icons.check),
                     ),
                     // allowClear: false, // Muestro (o no) una x a la derecha para resetear el campo xxx
                     // hint: const Text('Seleccione el diagnóstico nivel 1'), xxx
-                    validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                    validator: FormBuilderValidators.compose(
+                        [FormBuilderValidators.required()]),
                     items: diags.keys
                         .map(
                           (diag) => DropdownMenuItem(
@@ -565,7 +609,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                         // para mostrar los subdiagnósticos correspondientes
                         _diag1 = val;
 
-                        logger.t("Diags de nivel 2: " + diags[_diag1]!.keys.toString());
+                        logger.t("Diags de nivel 2: " +
+                            diags[_diag1]!.keys.toString());
                         logger.t((diags[_diag1]!.keys).toString());
 
                         // Reseteo el valor de subdiagnóstico para que no vuele por el aire si llego
@@ -583,7 +628,10 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                         _dropDownKey4.currentState!.setValue(null);
                         _diag4 = null;
 
-                        _diag1HasError = !(_formKey.currentState?.fields['Diag1']?.validate() ?? false);
+                        _diag1HasError = !(_formKey
+                                .currentState?.fields['Diag1']
+                                ?.validate() ??
+                            false);
                       });
                     },
                     valueTransformer: (val) => val?.toString(),
@@ -601,9 +649,12 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                       decoration: InputDecoration(
                         labelText: 'Diagnóstico de nivel 2',
                         isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 10.0),
                         border: const OutlineInputBorder(),
-                        suffix: _diag2HasError ? const Icon(Icons.error) : const Icon(Icons.check),
+                        suffix: _diag2HasError
+                            ? const Icon(Icons.error)
+                            : const Icon(Icons.check),
                       ),
                       // allowClear: false,  xxxx
                       // hint: const Text('Seleccione el diagnóstico nivel 2'), xxxx
@@ -623,7 +674,11 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                                 ),
                               )
                               .toList()
-                          : [""].map((diag2It) => DropdownMenuItem(value: diag2It, child: const Text("No hay nivel 2"))).toList(),
+                          : [""]
+                              .map((diag2It) => DropdownMenuItem(
+                                  value: diag2It,
+                                  child: const Text("No hay nivel 2")))
+                              .toList(),
                       onChanged: (val) {
                         logger.t("Cambió el diagnóstico nivel 2 a $val");
 
@@ -662,9 +717,12 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                       decoration: InputDecoration(
                         labelText: 'Diagnóstico de nivel 3',
                         isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 10.0),
                         border: const OutlineInputBorder(),
-                        suffix: _diag3HasError ? const Icon(Icons.error) : const Icon(Icons.check),
+                        suffix: _diag3HasError
+                            ? const Icon(Icons.error)
+                            : const Icon(Icons.check),
                       ),
                       // initialValue: 'Male',
                       // allowClear: false, xxxx
@@ -701,7 +759,10 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                           _dropDownKey4.currentState!.reset();
                           _dropDownKey4.currentState!.setValue(null);
 
-                          _diag3HasError = !(_formKey.currentState?.fields['Diag3']?.validate() ?? false);
+                          _diag3HasError = !(_formKey
+                                  .currentState?.fields['Diag3']
+                                  ?.validate() ??
+                              false);
                         });
                       },
                       valueTransformer: (val) => val?.toString(),
@@ -722,7 +783,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                       decoration: const InputDecoration(
                         labelText: 'Diagnóstico de nivel 4',
                         isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 10.0),
                         border: OutlineInputBorder(),
                         // suffix: _diag4HasError
                         //     ? const Icon(Icons.error)
@@ -732,23 +794,24 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                       // hint: const Text('Seleccione el diagnóstico nivel 4'),   xxxxx
                       // validator: FormBuilderValidators.compose(
                       //     [FormBuilderValidators.required()]),
-                      items: (_diag1 != null && _diag2 != null && _diag3 != null)
-                          ? diags[_diag1]![_diag2]![_diag3]!
-                              .map(
-                                (diag4It) => DropdownMenuItem(
-                                  value: diag4It,
-                                  child: Text(diag4It),
-                                ),
-                              )
-                              .toList()
-                          : [""]
-                              .map(
-                                (diag4It) => DropdownMenuItem(
-                                  value: diag4It,
-                                  child: const Text("No hay nivel 4"),
-                                ),
-                              )
-                              .toList(),
+                      items:
+                          (_diag1 != null && _diag2 != null && _diag3 != null)
+                              ? diags[_diag1]![_diag2]![_diag3]!
+                                  .map(
+                                    (diag4It) => DropdownMenuItem(
+                                      value: diag4It,
+                                      child: Text(diag4It),
+                                    ),
+                                  )
+                                  .toList()
+                              : [""]
+                                  .map(
+                                    (diag4It) => DropdownMenuItem(
+                                      value: diag4It,
+                                      child: const Text("No hay nivel 4"),
+                                    ),
+                                  )
+                                  .toList(),
                       onChanged: (val) {
                         logger.t("Cambió el diagnóstico nivel 4");
                         setState(() {});
@@ -756,11 +819,45 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                       valueTransformer: (val) => val?.toString(),
                     ),
                   ),
-
                   const SizedBox(
                     height: 10,
                   ),
+                  FormBuilderDropdown<String>(
+                    // autovalidate: true,
+                    name: 'SindAsocGen',
+                    decoration: const InputDecoration(
+                      labelText: 'Síndromes y Asociaciones Genéticas',
+                      isDense: true,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                      border: OutlineInputBorder(),
+                      // suffix: _diag1HasError ? const Icon(Icons.error) : const Icon(Icons.check),
+                    ),
+                    // allowClear: false, // Muestro (o no) una x a la derecha para resetear el campo xxx
+                    // hint: const Text('Seleccione el diagnóstico nivel 1'), xxx
+                    // validator: FormBuilderValidators.compose([FormBuilderValidators.required()]),
+                    items: sindromesAsocGeneticas
+                        .map(
+                          (diag) => DropdownMenuItem(
+                            value: diag,
+                            child: Text(diag),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (val) {
+                      logger.t("Cambió el compo genética a: $val");
 
+                      setState(() {
+                        // me guardo el valor del diagnóstico elegido para después usarlo
+                        // para mostrar los subdiagnósticos correspondientes
+                        _sindAsocGen = val;
+                      });
+                    },
+                    valueTransformer: (val) => val?.toString(),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Flex(
                     direction: isScreenWide ? Axis.horizontal : Axis.vertical,
                     mainAxisSize: MainAxisSize.min,
@@ -770,7 +867,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                           name: 'NroHistClinicaPapel',
                           decoration: const InputDecoration(
                             isDense: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12.0, horizontal: 10.0),
                             border: OutlineInputBorder(),
                             labelText: 'Nro. historia clínica en papel',
                           ),
@@ -788,12 +886,15 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(),
                             isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10.0),
                             labelText: 'Fecha del primer diagnósico',
                             suffixIcon: IconButton(
                                 icon: const Icon(Icons.close),
                                 onPressed: () {
-                                  _formKey.currentState!.fields['FechaPrimerDiagnostico']?.didChange(null);
+                                  _formKey.currentState!
+                                      .fields['FechaPrimerDiagnostico']
+                                      ?.didChange(null);
                                 }),
                           ),
                           // initialTime: const TimeOfDay(hour: 8, minute: 0),
@@ -811,7 +912,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                           initialValue: formatter.format(DateTime.now()),
                           decoration: const InputDecoration(
                             isDense: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12.0, horizontal: 10.0),
                             border: OutlineInputBorder(),
                             labelText: 'Fecha de creación de la ficha',
                           ),
@@ -865,7 +967,37 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     ]),
                     // initialValue: '12',
                     // keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.next,
+                    textInputAction: TextInputAction.newline,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  FormBuilderTextField(
+                    // autovalidateMode: AutovalidateMode.always,
+                    keyboardType: TextInputType.multiline,
+                    name: 'Historial',
+                    minLines: 6,
+                    maxLines: 6,
+                    decoration: const InputDecoration(
+                      labelText: 'Historial',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (val) {
+                      setState(() {
+                        // _ageHasError = !(_formKey.currentState?.fields['age']
+                        //     ?.validate() ??
+                        //     false);
+                      });
+                    },
+                    // valueTransformer: (text) => num.tryParse(text),
+                    validator: FormBuilderValidators.compose([
+                      // FormBuilderValidators.required(),
+                      // // FormBuilderValidators.numeric(),
+                      // FormBuilderValidators.max(70),
+                    ]),
+                    // initialValue: '12',
+                    // keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.newline,
                   ),
                 ],
               ),
@@ -905,19 +1037,24 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                   color: Theme.of(context).colorScheme.secondary,
                   onPressed: () async {
                     if (_formKey.currentState?.saveAndValidate() ?? false) {
-                      logger.d("Valor de los campos: ${_formKey.currentState?.value.toString()}");
+                      logger.d(
+                          "Valor de los campos: ${_formKey.currentState?.value.toString()}");
                     } else {
                       logger.d(_formKey.currentState?.value.toString());
                       setState(() {
-                        if (!_formKey.currentState!.fields["LastName"]!.validate()) _lastNameHasError = true;
-                        if (!_formKey.currentState!.fields["FirstName"]!.validate()) _firstNameHasError = true;
-                        if (!_formKey.currentState!.fields["Identification"]!.validate()) _identHasError = true;
+                        if (!_formKey.currentState!.fields["LastName"]!
+                            .validate()) _lastNameHasError = true;
+                        if (!_formKey.currentState!.fields["FirstName"]!
+                            .validate()) _firstNameHasError = true;
+                        if (!_formKey.currentState!.fields["Identification"]!
+                            .validate()) _identHasError = true;
                       });
                       logger.d('validation failed');
                       return;
                     }
 
-                    logger.d("Intento dar de alta al paciente: ${_formKey.currentState?.value.toString()}");
+                    logger.d(
+                        "Intento dar de alta al paciente: ${_formKey.currentState?.value.toString()}");
 
                     FormBuilderState base = _formKey.currentState!;
 
@@ -943,21 +1080,28 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     // Not yet born
                     if (_esDiagPrenatal) {
                       _fechaNacimientoEnviar = null;
-                      logger.d("Semanas gestación: " + base.fields["SemanasGestacion"]?.value);
-                      _semanasGestacionEnviar = int.parse(base.fields["SemanasGestacion"]?.value);
+                      logger.d("Semanas gestación: " +
+                          base.fields["SemanasGestacion"]?.value);
+                      _semanasGestacionEnviar =
+                          int.parse(base.fields["SemanasGestacion"]?.value);
                       _nroFichaDiagPreEnviar = null;
                     } else {
                       // Born => regular patient
                       // Date of birth
-                      _fechaNacimientoEnviar = (base.fields["FechaNacimiento"]?.value != null)
-                          ? base.fields["FechaNacimiento"]?.value.toString().substring(0, 10)
-                          : null;
-                      _nroFichaDiagPreEnviar = base.fields["NroFichaDiagPrenatal"]?.value;
+                      _fechaNacimientoEnviar =
+                          (base.fields["FechaNacimiento"]?.value != null)
+                              ? base.fields["FechaNacimiento"]?.value
+                                  .toString()
+                                  .substring(0, 10)
+                              : null;
+                      _nroFichaDiagPreEnviar =
+                          base.fields["NroFichaDiagPrenatal"]?.value;
                       _semanasGestacionEnviar = null;
                     }
 
                     // Paso la fecha de creación de la ficha en formato yyyy-MM-dd como lo espera la BD. Viene dd-MM-yyyy
-                    String _fechaCreacionFicha = base.fields["FechaCreacionFicha"]!.value!.toString();
+                    String _fechaCreacionFicha =
+                        base.fields["FechaCreacionFicha"]!.value!.toString();
                     _fechaCreacionFicha = _fechaCreacionFicha.substring(6, 10) +
                         "-" +
                         _fechaCreacionFicha.substring(3, 5) +
@@ -966,7 +1110,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
 
                     var paciente = Paciente(
                       id: _idRegistroPaciente,
-                      apellido: base.fields["LastName"]!.value.toString().trim(),
+                      apellido:
+                          base.fields["LastName"]!.value.toString().trim(),
                       nombre: base.fields["FirstName"]!.value.toString().trim(),
                       documento: base.fields["Identification"]?.value,
                       pais: base.fields["Country"]?.value,
@@ -974,19 +1119,27 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                       nroFichaDiagPrenatal: _nroFichaDiagPreEnviar,
                       fechaCreacionFicha: _fechaCreacionFicha,
                       sexo: _sexChar,
-                      diagnosticoPrenatal: base.fields["DiagnosticoPrenatal"]?.value ? "V" : "F",
-                      pacienteFallecido: base.fields["PacienteFallecido"]?.value ? "V" : "F",
+                      diagnosticoPrenatal:
+                          base.fields["DiagnosticoPrenatal"]?.value ? "V" : "F",
+                      pacienteFallecido:
+                          base.fields["PacienteFallecido"]?.value ? "V" : "F",
                       semanasGestacion: _semanasGestacionEnviar,
                       diag1: base.fields["Diag1"]?.value,
                       diag2: base.fields["Diag2"]?.value,
                       diag3: base.fields["Diag3"]?.value,
                       diag4: base.fields["Diag4"]?.value,
+                      sindAsocGen: base.fields["SindAsocGen"]?.value,
                       // fechaPrimerDiagnostico: base?.fields["FechaPrimerDiagnostico"]?.value.toString().substring(0, 10),
-                      fechaPrimerDiagnostico: (base.fields["FechaPrimerDiagnostico"]?.value != null)
-                          ? base.fields["FechaPrimerDiagnostico"]?.value.toString().substring(0, 10)
-                          : null,
-                      nroHistClinicaPapel: base.fields["NroHistClinicaPapel"]?.value,
+                      fechaPrimerDiagnostico:
+                          (base.fields["FechaPrimerDiagnostico"]?.value != null)
+                              ? base.fields["FechaPrimerDiagnostico"]?.value
+                                  .toString()
+                                  .substring(0, 10)
+                              : null,
+                      nroHistClinicaPapel:
+                          base.fields["NroHistClinicaPapel"]?.value,
                       comentarios: base.fields["Comentarios"]?.value,
+                      historial: base.fields["Historial"]?.value,
                     );
 
                     String _respuesta = "";
@@ -995,11 +1148,17 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
                     if (_creandoFicha) {
                       // _respuesta = await addPatient(paciente);
                       logger.d("Enviando solicitud de alta");
-                      _respuesta = await patientsDAO.addPatientWS(_connections.transceiver!, paciente, informConectionProblems);
+                      _respuesta = await patientsDAO.addPatientWS(
+                          _connections.transceiver!,
+                          paciente,
+                          informConectionProblems);
                       logger.d("Respuesta del servidor: $_respuesta");
                       _accion = 'creó';
                     } else {
-                      _respuesta = await patientsDAO.updatePatientWS(_connections.transceiver!, paciente, informConectionProblems);
+                      _respuesta = await patientsDAO.updatePatientWS(
+                          _connections.transceiver!,
+                          paciente,
+                          informConectionProblems);
 //                      _respuesta = await updatePatientLockingWS(paciente, informConectionProblems);
                       _accion = 'modificó';
                     }
@@ -1041,7 +1200,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
 
   SnackBar buildSnackBar2(String _respuesta, String _accion) {
     // Remove curly braces from the string
-    String keyValueString = _respuesta.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '');
+    String keyValueString =
+        _respuesta.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '');
 
 // Split the string into an array of key-value pairs
     List<String> keyValuePairs = keyValueString.split(',');
@@ -1089,7 +1249,8 @@ class PatientWidgetFormState extends State<PatientWidgetForm> {
 
   void showSnackBar(String _respuesta, String _accion) {
     // Remove curly braces from the string
-    String keyValueString = _respuesta.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '');
+    String keyValueString =
+        _respuesta.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '');
 
 // Split the string into an array of key-value pairs
     List<String> keyValuePairs = keyValueString.split(',');

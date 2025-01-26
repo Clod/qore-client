@@ -43,7 +43,7 @@ dependencies:
   progress_indicators: 1.0.0
   flutter_dotenv: ^5.0.2
   flutter_form_builder: ^9.1.0
-  form_builder_validators: ^9.0.0
+  form_builder_validators: ^11.0.0
   web_socket_channel: ^2.4.0
   logger: ^2.0.1
   provider: ^6.0.5
