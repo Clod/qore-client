@@ -1,3 +1,4 @@
+// Import necessary packages
 import 'package:cardio_gut/assets/global_data.dart';
 import 'package:cardio_gut/routes/app_router.dart';
 import 'package:cardio_gut/util/Connections.dart';
@@ -11,58 +12,66 @@ import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
 
+// Main function, the entry point of the Flutter application
 Future<void> main() async {
 
-  // Para la configuración para pruebas en local vcsinc.com.ar
-  // está definida en /etc/hosts como 192.168.0.102
+  // Configuration for local testing vcsinc.com.ar
+  // Defined in /etc/hosts as 192.168.0.102
   debugPrint("********************************************************");
-  debugPrint("***** ESPERA QUE EL SERVIDOR ESTÉ EN 192.168.0.102 *****");
+  debugPrint("***** WAIT FOR THE SERVER TO BE AT 192.168.0.102 *****");
   debugPrint("********************************************************");
 
+  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Me fijo si estoy corriendo desde el IDE
+  // Check if running from IDE
   // https://stackoverflow.com/questions/63249638/how-to-use-env-in-flutter-web
-  // Si el IDE no le pasa ningún parámetro asumo que es PROD
+  // If IDE does not pass any parameters, assume PROD mode
   if (const String.fromEnvironment("EXECUTION_MODE") == "DEV") {
+    // Set execution mode to development
     GlobalData.executionMode = ExecutionMode.dev;
-    debugPrint("Al ejecutar en modo DEV no usa el Route Guard");
-    // Creo que lo de abajo no corre más
-    // Si se necesita probar la autenticación por algún motivo
-    // Comentar la línea:
+    debugPrint("When running in DEV mode, the Route Guard is not used");
+    // The code below might not run anymore
+    // If authentication testing is needed for some reason
+    // Comment out the line:
     //        authService.authenticated = true;
-    // en la clase route_guard
+    // in the route_guard class
   } else {
+    // Set execution mode to production
     GlobalData.executionMode = ExecutionMode.prod;
   }
 
-  debugPrint("Ejecutando en modo: ${GlobalData.executionMode}");
+  debugPrint("Running in mode: ${GlobalData.executionMode}");
 
-  // Ahora cargo las URLs del archivo de configuración
+  // Load URLs from configuration file
   await dotenv.load(fileName: "abracadabra");
 
+  // Retrieve URLs for different environments from .env file
   GlobalData.urlWebDev = dotenv.get("URL_WEB_DEV");
   GlobalData.urlAndDev = dotenv.get("URL_AND_DEV");
   GlobalData.urlProd = dotenv.get("URL_PROD");
 
+  // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Run the app and pass in the AppRouter. The app will now depend on the AppRouter
   runApp(
+    // Wrap MyApp with ChangeNotifierProvider to provide Connections data
     ChangeNotifierProvider(
       create: (context) => Connections(),
+      // Instantiate MyApp
       child: const MyApp(),
     ),
   );
 }
 
+// Main application widget, a StatefulWidget to manage its state
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // Flutter stores the widgets as a tree, and the states are stored along
-  // with the widgets. If we want to access any member of a state up this
-  // tree, we can use this function to first find MyAppState within this
-  // context, and then access the authService member variable.
+  // Flutter stores widgets as a tree, and states are stored along with widgets.
+  // To access any member of a state up this tree, use this function to find the MyAppState
+  // within this context and then access the authService member variable.
   static MyAppState of(BuildContext context) => context.findAncestorStateOfType<MyAppState>()!;
 
   // This widget is the root of your application.
@@ -72,33 +81,39 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => MyAppState();
 }
 
+// State class for the MyApp widget
 class MyAppState extends State<MyApp> {
 
+  // Instance of AuthService for authentication
   final authProvider = AuthService();
-  // Clod: esta clase se genera a partir de router.dart
+  // Clod: this class is generated from router.dart
   // final _appRouter = AppRouter();
 
+  // Late initialization of AppRouter, passing authProvider
   late final _appRouter = AppRouter(authProvider);
 
   @override
   Widget build(BuildContext context) {
+    // Return MaterialApp.router for routing configuration
     return MaterialApp.router(
-      title: "Q-ORE Client",
+      title: "Q-ORE Client", // Application title
       // https://stackoverflow.com/questions/56194440/flutter-default-font-size
       // The resulting font size is (originalSize * fontSizeFactor + fontSizeDelta).
       theme: ThemeData(
+        // Apply font scaling factor to the default text theme
         textTheme: Theme.of(context).textTheme.apply(
               fontSizeFactor: 0.9,
               fontSizeDelta: 0.0,
             ),
       ),
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false, // Hide debug banner
       routerConfig: _appRouter.config(
+        // Re-evaluate routes when authProvider notifies listeners
         reevaluateListenable: authProvider,
         //navigatorObservers: () => [AuthGuard()],
         // deepLinkBuilder: (deepLink) {
         //   if (deepLink.path.startsWith('/patient-route')) {
-        //     // continute with the platfrom link
+        //     // continue with the platform link
         //     return deepLink;
         //   } else {
         //     //return DeepLink.defaultPath;
@@ -111,11 +126,13 @@ class MyAppState extends State<MyApp> {
       // routeInformationParser: _appRouter.defaultRouteParser(),
       // routerDelegate: _appRouter.delegate(),
       localizationsDelegates: const [
+        // Localization delegates for form builder and material widgets
         FormBuilderLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: const [
+        // Supported locales
         Locale('en', ''),
         Locale('es', ''),
       ],
