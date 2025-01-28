@@ -21,9 +21,9 @@ class HomeScreen extends StatelessWidget {
           alignment: AlignmentDirectional.center,
           // color: Colors.black,
           width: MediaQuery.of(context).size.width * 0.8,
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               FittedBox(
                 child: Text(
                   'Sólo usuarios autorizados',

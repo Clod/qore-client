@@ -44,7 +44,7 @@ To run the application, follow these steps:
 3.  **Install Dependencies:** Navigate to the project directory and run `flutter pub get` to install the required dependencies.
 4.  **Configure Firebase:** Create a Firebase project and configure the application with your Firebase credentials. You will need to download the `google-services.json` (for Android) and `GoogleService-Info.plist` (for iOS) files and place them in the appropriate directories. You will also need to configure the `firebase_options.dart` file with your Firebase project's configuration.
 5.  **Set Environment Variables:** Create a `.env` file in the root directory of the project and add the required environment variables, such as the Firebase API key and the server IP address.
-6.  **Run the Application:** Run the application using `flutter run`.
+6.  **Run the Application:** Run the application using `flutter run -d chrome`.
 
 ## Additional Notes
 

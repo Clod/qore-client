@@ -58,7 +58,7 @@ Future<List<Paciente>> traerPacientes(String value, String optBuscar) async {
   // EL HOST ACEPTA HEADERS SI SE LOS MANDO CON CURL Y LEE EL TOKEN
   // Await the http get response, then decode the json-formatted response.
   // https://stackoverflow.com/questions/65630743/how-to-solve-flutter-web-api-cors-error-only-with-dart-code
-  var response;
+  http.Response response;
 
   try {
     // response = await http.get(url,);  // Anda

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:convert' as convert;
-import 'package:flutter/cupertino.dart';
 import 'paciente.dart';
 import '../assets/global_data.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -26,14 +25,13 @@ class Transceiver {
       onError: (e) {
         logger.d("Executing on onError");
         logger.f(e);
-        // throw Exception("Error en la conexión con el servidor: $e");
+        _channel?.sink.close();
         callbackError();
       },
-      // Llamado cuando se cierra la conexión con el servidor
       onDone: () {
         logger.d("Executing on onDone");
         logger.d("Se cerró la conexión con el servidor");
-        // throw Exception("Se cerró la conexión con el servidor");
+        _channel?.sink.close();
         callbackDone();
       },
     );
@@ -57,7 +55,6 @@ class Transceiver {
   }
 
   void _handleResponse(dynamic data) {
-    // String message = response.toString();
     try {
       if (data is String) {
         logger.t('Recibí un mensaje string: $data');
@@ -195,10 +192,10 @@ class PatientsDAO {
         logger.d("JSON: $decodedMessage");
 
         jsonReceived = convert.jsonDecode(decodedMessage);
-        debugPrint("JsonReceived: ${jsonReceived.toString()}");
+        logger.t("JsonReceived: ${jsonReceived.toString()}");
         break; // Stop listening after the first response is received
       }
-    } catch (e) {
+    }  catch (e) {
       logger.f(e);
       callback2(decodedMessage);
       rethrow;

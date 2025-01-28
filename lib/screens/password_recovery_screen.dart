@@ -6,7 +6,7 @@ import 'package:cardio_gut/assets/constants.dart' as constants;
 
 @RoutePage()
 class PasswordRecoveryScreen extends StatelessWidget {
-  PasswordRecoveryScreen ({Key? key, required this.parametro}) : super(key: key);
+  const PasswordRecoveryScreen ({Key? key, required this.parametro}) : super(key: key);
 
   final String parametro;
 

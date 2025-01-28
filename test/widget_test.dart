@@ -27,7 +27,7 @@ void main() {
     final paciente = MockPaciente();
     final transceiver = MockTransceiver();
     // final patientsDAO = MockPatientsDAO();
-    final mockCallback = () => null;
+    mockCallback() => null;
 
     setUp(() {
       patientsDAO = MockPatientsDAO();

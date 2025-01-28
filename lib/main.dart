@@ -15,11 +15,11 @@ import 'firebase_options.dart';
 // Main function, the entry point of the Flutter application
 Future<void> main() async {
 
-  // Configuration for local testing vcsinc.com.ar
-  // Defined in /etc/hosts as 192.168.0.102
-  debugPrint("********************************************************");
-  debugPrint("***** WAIT FOR THE SERVER TO BE AT 192.168.0.102 *****");
-  debugPrint("********************************************************");
+  // Configuration for local testing grasso.net.ar
+  // Defined in /etc/hosts as 127.0.0.1
+  debugPrint("*************************************************************************");
+  debugPrint("***** MAKE SURE 127.0.0.1 IS DEFINED AS grasso.net.ar IN /etc/hosts *****");
+  debugPrint("*************************************************************************");
 
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();

@@ -42,8 +42,8 @@ class _PatientsScreenState extends State<PatientsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _connections = Provider.of<Connections>(context, listen: false);
       // _connections.transceiver = Transceiver('wss://vcsinc.com.ar:8080', () {
-      // _connections.transceiver = Transceiver('ws://vcsinc.com.ar:8080', () {
-      _connections.transceiver = Transceiver('ws://127.0.0.1:8080', () {
+      _connections.transceiver = Transceiver('wss://grasso.net.ar:8080', () {
+      // _connections.transceiver = Transceiver('ws://127.0.0.1:8080', () {
         // _connections.transceiver = Transceiver('ws://192.168.0.102:8080', () {
         // If the server is down, infor and go back to Home
         debugPrint("No hay conexión con el servidor");
@@ -64,7 +64,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
         // Le "aviso" a route_guard
         //MyApp.of(context).authProvider.authenticated = false;
         // Instead, I could send to home.
-        AutoRouter.of(context).pushAndPopUntil(HomeRoute(), predicate: (HomeRoute) => true);
+        AutoRouter.of(context).pushAndPopUntil(const HomeRoute(), predicate: (HomeRoute) => true);
       }, (){});
     });
   }
