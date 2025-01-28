@@ -9,47 +9,113 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:form_builder_validators/localization/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'firebase_options.dart';
+
+// Define a class to hold the configuration.
+class AppConfig {
+  final String serverUrl;
+  final String environment;
+  final Map<String, dynamic> featureFlags;
+
+  AppConfig({
+    required this.serverUrl,
+    required this.environment,
+    this.featureFlags = const {},
+  });
+
+  factory AppConfig.fromJson(Map<String, dynamic> json) {
+    return AppConfig(
+      serverUrl: json['serverUrl'] as String? ?? '', // Provide default if missing
+      environment:
+          json['environment'] as String? ?? '', // Provide default if missing
+      featureFlags: json['featureFlags'] as Map<String, dynamic>? ??
+          {}, // Provide default if missing
+    );
+  }
+}
+
+Future<AppConfig?> _fetchConfig() async {
+  final configUrl = Uri.parse(
+      '/config.json'); // Or your full config URL (e.g., 'https://your-server.com/config.json')
+
+  try {
+    final response = await http.get(configUrl);
+
+    if (response.statusCode == 200) {
+      logger.i(
+          'Configuration file loaded successfully, status code: ${response.statusCode}');
+      final jsonResponse = jsonDecode(response.body);
+      return AppConfig.fromJson(jsonResponse);
+    } else {
+      logger.f('Failed to load config, status code: ${response.statusCode}');
+      return null; // Indicate failure
+    }
+  } catch (e) {
+    logger.f('Error fetching config: $e');
+    return null; // Indicate failure
+  }
+}
 
 // Main function, the entry point of the Flutter application
 Future<void> main() async {
 
-  // Configuration for local testing grasso.net.ar
-  // Defined in /etc/hosts as 127.0.0.1
-  debugPrint("*************************************************************************");
-  debugPrint("***** MAKE SURE 127.0.0.1 IS DEFINED AS grasso.net.ar IN /etc/hosts *****");
-  debugPrint("*************************************************************************");
-
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  AppConfig? appConfig; // Declare a variable to hold the config
+
+  try {
+    appConfig = await _fetchConfig(); // Fetch config asynchronously
+    // Check if server URL is empty
+    if (appConfig?.serverUrl == '') {
+      logger.f("Server URL is empty. Please check the configuration file.");  
+      throw Exception('Server URL is empty');
+    }
+
+    GlobalData.serverUrl = appConfig?.serverUrl; // Set server URL
+
+    // Check execution mode
+    if (appConfig?.environment == 'dev') {
+      // Set execution mode to development
+      GlobalData.executionMode = ExecutionMode.dev;
+      logger.d("When running in DEV mode, the Route Guard is not used");
+      // The code below might not run anymore
+    } else {
+      // Set execution mode to production
+      GlobalData.executionMode = ExecutionMode.prod;
+    }
+    logger.i(
+        'Configuration file loaded successfully: ${appConfig?.serverUrl}, ${appConfig?.environment}');
+  } catch (e) {
+    logger.f(
+        'Failed to load configuration: $e ');
+    // If config fails to load, rethrow the error to crash the app
+    //rethrow; // Rethrow the error to crash the app
+  }
 
   // Check if running from IDE
   // https://stackoverflow.com/questions/63249638/how-to-use-env-in-flutter-web
   // If IDE does not pass any parameters, assume PROD mode
-  if (const String.fromEnvironment("EXECUTION_MODE") == "DEV") {
-    // Set execution mode to development
-    GlobalData.executionMode = ExecutionMode.dev;
-    debugPrint("When running in DEV mode, the Route Guard is not used");
-    // The code below might not run anymore
-    // If authentication testing is needed for some reason
-    // Comment out the line:
-    //        authService.authenticated = true;
-    // in the route_guard class
-  } else {
-    // Set execution mode to production
-    GlobalData.executionMode = ExecutionMode.prod;
-  }
+  // if (const String.fromEnvironment("EXECUTION_MODE") == "DEV") {
+  //   // Set execution mode to development
+  //   GlobalData.executionMode = ExecutionMode.dev;
+  //   debugPrint("When running in DEV mode, the Route Guard is not used");
+  //   // The code below might not run anymore
+  //   // If authentication testing is needed for some reason
+  //   // Comment out the line:
+  //   //        authService.authenticated = true;
+  //   // in the route_guard class
+  // } else {
+  //   // Set execution mode to production
+  //   GlobalData.executionMode = ExecutionMode.prod;
+  // }
 
-  debugPrint("Running in mode: ${GlobalData.executionMode}");
+  logger.d("Running in mode: ${GlobalData.executionMode}");
 
   // Load URLs from configuration file
   await dotenv.load(fileName: "abracadabra");
-
-  // Retrieve URLs for different environments from .env file
-  GlobalData.urlWebDev = dotenv.get("URL_WEB_DEV");
-  GlobalData.urlAndDev = dotenv.get("URL_AND_DEV");
-  GlobalData.urlProd = dotenv.get("URL_PROD");
 
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -72,7 +138,8 @@ class MyApp extends StatefulWidget {
   // Flutter stores widgets as a tree, and states are stored along with widgets.
   // To access any member of a state up this tree, use this function to find the MyAppState
   // within this context and then access the authService member variable.
-  static MyAppState of(BuildContext context) => context.findAncestorStateOfType<MyAppState>()!;
+  static MyAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<MyAppState>()!;
 
   // This widget is the root of your application.
   // final AppRouter _appRouter;
@@ -83,7 +150,6 @@ class MyApp extends StatefulWidget {
 
 // State class for the MyApp widget
 class MyAppState extends State<MyApp> {
-
   // Instance of AuthService for authentication
   final authProvider = AuthService();
   // Clod: this class is generated from router.dart

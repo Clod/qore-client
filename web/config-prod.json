@@ -1,0 +1,10 @@
+{
+    "_comment": "If testing locally, set 127.0.0.1 grasso.net.ar in /etc/hosts",
+    "serverUrl": "wss://grasso.net.ar:8080",
+    "_validEnvironments": ["dev", "prod"],
+    "environment": "prod",
+    "featureFlags": {
+      "darkModeEnabled": true,
+      "analyticsEnabled": false
+    }
+  }

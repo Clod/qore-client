@@ -1,0 +1,9 @@
+{
+    "serverUrl": "ws:localhost:8080",
+    "_validEnvironments": ["dev", "prod"],
+    "environment": "dev",
+    "featureFlags": {
+      "darkModeEnabled": true,
+      "analyticsEnabled": false
+    }
+  }

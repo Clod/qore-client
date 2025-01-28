@@ -5,6 +5,27 @@ import 'dart:io' show Platform; // For Platform functionalities
 import 'package:flutter/foundation.dart'; // For debugPrint
 import 'package:http/http.dart' as http; // For HTTP requests
 
+// Define a class to hold the configuration.
+class AppConfig {
+  final String apiUrl;
+  final String environment;
+  final Map<String, dynamic> featureFlags;
+
+  AppConfig({
+    required this.apiUrl,
+    required this.environment,
+    this.featureFlags = const {},
+  });
+
+  factory AppConfig.fromJson(Map<String, dynamic> json) {
+    return AppConfig(
+      apiUrl: json['apiUrl'] as String? ?? '', // Provide default if missing
+      environment: json['environment'] as String? ?? '', // Provide default if missing
+      featureFlags: json['featureFlags'] as Map<String, dynamic>? ?? {}, // Provide default if missing
+    );
+  }
+}
+
 // Main function, entry point of the Dart script
 void main(List<String> arguments) async {
   // Example using Google Books API to search for books about http.
